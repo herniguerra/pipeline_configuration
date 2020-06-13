@@ -47,7 +47,10 @@ class BeforeAppLaunch(sgtk.Hook):
         """
 
         if engine_name == "tk-maya":
-            sgtk.util.append_path_to_env_var("PYTHONPATH", self.disk_location)
+            sgtk.util.append_path_to_env_var("PYTHONPATH", os.path.aappend(self.disk_location, "maya")
+            sgtk.util.append_path_to_env_var("MAYA_MODULE_PATH", os.path.aappend(self.disk_location, "maya/modules")
+            sgtk.util.append_path_to_env_var("MAYA_SCRIPT_PATH", os.path.aappend(self.disk_location, "maya/scripts")
+            
 
         # Check that we have a software entity, and that it has some plugins.
         if software_entity is not None and software_entity["sg_software_plugins"]:
