@@ -51,10 +51,10 @@ class BeforeAppLaunch(sgtk.Hook):
                 "PYTHONPATH", os.path.join(self.disk_location, "maya")
             )
             sgtk.util.append_path_to_env_var(
-                "MAYA_MODULE_PATH", os.path.join(self.disk_location, "maya/modules")
+                "MAYA_MODULE_PATH", os.path.join(self.disk_location, "maya\\modules")
             )
             sgtk.util.append_path_to_env_var(
-                "MAYA_SCRIPT_PATH", os.path.join(self.disk_location, "maya/scripts")
+                "MAYA_SCRIPT_PATH", os.path.join(self.disk_location, "maya\\scripts")
             )
 
         # Check that we have a software entity, and that it has some plugins.
