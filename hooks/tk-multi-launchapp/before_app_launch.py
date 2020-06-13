@@ -46,6 +46,9 @@ class BeforeAppLaunch(sgtk.Hook):
             associated with this launch command.
         """
 
+        if engine_name == "tk-maya":
+            sgtk.util.append_path_to_env_var("PYTHONPATH", self.disk_location)
+
         # Check that we have a software entity, and that it has some plugins.
         if software_entity is not None and software_entity["sg_software_plugins"]:
             # Store a handy reference to the Shotgun API
