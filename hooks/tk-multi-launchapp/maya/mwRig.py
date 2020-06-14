@@ -1,13 +1,13 @@
 import maya.cmds as cmds
 import os
-import manyworlds.maya.mwUtils as mwUtils
+import mwUtils
+import pymel.core as pm
 import mgear.core as mgear
 import mgear.rigbits.sdk_io as sdk
 
 reload(sdk)
 import maya.mel as mel
 import math
-import pymel.core as pm
 import ast
 import re
 import json
