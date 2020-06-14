@@ -1,16 +1,24 @@
 import pymel.core as pm
 import mgear
 from mgear import rigbits
-from mgear.rigbits import (rbf_manager_ui,
-                           postSpring,
-                           rope,
-                           facial_rigger,
-                           eye_rigger,
-                           lips_rigger,
-                           channelWrangler,
-                           proxySlicer,
-                           utils,
-                           mirror_controls)
+from mgear.rigbits import (
+    rbf_manager_ui,
+    postSpring,
+    rope,
+    facial_rigger,
+    eye_rigger,
+    lips_rigger,
+    mwEyebrows_rigger,
+    mwEyelids_rigger,
+    mwEyelines_rigger,
+    mwNose_rigger,
+    mwMouth_rigger,
+    mwCheek_rigger,
+    channelWrangler,
+    proxySlicer,
+    utils,
+    mirror_controls,
+)
 from mgear.rigbits.sdk_manager import SDK_manager_ui
 from mgear.core import string
 from mgear.core.anim_utils import bakeSprings
@@ -56,6 +64,13 @@ def install():
         ("-----", None),
         ("Facial Rigger", facial_rigger.show),
         ("-----", None),
+        ("MW Eyebrows Rigger", mwEyebrows_rigger.showMwEyebrowsUI),
+        ("MW Eyelids Rigger", mwEyelids_rigger.showMwEyelidsUI),
+        ("MW Eyelines Rigger", mwEyelines_rigger.showMwEyelinesUI),
+        ("MW Nose Rigger", mwNose_rigger.showMwNoseUI),
+        ("MW Mouth Rigger", mwMouth_rigger.showMwMouthUI),
+        ("MW Cheek Rigger", mwCheek_rigger.showMwCheekUI),
+        ("-----", None),
         ("Proxy Slicer", proxySlicer.slice),
         ("Proxy Slicer Parenting", partial(proxySlicer.slice, True)),
         ("-----", None),
@@ -78,8 +93,7 @@ def connect_submenu(parent_menu_id):
         ("Connect SRT", partial(rigbits.connectLocalTransform, None, 1, 1, 1)),
         ("Connect S", partial(rigbits.connectLocalTransform, None, 1, 0, 0)),
         ("Connect R", partial(rigbits.connectLocalTransform, None, 0, 1, 0)),
-        ("Connect T", partial(rigbits.connectLocalTransform, None, 0, 0, 1))
-
+        ("Connect T", partial(rigbits.connectLocalTransform, None, 0, 0, 1)),
     )
 
     mgear.menu.install("Connect Local SRT", commands, parent_menu_id)
@@ -93,7 +107,7 @@ def legacy_submenu(parent_menu_id):
     """
     commands = (
         ("FACIAL: Eye Rigger", eye_rigger.showEyeRigUI),
-        ("FACIAL: Lips Rigger", lips_rigger.showLipRigUI)
+        ("FACIAL: Lips Rigger", lips_rigger.showLipRigUI),
     )
 
     mgear.menu.install("Legacy", commands, parent_menu_id)
@@ -109,7 +123,7 @@ def gimmick_submenu(parent_menu_id):
         ("Add Joint", rigbits.addJnt),
         ("-----", None),
         ("Add Blended Joint", rigbits.addBlendedJoint),
-        ("Add Support Joint", rigbits.addSupportJoint)
+        ("Add Support Joint", rigbits.addSupportJoint),
     )
 
     mgear.menu.install("Gimmick Joints", commands, parent_menu_id)
@@ -124,14 +138,16 @@ def _ctl_submenu(parent_menu_id, name, cCtl=False):
         pCtl (bool, optional): If True, the new control will be child
                                of selected
     """
-    ctls = ["Square",
-            "Circle",
-            "Cube",
-            "Diamond",
-            "Sphere",
-            "Cross Arrow",
-            "Pyramid",
-            "Cube With Peak"]
+    ctls = [
+        "Square",
+        "Circle",
+        "Cube",
+        "Diamond",
+        "Sphere",
+        "Cross Arrow",
+        "Pyramid",
+        "Cube With Peak",
+    ]
     commands = []
     for c in ctls:
         cm = string.removeInvalidCharacter(c).lower()
