@@ -17,9 +17,6 @@ from mgear.core import transform, attribute, skin, vector
 
 import maya.mel as mel
 
-import manyworlds.maya.mwUtils as mwUtils
-import manyworlds.maya.mwRig as mwRig
-
 import math
 
 ##########################################################
