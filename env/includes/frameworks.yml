@@ -74,7 +74,6 @@ frameworks:
   tk-framework-remotestorage_v1.x.x:
     provider_hook: "{config}/tk-framework-remotestorage/gcloud-storage.py"
     location:
-      type: github_release,
-      organization: herniguerra,
-      repository: tk-framework-remotestorage,
-      version: v1.0.0
+      type: git_branch,
+      branch: master,
+      path: https://github.com/herniguerra/tk-framework-remotestorage
