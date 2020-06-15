@@ -11,7 +11,7 @@
 ################################################################################
 
 includes:
-- ../app_locations.yml
+  - ../app_locations.yml
 
 ################################################################################
 
@@ -24,22 +24,22 @@ settings.tk-multi-loader2.3dsmaxplus: &settings_tk-multi-loader2_3dsmaxplus
     Rendered Image: [texture_node]
     Texture: [texture_node]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   location: "@apps.tk-multi-loader2.location"
 
 # 3dsmax
@@ -48,10 +48,9 @@ settings.tk-multi-loader2.3dsmax:
   <<: *settings_tk-multi-loader2_3dsmaxplus
   actions_hook: "{engine}/tk-multi-loader2/basic/scene_actions.py"
 
-
 # flame
 settings.tk-multi-loader2.flame:
-  actions_hook: '{engine}/tk-multi-loader2/flame_loader_actions.py'
+  actions_hook: "{engine}/tk-multi-loader2/flame_loader_actions.py"
   action_mappings:
     Flame Batch File: [load_setup]
     Flame Quicktime: [load_clip]
@@ -77,22 +76,22 @@ settings.tk-multi-loader2.houdini:
     Rendered Image: [file_cop]
     Texture: [file_cop]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
 
@@ -101,24 +100,25 @@ settings.tk-multi-loader2.mari:
   action_mappings:
     Alembic Cache: [geometry_import]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-    publish_filters: []
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
-    publish_filters: []
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+      publish_filters: []
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
+      publish_filters: []
   title_name: Import
-  location: '@apps.tk-multi-loader2.location'
+  location: "@apps.tk-multi-loader2.location"
 
 # maya
 settings.tk-multi-loader2.maya:
+  actions_hook: "{self}/tk-maya_actions.py:{config}/tk-multi-loader2/tk-maya_actions.py"
   action_mappings:
     Alembic Cache: [reference, import]
     Image: [texture_node, image_plane]
@@ -127,22 +127,22 @@ settings.tk-multi-loader2.maya:
     Rendered Image: [texture_node, image_plane]
     Texture: [texture_node, image_plane]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, "{context.project}"]
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, "{context.project}"]
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, "{context.user}"]
-    - [project, is, "{context.project}"]
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
 
@@ -159,54 +159,54 @@ settings.tk-multi-loader2.nuke:
     Rendered Image: [read_node]
     Texture: [read_node]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
 
 # nuke studio (actions hook)
 settings.tk-multi-loader2.nukestudio.project:
-  actions_hook: '{self}/tk-nuke_actions.py'
+  actions_hook: "{self}/tk-nuke_actions.py"
   action_mappings:
     Image: [clip_import]
     Movie: [clip_import]
     Rendered Image: [clip_import]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
 
 settings.tk-multi-loader2.nukestudio:
-  actions_hook: '{self}/tk-nuke_actions.py'
+  actions_hook: "{self}/tk-nuke_actions.py"
   action_mappings:
     Alembic Cache: [read_node]
     Image: [read_node]
@@ -217,22 +217,22 @@ settings.tk-multi-loader2.nukestudio:
     Rendered Image: [read_node]
     Texture: [read_node]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
 
@@ -244,22 +244,22 @@ settings.tk-multi-loader2.photoshop:
     Image: [add_as_a_layer, open_file]
     Texture: [add_as_a_layer, open_file]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
 
@@ -273,22 +273,22 @@ settings.tk-multi-loader2.aftereffects:
     Image: [add_to_project, add_to_comp]
     Texture: [add_to_project, add_to_comp]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   actions_hook: "{engine}/tk-multi-loader2/basic/scene_actions.py"
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
@@ -296,22 +296,22 @@ settings.tk-multi-loader2.aftereffects:
 # motion builder
 settings.tk-multi-loader2.motionbuilder:
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: Shots
-    entity_type: Shot
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_sequence, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: Shots
+      entity_type: Shot
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_sequence, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   location: "@apps.tk-multi-loader2.location"
 
 # alias
@@ -328,17 +328,17 @@ settings.tk-multi-loader2.alias:
     Image: [texture_node]
     Photoshop Image: [texture_node]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   actions_hook: "{engine}/tk-multi-loader2/basic/scene_actions.py"
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"
@@ -356,17 +356,17 @@ settings.tk-multi-loader2.vred:
     VRED Scene: [load]
     Osb File: [import]
   entities:
-  - caption: Assets
-    entity_type: Asset
-    filters:
-    - [project, is, '{context.project}']
-    hierarchy: [sg_asset_type, code]
-  - caption: My Tasks
-    entity_type: Task
-    filters:
-    - [task_assignees, is, '{context.user}']
-    - [project, is, '{context.project}']
-    hierarchy: [entity, content]
+    - caption: Assets
+      entity_type: Asset
+      filters:
+        - [project, is, "{context.project}"]
+      hierarchy: [sg_asset_type, code]
+    - caption: My Tasks
+      entity_type: Task
+      filters:
+        - [task_assignees, is, "{context.user}"]
+        - [project, is, "{context.project}"]
+      hierarchy: [entity, content]
   actions_hook: "{engine}/tk-multi-loader2/basic/scene_actions.py"
   publish_filters: [["sg_status_list", "is_not", null]]
   location: "@apps.tk-multi-loader2.location"

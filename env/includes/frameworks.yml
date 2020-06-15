@@ -69,3 +69,12 @@ frameworks:
       version: v0.0.9
       type: app_store
       name: tk-framework-desktopclient
+
+  # remotestorage - Framework to enable cloud storage
+  tk-framework-remotestorage_v1.x.x:
+    provider_hook: "{config}/tk-framework-remotestorage/gcloud-storage.py"
+    location:
+      type: github_release,
+      organization: herniguerra,
+      repository: tk-framework-remotestorage,
+      version: v1.0.0
