@@ -19,6 +19,11 @@ sgtk.util.append_path_to_env_var(
     "Path", "C:/Users/hernan.g/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin"
 )
 
+sgtk.util.append_path_to_env_var(
+    "Path",
+    "c:/users/hernan.g/appdata/local/programs/python/python36/lib/site-packages/",
+)
+
 
 from google.cloud import storage
 
