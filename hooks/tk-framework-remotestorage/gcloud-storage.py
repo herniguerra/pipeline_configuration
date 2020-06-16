@@ -111,11 +111,8 @@ class LocalProvider(HookBaseClass):
         sgtk.util.filesystem.copy_file(remote_path, destination)
         """
 
-        cmd = (
-                "gsutil cp "
-                + remote_path, destination
-            )
-            p = subprocess.Popen(cmd)
+        cmd = ("gsutil cp " + remote_path, destination)
+        p = subprocess.Popen(cmd)
 
         return destination
 
