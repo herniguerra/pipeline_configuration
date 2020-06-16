@@ -13,6 +13,14 @@ Hook that provides upload and download functionality for the cloud storage provi
 """
 import os
 import sgtk
+from google.cloud import storage
+
+os.environ[
+    "GOOGLE_APPLICATION_CREDENTIALS"
+] = "M:/pipeline/shotgun/dev/tk-framework-remotestorage/key/many-worlds-d48d0252c0e6.json"
+
+bucket_name = "manyworlds-test-bucket"
+
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -52,9 +60,17 @@ class LocalProvider(HookBaseClass):
                 )
                 return
 
+            """
             sgtk.util.filesystem.copy_file(
                 published_file["path"]["local_path"], destination_path
             )
+            """
+            storage_client = storage.Client()
+            bucket = storage_client.get_bucket(bucket_name)
+
+            blob = bucket.blob(destination_path)
+            blob.upload_from_filename(published_file["path"]["local_path"])
+
             return destination_path
 
         self.logger.warning(
@@ -90,7 +106,15 @@ class LocalProvider(HookBaseClass):
             )
             return
 
+        """
         sgtk.util.filesystem.copy_file(remote_path, destination)
+        """
+
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+        blob = bucket.blob(remote_path)
+        blob.download_to_filename(destination)
+
         return destination
 
     def _generate_remote_path(self, published_file):
