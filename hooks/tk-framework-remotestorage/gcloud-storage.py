@@ -16,6 +16,18 @@ import os
 import sgtk
 import subprocess
 
+sgtk.util.append_path_to_env_var(
+    "Path", "C:/Users/hernan.g/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin"
+)
+
+sgtk.util.append_path_to_env_var(
+    "Path",
+    "c:/users/hernan.g/appdata/local/programs/python/python36/lib/site-packages/",
+)
+
+
+from google.cloud import storage
+
 os.environ[
     "GOOGLE_APPLICATION_CREDENTIALS"
 ] = "M:/offline/key/many-worlds-d48d0252c0e6.json"
@@ -53,7 +65,15 @@ class LocalProvider(HookBaseClass):
             destination_path = self._generate_remote_path(published_file)
             self.logger.info("mock uploading file to %s" % destination_path)
 
+<<<<<<< HEAD
             if os.path.exists(destination_path):
+=======
+            storage_client = storage.Client()
+            bucket = storage_client.get_bucket(bucket_name)
+            blob = bucket.blob(destination_path)
+
+            if blob.exists():
+>>>>>>> parent of 67bd31f... Update gcloud-storage.py
                 self.logger.warning(
                     "PublishedFile already exists in remote location: %s"
                     % published_file
@@ -66,12 +86,7 @@ class LocalProvider(HookBaseClass):
             )
             """
 
-            cmd = (
-                "gsutil cp "
-                + published_file["path"]["local_path"]
-                + " destination_path"
-            )
-            p = subprocess.Popen(cmd)
+            blob.upload_from_filename(published_file["path"]["local_path"])
 
             return destination_path
 
@@ -112,8 +127,15 @@ class LocalProvider(HookBaseClass):
         sgtk.util.filesystem.copy_file(remote_path, destination)
         """
 
+<<<<<<< HEAD
         cmd = ("gsutil cp " + remote_path, destination)
         p = subprocess.Popen(cmd)
+=======
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+        blob = bucket.blob(remote_path)
+        blob.download_to_filename(destination)
+>>>>>>> parent of 67bd31f... Update gcloud-storage.py
 
         return destination
 
@@ -125,11 +147,8 @@ class LocalProvider(HookBaseClass):
         :return:
         """
         # Ext is usually included in the name so we are not explicitly setting it here.
-        file_name = (
-            "gs://"
-            + bucket_name
-            + "/"
-            + "{id}_{name}".format(id=published_file["id"], name=published_file["name"])
+        file_name = "{id}_{name}".format(
+            id=published_file["id"], name=published_file["name"]
         )
 
         return file_name
