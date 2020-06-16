@@ -17,7 +17,7 @@ from google.cloud import storage
 
 os.environ[
     "GOOGLE_APPLICATION_CREDENTIALS"
-] = "M:/pipeline/shotgun/dev/tk-framework-remotestorage/key/many-worlds-d48d0252c0e6.json"
+] = "M:/offline/key/many-worlds-d48d0252c0e6.json"
 
 bucket_name = "manyworlds-test-bucket"
 
