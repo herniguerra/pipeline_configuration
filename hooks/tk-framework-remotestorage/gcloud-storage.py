@@ -32,8 +32,6 @@ class LocalProvider(HookBaseClass):
     but instead copies thee files to a location, and then retrieves them on download.
     """
 
-    remote_storage_location = "$HOME/mock_remote_storage"
-
     def upload(self, published_file):
         """
         This method should contain any logic for uploading the file to the remote storage.
@@ -53,7 +51,12 @@ class LocalProvider(HookBaseClass):
             # Build a path to copy the published file to in our mocked remote storage.
             destination_path = self._generate_remote_path(published_file)
             self.logger.info("mock uploading file to %s" % destination_path)
-            if os.path.exists(destination_path):
+
+            storage_client = storage.Client()
+            bucket = storage_client.get_bucket(bucket_name)
+            blob = bucket.blob(destination_path)
+
+            if blob.exists():
                 self.logger.warning(
                     "PublishedFile already exists in remote location: %s"
                     % published_file
@@ -65,10 +68,7 @@ class LocalProvider(HookBaseClass):
                 published_file["path"]["local_path"], destination_path
             )
             """
-            storage_client = storage.Client()
-            bucket = storage_client.get_bucket(bucket_name)
 
-            blob = bucket.blob(destination_path)
             blob.upload_from_filename(published_file["path"]["local_path"])
 
             return destination_path
@@ -128,4 +128,5 @@ class LocalProvider(HookBaseClass):
         file_name = "{id}_{name}".format(
             id=published_file["id"], name=published_file["name"]
         )
-        return os.path.join(os.path.expandvars(self.remote_storage_location), file_name)
+
+        return file_name
