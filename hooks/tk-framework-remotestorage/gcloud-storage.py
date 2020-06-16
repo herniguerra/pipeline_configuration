@@ -14,6 +14,7 @@ Hook that provides upload and download functionality for the cloud storage provi
 
 import os
 import sgtk
+import subprocess
 
 os.environ[
     "GOOGLE_APPLICATION_CREDENTIALS"
