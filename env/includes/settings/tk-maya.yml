@@ -12,15 +12,15 @@
 ################################################################################
 
 includes:
-- ../app_locations.yml
-- ../engine_locations.yml
-- ./tk-multi-loader2.yml
-- ./tk-multi-publish2.yml
-- ./tk-multi-reviewsubmission.yml
-- ./tk-multi-screeningroom.yml
-- ./tk-multi-shotgunpanel.yml
-- ./tk-multi-snapshot.yml
-- ./tk-multi-workfiles2.yml
+  - ../app_locations.yml
+  - ../engine_locations.yml
+  - ./tk-multi-loader2.yml
+  - ./tk-multi-publish2.yml
+  - ./tk-multi-reviewsubmission.yml
+  - ./tk-multi-screeningroom.yml
+  - ./tk-multi-shotgunpanel.yml
+  - ./tk-multi-snapshot.yml
+  - ./tk-multi-workfiles2.yml
 
 ################################################################################
 
@@ -33,7 +33,7 @@ settings.tk-maya.asset:
     tk-multi-shotgunpanel: "@settings.tk-multi-shotgunpanel"
     tk-multi-workfiles2: "@settings.tk-multi-workfiles2.launch_at_startup"
   menu_favourites:
-  - {app_instance: tk-multi-workfiles2, name: File Open...}
+    - { app_instance: tk-multi-workfiles2, name: File Open... }
   debug_logging: false
   location: "@engines.tk-maya.location"
 
@@ -52,10 +52,10 @@ settings.tk-maya.asset_step:
     tk-multi-workfiles2: "@settings.tk-multi-workfiles2.maya.asset_step"
     tk-multi-reviewsubmission: "@settings.tk-multi-reviewsubmission.maya"
   menu_favourites:
-  - {app_instance: tk-multi-workfiles2, name: File Open...}
-  - {app_instance: tk-multi-snapshot, name: Snapshot...}
-  - {app_instance: tk-multi-workfiles2, name: File Save...}
-  - {app_instance: tk-multi-publish2, name: Publish...}
+    - { app_instance: tk-multi-workfiles2, name: File Open... }
+    - { app_instance: tk-multi-snapshot, name: Snapshot... }
+    - { app_instance: tk-multi-workfiles2, name: File Save... }
+    - { app_instance: tk-multi-publish2, name: Publish... }
   template_project: asset_work_area_maya
   location: "@engines.tk-maya.location"
 
@@ -64,11 +64,13 @@ settings.tk-maya.project:
   apps:
     tk-multi-about:
       location: "@apps.tk-multi-about.location"
+    tk-multi-pythonconsole:
+      location: "@apps.tk-multi-pythonconsole.location"
     tk-multi-screeningroom: "@settings.tk-multi-screeningroom.rv"
     tk-multi-shotgunpanel: "@settings.tk-multi-shotgunpanel"
     tk-multi-workfiles2: "@settings.tk-multi-workfiles2.launch_at_startup"
   menu_favourites:
-  - {app_instance: tk-multi-workfiles2, name: File Open...}
+    - { app_instance: tk-multi-workfiles2, name: File Open... }
   location: "@engines.tk-maya.location"
 
 # sequence
@@ -80,7 +82,7 @@ settings.tk-maya.sequence:
     tk-multi-shotgunpanel: "@settings.tk-multi-shotgunpanel"
     tk-multi-workfiles2: "@settings.tk-multi-workfiles2.launch_at_startup"
   menu_favourites:
-  - {app_instance: tk-multi-workfiles2, name: File Open...}
+    - { app_instance: tk-multi-workfiles2, name: File Open... }
   location: "@engines.tk-maya.location"
 
 # shot
@@ -92,7 +94,7 @@ settings.tk-maya.shot:
     tk-multi-shotgunpanel: "@settings.tk-multi-shotgunpanel"
     tk-multi-workfiles2: "@settings.tk-multi-workfiles2.launch_at_startup"
   menu_favourites:
-  - {app_instance: tk-multi-workfiles2, name: File Open...}
+    - { app_instance: tk-multi-workfiles2, name: File Open... }
   location: "@engines.tk-maya.location"
 
 # shot_step
@@ -112,9 +114,9 @@ settings.tk-maya.shot_step:
     tk-multi-workfiles2: "@settings.tk-multi-workfiles2.maya.shot_step"
     tk-multi-reviewsubmission: "@settings.tk-multi-reviewsubmission.maya"
   menu_favourites:
-  - {app_instance: tk-multi-workfiles2, name: File Open...}
-  - {app_instance: tk-multi-snapshot, name: Snapshot...}
-  - {app_instance: tk-multi-workfiles2, name: File Save...}
-  - {app_instance: tk-multi-publish2, name: Publish...}
+    - { app_instance: tk-multi-workfiles2, name: File Open... }
+    - { app_instance: tk-multi-snapshot, name: Snapshot... }
+    - { app_instance: tk-multi-workfiles2, name: File Save... }
+    - { app_instance: tk-multi-publish2, name: Publish... }
   template_project: shot_work_area_maya
   location: "@engines.tk-maya.location"

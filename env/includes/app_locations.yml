@@ -12,7 +12,7 @@
 ################################################################################
 
 includes:
-- ./frameworks.yml
+  - ./frameworks.yml
 
 ################################################################################
 # location descriptors for apps used in this configuration
@@ -59,7 +59,7 @@ apps.tk-multi-publish2.location:
 apps.tk-multi-pythonconsole.location:
   type: app_store
   name: tk-multi-pythonconsole
-  version: v1.2.2
+  version: v1.2.3
 
 # reviewsubmission
 apps.tk-multi-reviewsubmission.location:
@@ -195,4 +195,4 @@ apps.tk-mari-projectmanager.location:
 
 ################################################################################
 # reference all of the common frameworks
-frameworks: '@frameworks'
+frameworks: "@frameworks"
