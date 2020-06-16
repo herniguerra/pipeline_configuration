@@ -52,7 +52,7 @@ class LocalProvider(HookBaseClass):
             destination_path = self._generate_remote_path(published_file)
             self.logger.info("mock uploading file to %s" % destination_path)
 
-            if blob.exists():
+            if os.path.exists(destination_path):
                 self.logger.warning(
                     "PublishedFile already exists in remote location: %s"
                     % published_file
