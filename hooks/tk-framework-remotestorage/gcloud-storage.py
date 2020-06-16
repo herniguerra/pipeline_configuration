@@ -11,8 +11,15 @@
 """
 Hook that provides upload and download functionality for the cloud storage provider.
 """
+
 import os
 import sgtk
+
+sgtk.util.append_path_to_env_var(
+    "Path", "C:/Users/hernan.g/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin"
+)
+
+
 from google.cloud import storage
 
 os.environ[
