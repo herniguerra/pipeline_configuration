@@ -59,11 +59,13 @@ class LocalProvider(HookBaseClass):
             )
             """
 
+            destFilename = "{id}_{name}".format(id=published_file["id"], name=published_file["name"])
+
             p = Popen(
                 [
                     "M:/upload.bat",
                     published_file["path"]["local_path"],
-                    destination_path,
+                    destFilename,
                 ]
             )
 
