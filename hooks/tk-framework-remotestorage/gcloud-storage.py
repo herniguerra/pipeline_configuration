@@ -13,7 +13,6 @@ Hook that provides upload and download functionality for the cloud storage provi
 """
 import os
 import sgtk
-from subprocess import *
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -63,8 +62,11 @@ class LocalProvider(HookBaseClass):
                 id=published_file["id"], name=published_file["name"]
             )
 
-            p = Popen(
-                ["M:/upload.bat", published_file["path"]["local_path"], destFilename,]
+            os.system(
+                "M:/upload.bat "
+                + published_file["path"]["local_path"]
+                + " "
+                + destFilename
             )
 
             return destination_path
