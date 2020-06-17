@@ -45,7 +45,7 @@ class LocalProvider(HookBaseClass):
         ):
             # Build a path to copy the published file to in our mocked remote storage.
             destination_path = self._generate_remote_path(published_file)
-            self.logger.info("uploading file %s to %s" % (published_file["path"]["local_path"], destination_path)
+            self.logger.info("uploading file to %s" % destination_path)
             if os.path.exists(destination_path):
                 self.logger.warning(
                     "PublishedFile already exists in remote location: %s"
@@ -59,14 +59,12 @@ class LocalProvider(HookBaseClass):
             )
             """
 
-            destFilename = "{id}_{name}".format(id=published_file["id"], name=published_file["name"])
+            destFilename = "{id}_{name}".format(
+                id=published_file["id"], name=published_file["name"]
+            )
 
             p = Popen(
-                [
-                    "M:/upload.bat",
-                    published_file["path"]["local_path"],
-                    destFilename,
-                ]
+                ["M:/upload.bat", published_file["path"]["local_path"], destFilename,]
             )
 
             return destination_path
