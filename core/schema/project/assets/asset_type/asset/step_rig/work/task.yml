@@ -14,4 +14,4 @@ type: "shotgun_task"
 # the shotgun field to use for the folder name
 name: "content"
 
-filters: [{ "path": "content", "relation": "not_in", "values": ["rigPuppet"] }]
+filters: [{ "path": "content", "relation": "not_in", "values": ["RigPuppet"] }]
