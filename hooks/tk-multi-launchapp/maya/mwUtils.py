@@ -1041,13 +1041,14 @@ def userSetup():
     """
     if task == "rigPuppet":
         rigPuppetWorkSetup(project, asset, task)
-    """
+    
 
     customStepPath = (
         "C:/dev/mw_rig_dev/mGear_steps/projects/" + project + "/" + asset + "/"
     )
     command = 'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
     mel.eval(command)
+    """
 
 
 def helloWorlds():
