@@ -113,11 +113,13 @@ class ContextChange(get_hook_baseclass()):
         if engine and engine.name == "tk-maya":
 
             # Frame rate
-            if current_context.entity and context.entity["type"] == "Shot":
+            if current_context.entity and current_context.entity["type"] == "Shot":
                 # Now perform any Maya specific logic
                 # For example we could query Shotgun for some specific data
                 project = engine.shotgun.find_one(
-                    "Project", ["id", "is", context.project["id"]], ["sg_frame_rate"]
+                    "Project",
+                    ["id", "is", current_context.project["id"]],
+                    ["sg_frame_rate"],
                 )
 
                 # Import the Maya API now we are sure we are running in the Maya engine.
@@ -129,7 +131,7 @@ class ContextChange(get_hook_baseclass()):
                 cmds.currentUnit(time=frame_rate)
 
             # mGear steps path
-            if current_context.entity and context.entity["type"] == "Asset":
+            if current_context.entity and current_context.entity["type"] == "Asset":
                 import maya.mel as mel
 
                 project = current_context.project["name"]
