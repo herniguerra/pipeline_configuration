@@ -854,11 +854,7 @@ def bringPublished(
 
 def getProject():
     # returns current project
-    """
-    session = api.Session
-    project = session["AVALON_PROJECT"]
-    return project
-    """
+
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
 
@@ -867,11 +863,6 @@ def getProject():
 
 def getAsset():
     # returns current asset name
-    """
-    session = api.Session
-    asset = session["AVALON_ASSET"]
-    return asset
-    """
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
@@ -1045,12 +1036,16 @@ def userSetup():
 
     project = getProject()
     asset = getAsset()
-    task = getTask()
+    # task = getTask()
 
+    """
     if task == "rigPuppet":
         rigPuppetWorkSetup(project, asset, task)
+    """
 
-    customStepPath = "C:/dev/build/scripts/projects/" + project + "/" + asset + "/"
+    customStepPath = (
+        "C:/dev/mw_rig_dev/mGear_steps/projects/" + project + "/" + asset + "/"
+    )
     command = 'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
     mel.eval(command)
 

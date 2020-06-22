@@ -63,7 +63,9 @@ class LocalProvider(HookBaseClass):
             )
 
             os.system(
-                "M:/upload.bat "
+                "M:/mwCloudStorageUtils.bat "
+                + "upload"
+                + " "
                 + published_file["path"]["local_path"]
                 + " "
                 + destFilename
