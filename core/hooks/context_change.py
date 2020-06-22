@@ -13,6 +13,7 @@ This hook gets executed before and after the context changes in Toolkit.
 """
 
 from tank import get_hook_baseclass
+import sgtk
 
 
 class ContextChange(get_hook_baseclass()):
