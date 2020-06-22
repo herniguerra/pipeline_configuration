@@ -15,6 +15,3 @@ type: "shotgun_task"
 name: "content"
 
 filters: [{ "path": "content", "relation": "in", "values": ["RigPuppet"] }]
-
-# recurse down from parent folder
-create_with_parent: true
