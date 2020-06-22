@@ -87,7 +87,7 @@ class ContextChange(get_hook_baseclass()):
             if current_context.entity and context.entity["type"] == "Asset":
               import maya.mel as mel
 
-              project = current_context.project
+              project = current_context.project["name"]
               asset = current_context.entity["name"]
 
               customStepPath = (

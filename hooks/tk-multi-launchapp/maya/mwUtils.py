@@ -858,7 +858,7 @@ def getProject():
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
 
-    return context.project
+    return context.project["name"]
 
 
 def getAsset():
