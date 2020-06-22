@@ -105,7 +105,7 @@ class ContextChange(get_hook_baseclass()):
         print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        
+
         # Get the engine we are currently running in
         engine = sgtk.platform.current_engine()
         # Check we are in the right engine
@@ -115,12 +115,13 @@ class ContextChange(get_hook_baseclass()):
             if current_context.entity and context.entity["type"] == "Shot":
                 # Now perform any Maya specific logic
                 # For example we could query Shotgun for some specific data
-                project = engine.shotgun.find_one("Project",
-                                                  ["id","is",context.project["id"], 
-                                                  ["sg_frame_rate"])
+                project = engine.shotgun.find_one(
+                    "Project", ["id", "is", context.project["id"]], ["sg_frame_rate"]
+                )
 
                 # Import the Maya API now we are sure we are running in the Maya engine.
                 import maya.cmds as cmds
+
                 # Convert the Shotgun value into a format that Maya understands.
                 frame_rate = "{0}fps".format(project["sg_frame_rate"])
                 # Now set the Maya framerate based on the data in Shotgun
@@ -128,15 +129,21 @@ class ContextChange(get_hook_baseclass()):
 
             # mGear steps path
             if current_context.entity and context.entity["type"] == "Asset":
-              import maya.mel as mel
+                import maya.mel as mel
 
-              project = current_context.project["name"]
-              asset = current_context.entity["name"]
+                project = current_context.project["name"]
+                asset = current_context.entity["name"]
 
-              customStepPath = (
-                  "C:/dev/mw_rig_dev/mGear_steps/projects/" + project + "/" + asset + "/"
-              )
-              command = 'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
-              mel.eval(command)
+                customStepPath = (
+                    "C:/dev/mw_rig_dev/mGear_steps/projects/"
+                    + project
+                    + "/"
+                    + asset
+                    + "/"
+                )
+                command = (
+                    'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
+                )
+                mel.eval(command)
 
         pass
