@@ -49,6 +49,9 @@ class PickEnvironment(Hook):
             if context.entity["type"] == "Shot":
                 return "shot_step"
             if context.entity["type"] == "Asset":
-                return "asset_step"
+                if context.step["name"] == "Rig":
+                    return "asset_rig_step"
+                else:
+                    return "asset_step"
 
         return None
