@@ -55,6 +55,7 @@ class BeforeAppLaunch(sgtk.Hook):
             )
             sgtk.util.append_path_to_env_var(
                 "MAYA_SCRIPT_PATH", os.path.join("C:/mw_rig_dev/mw_facial/")
+            )
 
             sgtk.util.append_path_to_env_var(
                 "MAYA_SCRIPT_PATH", os.path.join(self.disk_location, "maya/scripts")
