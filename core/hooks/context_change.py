@@ -87,13 +87,14 @@ class ContextChange(get_hook_baseclass()):
                 # Now set the Maya framerate based on the data in Shotgun
                 cmds.currentUnit(time=frame_rate)
 
-            # mGear steps path
             if current_context.entity and current_context.entity["type"] == "Asset":
-                import mwUtils
+                if current_context.task["name"] == "RigPuppet":
+                    # mGear steps path
+                    import mwUtils
 
-                project = current_context.project["name"]
-                asset = current_context.entity["name"]
+                    project = current_context.project["name"]
+                    asset = current_context.entity["name"]
 
-                mwUtils.rigPuppetWorkSetup(project, asset)
+                    mwUtils.rigPuppetWorkSetup(project, asset)
 
         pass
