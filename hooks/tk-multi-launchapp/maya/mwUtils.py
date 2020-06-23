@@ -8,7 +8,6 @@ import getpass
 import re
 
 import sgtk
-import shotgun_api3
 
 
 def mirrorName(name):
@@ -810,6 +809,8 @@ def bringPublished(
     namespace="",
     returnPath=False,
 ):
+
+    import shotgun_api3
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
