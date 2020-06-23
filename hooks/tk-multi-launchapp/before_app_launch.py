@@ -60,8 +60,6 @@ class BeforeAppLaunch(sgtk.Hook):
                 "XBMLANGPATH", os.path.join(self.disk_location, "maya/splash")
             )
 
-            sys.path.append("C:\mw_rig_dev\mw_facial")
-
         # Check that we have a software entity, and that it has some plugins.
         if software_entity is not None and software_entity["sg_software_plugins"]:
             # Store a handy reference to the Shotgun API

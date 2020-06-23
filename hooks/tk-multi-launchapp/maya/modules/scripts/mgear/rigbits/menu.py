@@ -20,6 +20,10 @@ from mgear.core.anim_utils import bakeSprings
 from mgear.core.anim_utils import clearSprings
 from functools import partial
 
+import sys
+
+sys.path.append("C:\mw_rig_dev\mw_facial")
+
 import mwEyebrows_rigger
 import mwEyelids_rigger
 import mwEyelines_rigger
