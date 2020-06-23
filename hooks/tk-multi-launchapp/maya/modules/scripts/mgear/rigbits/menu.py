@@ -8,22 +8,24 @@ from mgear.rigbits import (
     facial_rigger,
     eye_rigger,
     lips_rigger,
-    mwEyebrows_rigger,
-    mwEyelids_rigger,
-    mwEyelines_rigger,
-    mwNose_rigger,
-    mwMouth_rigger,
-    mwCheek_rigger,
     channelWrangler,
     proxySlicer,
     utils,
     mirror_controls,
 )
+
 from mgear.rigbits.sdk_manager import SDK_manager_ui
 from mgear.core import string
 from mgear.core.anim_utils import bakeSprings
 from mgear.core.anim_utils import clearSprings
 from functools import partial
+
+import mwEyebrows_rigger
+import mwEyelids_rigger
+import mwEyelines_rigger
+import mwNose_rigger
+import mwMouth_rigger
+import mwCheek_rigger
 
 menuID = "Rigbits"
 
