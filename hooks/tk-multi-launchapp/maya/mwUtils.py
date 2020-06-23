@@ -1048,8 +1048,9 @@ def userSetup():
 
 
 def currentPath():
-    print os.getcwd()
-    return os.getcwd()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print dir_path
+    return dir_path
 
 
 def helloWorlds():
