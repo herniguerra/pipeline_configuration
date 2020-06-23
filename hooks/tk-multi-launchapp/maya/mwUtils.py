@@ -801,15 +801,15 @@ def connectRigs(source=None, dest=None, disconnect=False):
                                 )
 
 
-def bringLatestPublishedModel(
-    project=None, asset=None, returnPath=False,
-):
-
+def bringPublishedModel(task=None, returnPath=False):
     import shotgun_api3
+
+    if task == None:
+        task = "model"
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
-        script_name="mwUtils_bringLatestPublishedModel",
+        script_name="mwUtils_bringPublishedModel",
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
@@ -825,7 +825,7 @@ def bringLatestPublishedModel(
 
     filters = [
         ["entity.Asset.code", "is", asset_name],
-        ["task.Task.content", "is", "model"],
+        ["task.Task.content", "is", task],
     ]
     fields = ["path"]
     order = [{"field_name": "version_number", "direction": "desc"}]
@@ -925,77 +925,34 @@ def convertToVersion(ver, returnInt=False):
     return version
 
 
-def getPath(to="work", project=None, asset=None, task=None):
+def getPath(to="work"):
     # returns paths
-    if project == None:
-        project = getProject()
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
 
-    if asset == None:
-        asset = getAsset()
+    tk = current_engine.sgtk
 
-    if task == None:
-        task = getTask()
+    task = getTask(returnId=True)
 
     if to == "work":
-        return os.path.join("M:\\", "projects", project, "assets", asset, "work", task)
-
-    if to == "publish":
-        return os.path.join("M:\\", "projects", project, "as1sets", asset, "publish")
+        return tk.paths_from_entity("Task", task)
 
     if to == "skin":
-        return os.path.join(
-            "M:\\",
-            "projects",
-            project,
-            "assets",
-            asset,
-            "work",
-            "rigPuppet",
-            "maya",
-            "data",
-            "skin",
-        )
+        return os.path.join(tk.paths_from_entity("Task", task)[0], "maya\\data\\skin")
 
     if to == "nurbsCorrectives":
         return os.path.join(
-            "M:\\",
-            "projects",
-            project,
-            "assets",
-            asset,
-            "work",
-            task,
-            "maya",
-            "data",
-            "nurbsCorrectives",
+            tk.paths_from_entity("Task", task)[0], "maya\\data\\nurbsCorrectives"
         )
 
     if to == "polyCorrectives":
         return os.path.join(
-            "M:\\",
-            "projects",
-            project,
-            "assets",
-            asset,
-            "work",
-            task,
-            "maya",
-            "data",
-            "polyCorrectives",
+            tk.paths_from_entity("Task", task)[0], "maya\\data\\polyCorrectives"
         )
 
     if to == "deformers":
         return os.path.join(
-            "M:\\",
-            "projects",
-            project,
-            "assets",
-            asset,
-            "work",
-            task,
-            "maya",
-            "data",
-            "deformers",
+            tk.paths_from_entity("Task", task)[0], "maya\\data\\deformers"
         )
 
 
@@ -1050,9 +1007,8 @@ def userSetup():
 def currentPath():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     print dir_path
-    return dir_path
 
 
 def helloWorlds():
-    print ("Hello, worlds! :) 4")
+    print ("Hello, worlds! :)")
 
