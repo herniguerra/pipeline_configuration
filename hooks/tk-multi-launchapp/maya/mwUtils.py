@@ -801,21 +801,16 @@ def connectRigs(source=None, dest=None, disconnect=False):
                                 )
 
 
-def bringPublished(
-    project=None,
-    asset=None,
-    subset="modelDefault",
-    version="latest",
-    namespace="",
-    returnPath=False,
+def bringLatestPublishedModel(
+    project=None, asset=None, returnPath=False,
 ):
 
     import shotgun_api3
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
-        login="hernan.g",
-        password="1aNasentropfen",
+        script_name="mwUtils_bringLatestPublishedModel",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
     current_engine = sgtk.platform.current_engine()
@@ -853,22 +848,52 @@ def bringPublished(
         return False
 
 
-def getProject():
+def getProject(returnId=False):
     # returns current project
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
 
-    return context.project["name"]
+    if returnId == False:
+        return context.project["name"]
+    else:
+        return context.project["id"]
 
 
-def getAsset():
+def getAsset(returnId=False):
     # returns current asset name
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
 
-    return context.entity["name"]
+    if returnId == False:
+        return context.entity["name"]
+    else:
+        return context.entity["id"]
+
+
+def getStep(returnId=False):
+    # returns current task name
+
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+
+    if returnId == False:
+        return context.step["name"]
+    else:
+        return context.step["id"]
+
+
+def getTask(returnId=False):
+    # returns current task name
+
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+
+    if returnId == False:
+        return context.task["name"]
+    else:
+        return context.task["id"]
 
 
 def getFrameRange():
@@ -882,13 +907,6 @@ def getFrameRange():
     except KeyError:
         cmds.warning("No edit information found for %s" % shot["name"])
         return None
-
-
-def getTask():
-    # returns current task name
-    session = api.Session
-    task = session["AVALON_TASK"]
-    return task
 
 
 def convertToVersion(ver, returnInt=False):
@@ -922,7 +940,7 @@ def getPath(to="work", project=None, asset=None, task=None):
         return os.path.join("M:\\", "projects", project, "assets", asset, "work", task)
 
     if to == "publish":
-        return os.path.join("M:\\", "projects", project, "assets", asset, "publish")
+        return os.path.join("M:\\", "projects", project, "as1sets", asset, "publish")
 
     if to == "skin":
         return os.path.join(
@@ -1026,20 +1044,14 @@ def userSetup():
 
     project = getProject()
     asset = getAsset()
-    # task = getTask()
+    task = getTask()
 
-    """
-    if task == "rigPuppet":
-        rigPuppetWorkSetup(project, asset, task)
-    
 
-    customStepPath = (
-        "C:/dev/mw_rig_dev/mGear_steps/projects/" + project + "/" + asset + "/"
-    )
-    command = 'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
-    mel.eval(command)
-    """
+def currentPath():
+    print os.getcwd()
+    return os.getcwd()
 
 
 def helloWorlds():
-    print("Hello, worlds! :) 4")
+    print ("Hello, worlds! :) 4")
+
