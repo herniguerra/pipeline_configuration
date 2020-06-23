@@ -980,24 +980,20 @@ def getPath(to="work", project=None, asset=None, task=None):
         )
 
 
-def rigPuppetWorkSetup(project, asset, task):
+def rigPuppetWorkSetup(project, asset):
     # creates folders
-    skinPath = os.path.join(getPath(to="skin"))
-    nurbsCorrectivesPath = os.path.join(getPath(to="nurbsCorrectives"))
-    polyCorrectivesPath = os.path.join(getPath(to="polyCorrectives"))
-    deformersPath = os.path.join(getPath(to="deformers"))
     assetPreBuildPath = os.path.join(
-        "C:\\dev\\build\\scripts\\projects\\", project, asset, "pre"
+        "C:\\mw_rig_dev\\mGear_steps\\projects\\", project, asset, "pre"
     )
     assetPostBuildPath = os.path.join(
-        "C:\\dev\\build\\scripts\\projects\\", project, asset, "post"
+        "C:\\mw_rig_dev\\mGear_steps\\projects\\", project, asset, "post"
     )
 
     if not (os.path.isdir(assetPreBuildPath)):
         os.makedirs(assetPreBuildPath)
 
         # copies preBuild scripts from template folder
-        path = "C:\\dev\\build\\scripts\\template_pre\\"
+        path = "C:\\mw_rig_dev\\mGear_steps\\template_pre\\"
         scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
@@ -1009,25 +1005,13 @@ def rigPuppetWorkSetup(project, asset, task):
         os.makedirs(assetPostBuildPath)
 
         # copies postBuild scripts from template folder
-        path = "C:\\dev\\build\\scripts\\template_post\\"
+        path = "C:\\mw_rig_dev\\mGear_steps\\template_post\\"
         scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
             src = path + script
             dst = assetPostBuildPath + "\\" + script.replace("template", asset)
             shutil.copy2(src, dst)
-
-    if not (os.path.isdir(skinPath)):
-        os.makedirs(skinPath)
-
-    if not (os.path.isdir(nurbsCorrectivesPath)):
-        os.makedirs(nurbsCorrectivesPath)
-
-    if not (os.path.isdir(polyCorrectivesPath)):
-        os.makedirs(polyCorrectivesPath)
-
-    if not (os.path.isdir(deformersPath)):
-        os.makedirs(deformersPath)
 
 
 def userSetup():
