@@ -63,7 +63,7 @@ settings.tk-maya.asset_step:
   location: "@engines.tk-maya.location"
 
 # asset_rig_step
-settings.tk-maya.asset_step:
+settings.tk-maya.asset_rig_step:
   apps:
     tk-multi-about:
       location: "@apps.tk-multi-about.location"
