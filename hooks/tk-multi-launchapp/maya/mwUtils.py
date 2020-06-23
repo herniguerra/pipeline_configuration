@@ -983,35 +983,40 @@ def getPath(to="work", project=None, asset=None, task=None):
 def rigPuppetWorkSetup(project, asset):
     # creates folders
     assetPreBuildPath = os.path.join(
-        "C:\\mw_rig_dev\\mGear_steps\\projects\\", project, asset, "pre"
+        "C:/mw_rig_dev/mGear_steps/projects/", project, asset, "pre"
     )
     assetPostBuildPath = os.path.join(
-        "C:\\mw_rig_dev\\mGear_steps\\projects\\", project, asset, "post"
+        "C:/mw_rig_dev/mGear_steps/projects/", project, asset, "post"
     )
 
     if not (os.path.isdir(assetPreBuildPath)):
         os.makedirs(assetPreBuildPath)
 
         # copies preBuild scripts from template folder
-        path = "C:\\mw_rig_dev\\mGear_steps\\template_pre\\"
+        path = "C:/mw_rig_dev/mGear_steps/template_pre/"
         scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
             src = path + script
-            dst = assetPreBuildPath + "\\" + script.replace("template", asset)
+            dst = assetPreBuildPath + "/" + script.replace("template", asset)
             shutil.copy2(src, dst)
 
     if not (os.path.isdir(assetPostBuildPath)):
         os.makedirs(assetPostBuildPath)
 
         # copies postBuild scripts from template folder
-        path = "C:\\mw_rig_dev\\mGear_steps\\template_post\\"
+        path = "C:/mw_rig_dev/mGear_steps/template_post/"
         scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
             src = path + script
-            dst = assetPostBuildPath + "\\" + script.replace("template", asset)
+            dst = assetPostBuildPath + "/" + script.replace("template", asset)
             shutil.copy2(src, dst)
+
+    # sets mGear steps folder
+    customStepPath = "C:/mw_rig_dev/mGear_steps/projects/" + project + "/" + asset + "/"
+    command = 'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
+    mel.eval(command)
 
 
 def userSetup():
