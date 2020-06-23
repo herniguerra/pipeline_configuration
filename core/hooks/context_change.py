@@ -89,21 +89,11 @@ class ContextChange(get_hook_baseclass()):
 
             # mGear steps path
             if current_context.entity and current_context.entity["type"] == "Asset":
-                import maya.mel as mel
+                import mwUtils
 
                 project = current_context.project["name"]
                 asset = current_context.entity["name"]
 
-                customStepPath = (
-                    "C:/dev/mw_rig_dev/mGear_steps/projects/"
-                    + project
-                    + "/"
-                    + asset
-                    + "/"
-                )
-                command = (
-                    'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
-                )
-                mel.eval(command)
+                mwUtils.rigPuppetWorkSetup(project, asset)
 
         pass
