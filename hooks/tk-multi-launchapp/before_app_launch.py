@@ -56,6 +56,9 @@ class BeforeAppLaunch(sgtk.Hook):
             sgtk.util.append_path_to_env_var(
                 "MAYA_SCRIPT_PATH", os.path.join(self.disk_location, "maya/scripts")
             )
+            sgtk.util.append_path_to_env_var(
+                "XBMLANGPATH", os.path.join(self.disk_location, "maya/splash")
+            )
 
         # Check that we have a software entity, and that it has some plugins.
         if software_entity is not None and software_entity["sg_software_plugins"]:
