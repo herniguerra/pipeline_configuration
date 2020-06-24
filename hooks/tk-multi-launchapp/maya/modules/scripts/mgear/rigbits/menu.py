@@ -22,7 +22,7 @@ from functools import partial
 
 import sys
 
-sys.path.append("C:\Many-Worlds\mw_rig_dev\mw_facial")
+sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")
 
 import mwEyebrows_rigger
 import mwEyelids_rigger
