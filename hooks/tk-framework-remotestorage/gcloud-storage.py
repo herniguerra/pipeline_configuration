@@ -13,6 +13,7 @@ Hook that provides upload and download functionality for the cloud storage provi
 """
 import os
 import sgtk
+import mwCloudStorageUtils
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -62,6 +63,7 @@ class LocalProvider(HookBaseClass):
                 id=published_file["id"], name=published_file["name"]
             )
 
+            """
             os.system(
                 "M:/mwCloudStorageUtils.bat "
                 + "upload"
@@ -69,6 +71,11 @@ class LocalProvider(HookBaseClass):
                 + published_file["path"]["local_path"]
                 + " "
                 + destFilename
+            )
+            """
+
+            mwCloudStorageUtils.upload(
+                published_file["path"]["local_path"], destFilename
             )
 
             return destination_path
@@ -106,7 +113,10 @@ class LocalProvider(HookBaseClass):
             )
             return
 
+        """
         sgtk.util.filesystem.copy_file(remote_path, destination)
+        """
+        mwCloudStorageUtils.download(remote_path, destination)
         return destination
 
     def _generate_remote_path(self, published_file):
