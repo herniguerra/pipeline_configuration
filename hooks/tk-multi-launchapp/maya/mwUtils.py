@@ -990,7 +990,13 @@ def rigPuppetWorkSetup(project, asset):
             shutil.copy2(src, dst)
 
     # sets mGear steps folder
-    customStepPath = "C:/mw_rig_dev/mGear_steps/projects/" + project + "/" + asset + "/"
+    customStepPath = (
+        "C:/Many-Worlds/rigging/mw_rig_dev/mGear_steps/projects/"
+        + project
+        + "/"
+        + asset
+        + "/"
+    )
     command = 'putenv "MGEAR_SHIFTER_CUSTOMSTEP_PATH" "' + customStepPath + '"'
     mel.eval(command)
 
