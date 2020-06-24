@@ -959,17 +959,20 @@ def getPath(to="work"):
 def rigPuppetWorkSetup(project, asset):
     # creates folders
     assetPreBuildPath = os.path.join(
-        "C:/Many-Worlds/rigging/mw_rig_dev/projects/", project, asset, "pre"
+        "C:/Many-Worlds/rigging/mw_rig_dev/mGear_steps/projects/", project, asset, "pre"
     )
     assetPostBuildPath = os.path.join(
-        "C:/Many-Worlds/rigging/mw_rig_dev/projects/", project, asset, "post"
+        "C:/Many-Worlds/rigging/mw_rig_dev/mGear_steps/projects/",
+        project,
+        asset,
+        "post",
     )
 
     if not (os.path.isdir(assetPreBuildPath)):
         os.makedirs(assetPreBuildPath)
 
         # copies preBuild scripts from template folder
-        path = "C:/Many-Worlds/rigging/mw_rig_dev/template_pre/"
+        path = "C:/Many-Worlds/rigging/mw_rig_dev/mGear_steps/template_pre/"
         scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
