@@ -15,3 +15,5 @@ type: "shotgun_task"
 name: "content"
 
 filters: [{ "path": "content", "relation": "in", "values": ["RigPuppet"] }]
+
+create_with_parent: true
