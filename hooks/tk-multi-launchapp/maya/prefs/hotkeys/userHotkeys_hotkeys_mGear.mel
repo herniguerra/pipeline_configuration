@@ -1,0 +1,38 @@
+//Maya Preference 2018 (Release 1)
+//
+//
+
+//
+// The hotkey set
+//
+hotkeySet -source "Maya_Default" -current hotkeys_mGear;
+//
+// The hotkey contexts and hotkeys
+//
+hotkey -keyShortcut "d" -ctl -name ("mGear_duplicateNameCommand");
+hotkey -keyShortcut "i" -releaseName ("");
+hotkey -keyShortcut "i" -name ("");
+hotkey -keyShortcut "9" -name ("mGear_buildFromSelectionNameCommand");
+hotkey -keyShortcut "d" -sht -name ("mGear_duplicateSymNameCommand");
+hotkey -keyShortcut "z" -ctl -alt -name ("mGear_resetSRTNameCommand");
+hotkey -keyShortcut "a" -ctl -alt -name ("mGear_align2TransformsNameCommand");
+hotkey -keyShortcut "8" -name ("mGear_inspectPropertyNameCommand");
+hotkey -keyShortcut "r" -ctl -alt -name ("");
+hotkeyCtx -type "Editor" -addClient "graphEditor";
+hotkey -keyShortcut "i" -name ("InsertKeysToolNameCommand");
+hotkeyCtx -type "Editor" -addClient "polyTexturePlacementPanel";
+hotkeyCtx -type "Editor" -addClient "timeEditorPanel";
+hotkeyCtx -type "Editor" -addClient "outlinerPanel";
+hotkeyCtx -type "Editor" -addClient "nodeEditorPanel";
+hotkeyCtx -type "Editor" -addClient "posePanel";
+hotkeyCtx -type "Editor" -addClient "profilerPanel";
+hotkeyCtx -type "Editor" -addClient "hyperGraphPanel";
+hotkeyCtx -type "Editor" -addClient "shapePanel";
+hotkeyCtx -type "Editor" -addClient "hyperShadePanel";
+hotkeyCtx -type "Tool" -addClient "xgmIGBrush";
+hotkeyCtx -type "Tool" -addClient "texSculptCacheContext";
+hotkeyCtx -type "Tool" -addClient "polyCutUV";
+hotkeyCtx -type "Tool" -addClient "sculptMeshCache";
+hotkeyCtx -type "Tool" -addClient "texCutContext";
+hotkeyCtx -type "Tool" -addClient "SymmetrizeUVBrush";
+hotkeyCtx -type "Tool" -addClient "Unfold3DBrush";

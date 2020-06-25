@@ -1,0 +1,9 @@
+from subprocess import *
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "M:/offline/key/many-worlds-d48d0252c0e6.json"
+
+arg1 = "M:/uploadTest.txt"
+arg2 = "scene.v12.txt"
+
+print os.system("M:/test.bat exists 223_scene.ma file")
+    

@@ -1,0 +1,28 @@
+import json
+import ast
+
+def importCorrectiveCombos(file):
+    with open(file) as json_file:
+        data = json.load(json_file)
+
+    dict = ast.literal_eval(data)
+    comboDicts = []
+    for alias in dict:
+        if "_crr" in alias:
+            comboDict = dict[alias]["comboDict"]
+            comboDicts.append(comboDict)
+
+    for c in comboDicts:
+        print c
+        if c != {}:
+            for comboName in c:
+                inputs = c[comboName]["inputs"]
+                output = c[comboName]["output"]
+                cs = cmds.createNode("combinationShape", n=comboName)
+                for j, i in enumerate(inputs):
+                    cmds.connectAttr(i, cs + ".inputWeight[" + str(j) + "]")
+                cmds.connectAttr(cs + ".outputWeight", output)
+        
+file = "M:/projects/testProject/assets/charAndre/work/rigPuppet/maya/data/nurbsCorrectives/mouthDnNurbs_C_bs.json"
+importCorrectiveCombos(file)
+

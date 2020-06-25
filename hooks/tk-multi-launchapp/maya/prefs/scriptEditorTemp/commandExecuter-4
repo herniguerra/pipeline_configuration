@@ -1,0 +1,3 @@
+cmds.blendShape("eyebrowsCorrectives_C_bs", e=1, ip="M:/test4.shp")
+
+cmds.blendShape("eyebrowsCorrectives_C_bs", e=1, ep="M:/test3.shp")

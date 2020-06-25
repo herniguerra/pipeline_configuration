@@ -1,0 +1,33 @@
+import sgtk
+#import shotgun_api3
+
+#sg = shotgun_api3.Shotgun("https://many-worlds.shotgunstudio.com", login="hernan.g", password="1aNasentropfen")
+
+# Get the engine that is currently running. Get the context from the engine.
+current_engine = sgtk.platform.current_engine()
+context = current_engine.context
+
+print repr(context), "!!"
+print context.step["name"]
+
+    
+# Grab the already created Sgtk instance from the current engine.
+tk = current_engine.sgtk
+
+template = tk.templates["maya_asset_publish"]
+fields = context.as_template_fields(template)
+
+asset_name = fields['Asset']
+
+filters = [
+    ['entity.Asset.code', 'is', asset_name],
+    ['task.Task.content', 'is', 'model']
+]
+fields = ['path']
+order = [{'field_name': 'version_number', 'direction': 'desc'}]
+
+path_dict = sg.find_one('PublishedFile', filters, fields, order)
+
+print path_dict["path"]["local_path"]
+
+

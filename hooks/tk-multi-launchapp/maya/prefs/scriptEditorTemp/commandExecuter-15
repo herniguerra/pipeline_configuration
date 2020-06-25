@@ -1,0 +1,10 @@
+import sys
+import sgtk
+
+user_paths = os.environ['PYTHONPATH'].split(os.pathsep)
+for u in user_paths:
+    print u
+    
+import shotgun_api3
+import google
+print google.__file__

@@ -1,0 +1,22 @@
+bsNode = "eyebrowsNurbs_C_bs"
+nurbs = "eyebrowsMain_C_nurbs"
+
+dict = {}
+comboDict = {}
+nurbs = cmds.blendShape(bsNode, q=True, g=1)[0]
+
+aliasList = cmds.aliasAttr(bsNode, q=True)
+
+for i in range(0, len(aliasList), 2):
+    print i
+    alias = aliasList[i]
+    print alias
+    print aliasList[i+1]
+    if "_crr" in alias:
+        print "ok"
+
+        dict["bsNode"] = bsNode
+        dict["nurbs"] = nurbs
+        dict[alias] = "points"
+        
+print dict

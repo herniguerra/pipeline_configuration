@@ -1,0 +1,14 @@
+import os
+import sgtk
+import sys
+
+print(sys.version)
+
+sys.path.append("C:/Users/hernan.g/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin")
+
+sys.path.append("c:/users/hernan.g/appdata/local/programs/python/python36/lib/site-packages/")
+
+sys.path.append("M:/pipeline/shotgun/dev/tk-framework-remotestorage/lib/")
+
+
+from google.cloud import storage

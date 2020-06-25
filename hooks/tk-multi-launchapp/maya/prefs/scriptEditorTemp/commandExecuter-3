@@ -1,0 +1,10 @@
+import manyworlds.maya.mwRig as mwRig
+import manyworlds.maya.mwUtils as mwUtils
+reload(mwRig)
+reload(mwUtils)
+
+mwRig.mirrorNurbsTarget("eyelidUpNurbs_L_bs", "eyelidMainUp_L_crr")
+
+bsNode = "mouthDnNurbs_C_bs"
+queryWeights = cmds.blendShape(bsNode, q=True, w=1)
+bsNum = len(queryWeights)

@@ -1,0 +1,343 @@
+global proc shelf_mwRig () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 39
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "loadLatest - loads latest work file version" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "loadLatest" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.3 
+        -image "M:/pipeline/maya/shelves/icons/loadLatest.png" 
+        -image1 "M:/pipeline/maya/shelves/icons/loadLatest.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import mwUtils\nfileName = mwUtils.bringPublished()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 39
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "saveVersion - save work file as a new version" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "saveVersion" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.764901 0.764901 0.764901 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "M:/pipeline/maya/shelves/icons/saveVersion.png" 
+        -image1 "M:/pipeline/maya/shelves/icons/saveVersion.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import manyworlds.maya.mwUtils as mwUtils\nfileName = mwUtils.getLatestWorkFileVersion(new=True)\nmwUtils.mayaSave(fileName)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 39
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "bringModel - brings latest published model" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "bringModel" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "M:/pipeline/maya/shelves/icons/bringModel.png" 
+        -image1 "M:/pipeline/maya/shelves/icons/bringModel.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "mwUtils.bringPublished(subset=\"modelDefault\")" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 39
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "multiMirror - mirrors transforms and shapes, depending on selection" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "multiMirror" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "M:/pipeline/maya/shelves/icons/multiMirror.png" 
+        -image1 "M:/pipeline/maya/shelves/icons/multiMirror.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import manyworlds.maya.mwRig as mwRig\nmwRig.multiMirror()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 39
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "copySkin - (source >> [dest]) - copies skinCluster and influences from source to multiple destinations" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "copySkin" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "M:/pipeline/maya/shelves/icons/copySkin.png" 
+        -image1 "M:/pipeline/maya/shelves/icons/copySkin.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import manyworlds.maya.mwRig as mwRig\nmwRig.copySkin()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Reload all" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "import manyworlds.maya.mwRig as mwRig\nimport manyworlds.maya.mwU..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "reload" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import mgear.rigbits as rigbits\nimport mwRig\nimport mwUtils\nimport mwCheek_rigger\nimport mwEyebrows_rigger\nimport mwEyelids_rigger\nimport mwEyelines_rigger\nimport mwNose_rigger\nimport mwMouth_rigger\n\n\nreload(rigbits)\nreload(mwRig)\nreload(mwUtils)\nreload(mwCheek_rigger)\nreload(mwEyebrows_rigger)\nreload(mwEyelids_rigger)\nreload(mwEyelines_rigger)\nreload(mwNose_rigger)\nreload(mwMouth_rigger)\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "flip nurbs" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Flip Nurbs" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "flip" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import manyworlds.maya.mwRig as mwRig\nimport manyworlds.maya.mwUtils as mwUtils\nreload(mwRig)\nreload(mwUtils)\n\nnurbs = cmds.ls(sl=1)[0]\nnurbsShape = cmds.listRelatives(nurbs, c=1, s=1)[0]\n\nposDict = {}\n\nspansU = int(cmds.getAttr(nurbsShape+\".spansU\"))\nspansV = int(cmds.getAttr(nurbsShape+\".spansV\"))\ndegreeU = int(cmds.getAttr(nurbsShape+\".degreeU\"))\ndegreeV = int(cmds.getAttr(nurbsShape+\".degreeV\"))\n\nU = spansU + degreeU\nV = spansV + degreeV\n\nfor u in range(0, U):\n    posDict[u] = {}\n    for v in range(0, V):\n        pos = cmds.xform(nurbs+\".cv[\"+str(u)+\"][\"+str(v)+\"]\", q=1, t=1, ws=1)\n        posDict[u][v] = pos\n        \nfor u in range(0, U):\n    for v in range(0, V):\n        pos = posDict[u][V-v-1]\n        cmds.xform(nurbs+\".cv[\"+str(u)+\"][\"+str(v)+\"]\", t=[-pos[0], pos[1], pos[2]], ws=1)\n        \n\n        \nprint posDict\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Transfer Nurbs" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "transfer nurbs" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "transfer" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import manyworlds.maya.mwRig as mwRig\nimport manyworlds.maya.mwUtils as mwUtils\nreload(mwRig)\nreload(mwUtils)\n\nnurbs1 = cmds.ls(sl=1)[0]\nnurbs1Shape = cmds.listRelatives(nurbs1, c=1, s=1)[0]\nnurbs2 = cmds.ls(sl=1)[1]\nnurbs2Shape = cmds.listRelatives(nurbs2, c=1, s=1)[0]\n\nposDict = {}\n\nspansU = int(cmds.getAttr(nurbs1Shape+\".spansU\"))\nspansV = int(cmds.getAttr(nurbs1Shape+\".spansV\"))\ndegreeU = int(cmds.getAttr(nurbs1Shape+\".degreeU\"))\ndegreeV = int(cmds.getAttr(nurbs1Shape+\".degreeV\"))\n\nU = spansU + degreeU\nV = spansV + degreeV\n\nfor u in range(0, U):\n    posDict[u] = {}\n    for v in range(0, V):\n        pos = cmds.xform(nurbs1+\".cv[\"+str(u)+\"][\"+str(v)+\"]\", q=1, t=1, ws=1)\n        posDict[u][v] = pos\n        \nfor u in range(0, U):\n    for v in range(0, V):\n        pos = posDict[u][v]\n        cmds.xform(nurbs2+\".cv[\"+str(u)+\"][\"+str(v)+\"]\", t=[pos[0], pos[1], pos[2]], ws=1)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "sel = cmds.ls(sl=1)\nnum = sel[0][-2]\ncmds.select(sel[0].split(\".cv\")[0]+\".cv[:][\"+num+\"]\", r=1)" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "sel = cmds.ls(sl=1)\nnum = sel[0][-2]\ncmds.select(sel[0].split(\"...." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "sel = cmds.ls(sl=1)\nnum = sel[0][-2]\ncmds.select(sel[0].split(\".cv\")[0]+\".cv[:][\"+num+\"]\", r=1)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+
+} 
