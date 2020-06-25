@@ -45,6 +45,8 @@ class BeforeAppLaunch(sgtk.Hook):
         """
 
         if engine_name == "tk-maya":
+            sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial/")
+
             sgtk.util.append_path_to_env_var(
                 "PYTHONPATH", os.path.join(self.disk_location, "maya")
             )
