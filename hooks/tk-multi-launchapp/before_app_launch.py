@@ -19,8 +19,6 @@ import os
 import sys
 import shutil
 import imp
-
-
 import sgtk
 from sgtk.util.zip import unzip_file
 

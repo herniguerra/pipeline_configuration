@@ -1,7 +1,5 @@
 import sys
 import os
-
-sys.path.append("C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/python")
 from google.cloud import storage
 
 os.environ[
@@ -25,4 +23,4 @@ def download(source, dest):
 
 
 def exists(source):
-    return storage.Bob(bucket=bucket, name=source).exists(storage_client)
+    return storage.Blob(bucket=bucket, name=source).exists(storage_client)

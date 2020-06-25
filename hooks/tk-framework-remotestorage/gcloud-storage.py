@@ -25,7 +25,7 @@ class LocalProvider(HookBaseClass):
     but instead copies thee files to a location, and then retrieves them on download.
     """
 
-    remote_storage_location = "gs://"
+    remote_storage_location = "gs:\\"
 
     def upload(self, published_file):
         """
@@ -53,26 +53,9 @@ class LocalProvider(HookBaseClass):
                 )
                 return
 
-            """
-            sgtk.util.filesystem.copy_file(
-                published_file["path"]["local_path"], destination_path
-            )
-            """
-
             destFilename = "{id}_{name}".format(
                 id=published_file["id"], name=published_file["name"]
             )
-
-            """
-            os.system(
-                "M:/mwCloudStorageUtils.bat "
-                + "upload"
-                + " "
-                + published_file["path"]["local_path"]
-                + " "
-                + destFilename
-            )
-            """
 
             mwCloudStorageUtils.upload(
                 published_file["path"]["local_path"], destFilename
@@ -95,7 +78,8 @@ class LocalProvider(HookBaseClass):
         self.logger.info("downloading %s" % published_file)
 
         remote_path = self._generate_remote_path(published_file)
-        if not os.path.exists(remote_path):
+
+        if not mwCloudStorageUtils.exists(remote_path):
             self.logger.warning(
                 "PublishedFile %s could not be found in the remote storage."
                 % published_file["id"]
@@ -113,10 +97,8 @@ class LocalProvider(HookBaseClass):
             )
             return
 
-        """
-        sgtk.util.filesystem.copy_file(remote_path, destination)
-        """
         mwCloudStorageUtils.download(remote_path, destination)
+
         return destination
 
     def _generate_remote_path(self, published_file):
@@ -130,4 +112,5 @@ class LocalProvider(HookBaseClass):
         file_name = "{id}_{name}".format(
             id=published_file["id"], name=published_file["name"]
         )
-        return os.path.join(os.path.expandvars(self.remote_storage_location), file_name)
+        return file_name
+        # return os.path.join(os.path.expandvars(self.remote_storage_location), file_name)

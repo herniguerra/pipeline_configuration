@@ -845,6 +845,7 @@ def bringPublishedModel(task=None, returnPath=False):
             return filePath
 
     else:
+        print "File not found."
         return False
 
 
