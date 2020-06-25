@@ -30,7 +30,7 @@ class TankInit(Hook):
 
         location = self.disk_location
         packagesPath = os.path.join(
-            os.path.split(os.path.split(os.path.split(location)[0])[0])[0], "packages"
+            os.path.split(os.path.split(location)[0]))[0], "packages"
         )
 
         sgPythonApiPath = os.path.join(packagesPath, "python-api-3.2.4")
