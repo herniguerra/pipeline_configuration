@@ -4,7 +4,7 @@ from google.cloud import storage
 
 os.environ[
     "GOOGLE_APPLICATION_CREDENTIALS"
-] = "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/python/google_cloud_storage/key/many-worlds-d48d0252c0e6.json"
+] = "M:/offline/key/many-worlds-d48d0252c0e6.json"
 
 bucket_name = "manyworlds-test-bucket"
 
@@ -23,4 +23,4 @@ def download(source, dest):
 
 
 def exists(source):
-    return storage.Bob(bucket=bucket, name=source).exists(storage_client)
+    return storage.Blob(bucket=bucket, name=source).exists(storage_client)
