@@ -43,18 +43,10 @@ class BeforeAppLaunch(sgtk.Hook):
         :param software_entity: (dict) If set, this is the Software entity that is
             associated with this launch command.
         """
-        sys.path.append(os.path.join(self.disk_location, "maya/google_cloud_storage"))
 
         if engine_name == "tk-maya":
             sgtk.util.append_path_to_env_var(
                 "PYTHONPATH", os.path.join(self.disk_location, "maya")
-            )
-            sgtk.util.append_path_to_env_var(
-                "PYTHONPATH", os.path.join(self.disk_location, "maya/python-api-3.2.4")
-            )
-            sgtk.util.append_path_to_env_var(
-                "PYTHONPATH",
-                os.path.join(self.disk_location, "maya/google_cloud_storage"),
             )
             sgtk.util.append_path_to_env_var(
                 "MAYA_MODULE_PATH", os.path.join(self.disk_location, "maya/modules")
