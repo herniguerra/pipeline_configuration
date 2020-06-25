@@ -56,6 +56,9 @@ class BeforeAppLaunch(sgtk.Hook):
                 "MAYA_SCRIPT_PATH", os.path.join(self.disk_location, "maya/scripts")
             )
             sgtk.util.append_path_to_env_var(
+                "MAYA_PLUG_IN_PATH", os.path.join(self.disk_location, "maya/plugins")
+            )
+            sgtk.util.append_path_to_env_var(
                 "XBMLANGPATH", os.path.join(self.disk_location, "maya/splash")
             )
 
