@@ -13,6 +13,7 @@ Hook that gets executed every time a new Toolkit API instance is created.
 """
 
 from tank import Hook
+import sgtk
 import os
 import sys
 
@@ -36,8 +37,8 @@ class TankInit(Hook):
 
         gcloudApiPath = os.path.join(packagesPath, "google_cloud_storage")
 
-        sys.path.append(packagesPath)
-        sys.path.append(sgPythonApiPath)
-        sys.path.append(gcloudApiPath)
+        sgtk.util.append_path_to_env_var("PYTHONPATH", packagesPath)
+        sgtk.util.append_path_to_env_var("PYTHONPATH", sgPythonApiPath)
+        sgtk.util.append_path_to_env_var("PYTHONPATH", gcloudApiPath)
 
         pass
