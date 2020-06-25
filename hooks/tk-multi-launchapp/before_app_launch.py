@@ -43,6 +43,7 @@ class BeforeAppLaunch(sgtk.Hook):
         :param software_entity: (dict) If set, this is the Software entity that is
             associated with this launch command.
         """
+        sys.path.append(os.path.join(self.disk_location, "/python")
 
         if engine_name == "tk-maya":
             sgtk.util.append_path_to_env_var(

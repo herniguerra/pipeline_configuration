@@ -1,7 +1,5 @@
 import sys
 import os
-
-sys.path.append("C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/python")
 from google.cloud import storage
 
 os.environ[
