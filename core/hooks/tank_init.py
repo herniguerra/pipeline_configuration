@@ -33,6 +33,9 @@ class TankInit(Hook):
             os.path.split(os.path.split(location)[0])[0], "packages"
         )
 
+        sgPythonApiPath = os.path.join(packagesPath, "python-api-3.2.4")
+
         sgtk.util.append_path_to_env_var("PYTHONPATH", packagesPath)
+        sgtk.util.append_path_to_env_var("PYTHONPATH", sgPythonApiPath)
 
         pass
