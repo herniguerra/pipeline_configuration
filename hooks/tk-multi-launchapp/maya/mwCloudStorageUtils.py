@@ -6,7 +6,7 @@ from google.cloud import storage
 
 os.environ[
     "GOOGLE_APPLICATION_CREDENTIALS"
-] = "M:/offline/key/many-worlds-d48d0252c0e6.json"
+] = "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/python/google_cloud_storage/key/many-worlds-d48d0252c0e6.json"
 
 bucket_name = "manyworlds-test-bucket"
 
