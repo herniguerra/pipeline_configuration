@@ -50,6 +50,9 @@ class BeforeAppLaunch(sgtk.Hook):
                 "PYTHONPATH", os.path.join(self.disk_location, "maya")
             )
             sgtk.util.append_path_to_env_var(
+                "PYTHONPATH", os.path.join(self.disk_location, "maya/python-api-3.2.4")
+            )
+            sgtk.util.append_path_to_env_var(
                 "MAYA_MODULE_PATH", os.path.join(self.disk_location, "maya/modules")
             )
             sgtk.util.append_path_to_env_var(
