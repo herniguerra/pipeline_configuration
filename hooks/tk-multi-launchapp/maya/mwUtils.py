@@ -2,6 +2,7 @@ import os
 import maya.cmds as cmds
 import shutil
 import maya.mel as mel
+import mwRig
 
 # import mgear.core as mgear
 import getpass
@@ -1012,6 +1013,57 @@ def userSetup():
     project = getProject()
     asset = getAsset()
     task = getTask()
+
+
+def installMenu():
+    from functools import partial
+    from mgear import anim_picker
+
+    maya_main_window = mel.eval("$tmpVar = $gMainWindow")
+
+    # delete previously created Many-Worlds menu, if exists
+    menus = cmds.window(maya_main_window, query=True, menuArray=True)
+    for menu in menus:
+        label = cmds.menu(menu, query=True, label=True)
+        if label == "Many-Worlds":
+            cmds.deleteUI(menu)
+            break
+
+    # create Many-Worlds menu
+    mw_menu = cmds.menu(parent=maya_main_window, label="Many-Worlds", tearOff=True)
+
+    rigging_menu = cmds.menuItem(parent=mw_menu, label="Rigging", subMenu=True)
+    cmds.menuItem(
+        parent=rigging_menu, label="Build rigBound", command=mwRig.buildRigBound
+    )
+    cmds.menuItem(parent=rigging_menu, label="Connect rigs", command=connectRigs)
+    cmds.menuItem(parent=rigging_menu, label="Disconnect rigs", command=disconnectRigs)
+    cmds.menuItem(parent=rigging_menu, divider=True)
+    cmds.menuItem(parent=rigging_menu, label="Export skins", command=mwRig.exportSkins)
+    cmds.menuItem(
+        parent=rigging_menu,
+        label="Export poly correctives",
+        command=mwRig.exportPolyCorrectives,
+    )
+    cmds.menuItem(
+        parent=rigging_menu,
+        label="Export nurbs correctives",
+        command=mwRig.exportPolyCorrectives,
+    )
+    cmds.menuItem(parent=rigging_menu, divider=True)
+    cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
+
+    animation_menu = cmds.menuItem(parent=mw_menu, label="Animation", subMenu=True)
+    cmds.menuItem(
+        parent=animation_menu,
+        label="Anim Picker",
+        command=partial(anim_picker.load, False, False),
+    )
+    cmds.menuItem(
+        parent=animation_menu,
+        label="Anim Picker Editor",
+        command=partial(anim_picker.load, True, False),
+    )
 
 
 def currentPath():
