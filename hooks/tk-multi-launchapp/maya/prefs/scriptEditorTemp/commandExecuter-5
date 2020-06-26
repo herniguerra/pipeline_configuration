@@ -1,4 +1,0 @@
-cmds.setAttr("eye_L0_Over_ctl.upEyelidOpen", k=0)
-cmds.setAttr("eye_L0_Over_ctl.dnEyelidOpen", k=0)
-cmds.setAttr("eye_R0_Over_ctl.upEyelidOpen", k=0)
-cmds.setAttr("eye_R0_Over_ctl.dnEyelidOpen", k=0) 

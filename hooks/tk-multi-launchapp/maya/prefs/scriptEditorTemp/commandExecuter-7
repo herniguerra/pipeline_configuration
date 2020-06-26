@@ -1,4 +1,0 @@
-for rn in cmds.ls("*eferenceNode*", dep=1):
-    print rn
-    cmds.lockNode(rn, lock=0)
-    cmds.delete(rn)

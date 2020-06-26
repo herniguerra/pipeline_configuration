@@ -46,12 +46,11 @@ class BeforeAppLaunch(sgtk.Hook):
 
         if engine_name == "tk-maya":
             sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial/")
-            sys.path.append(os.path.join(self.disk_location, "maya/prefs"))
-            """
+            # sys.path.append(os.path.join(self.disk_location, "maya/prefs"))
+
             sgtk.util.append_path_to_env_var(
-                "MAYA_APP_DIR", os.path.join(self.disk_location, "maya/prefs")
+                "MAYA_SHELF_PATH", os.path.join(self.disk_location, "maya/shelves")
             )
-            """
             sgtk.util.append_path_to_env_var(
                 "PYTHONPATH", os.path.join(self.disk_location, "maya")
             )
@@ -65,7 +64,7 @@ class BeforeAppLaunch(sgtk.Hook):
                 "MAYA_PLUG_IN_PATH", os.path.join(self.disk_location, "maya/plugins")
             )
             sgtk.util.append_path_to_env_var(
-                "XBMLANGPATH", os.path.join(self.disk_location, "maya/splash")
+                "XBMLANGPATH", os.path.join(self.disk_location, "maya/icons")
             )
 
         # Check that we have a software entity, and that it has some plugins.

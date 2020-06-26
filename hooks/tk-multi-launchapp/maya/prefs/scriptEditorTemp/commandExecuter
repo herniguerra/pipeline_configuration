@@ -1,7 +1,0 @@
-import mgear.rigbits as rigbits
-import manyworlds.maya.mwRig as mwRig
-import manyworlds.maya.mwUtils as mwUtils
-import pymel.core as pm
-reload(rigbits)
-reload(mwRig)
-reload(mwUtils)
