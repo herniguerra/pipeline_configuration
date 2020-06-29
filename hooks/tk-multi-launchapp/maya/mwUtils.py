@@ -3,6 +3,7 @@ import maya.cmds as cmds
 import shutil
 import maya.mel as mel
 import mwRig
+import sys
 
 # import mgear.core as mgear
 import getpass
