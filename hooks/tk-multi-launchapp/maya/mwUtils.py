@@ -4,8 +4,6 @@ import shutil
 import maya.mel as mel
 import mwRig
 
-import mwEyebrows_rigger
-
 # import mgear.core as mgear
 import getpass
 import re
