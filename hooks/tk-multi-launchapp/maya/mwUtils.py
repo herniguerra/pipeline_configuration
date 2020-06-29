@@ -832,9 +832,11 @@ def bringPublishedModel(task=None, returnPath=False):
     fields = ["path"]
     order = [{"field_name": "version_number", "direction": "desc"}]
 
-    path_dict = sg.find_one("PublishedFile", filters, fields, order)
+    publishedFile = sg.find_one("PublishedFile", filters, fields, order)
 
-    filePath = path_dict["path"]["local_path"]
+    download(publishedFile)
+
+    filePath = publishedFile["path"]["local_path"]
 
     if os.path.isfile(filePath):
 
@@ -847,8 +849,49 @@ def bringPublishedModel(task=None, returnPath=False):
             return filePath
 
     else:
-        print "File not found."
+        cmds.warning("File does not exist locally and could not be found in mwCloud.")
         return False
+
+
+def download(published_file):
+    import mwCloudStorageUtils
+
+    """
+        Downloads the PublishedFile from the remote storage.
+        This method is responsible for finding the file in the remote storage based on
+        the passed published_file.
+        :param published_file: dict, PublishedFile entity.
+        :return: str; The path to the downloaded file.
+    """
+
+    print ("downloading %s" % published_file)
+
+    remote_path = "{id}_{name}".format(
+        id=published_file["id"], name=published_file["name"]
+    )
+
+    if not mwCloudStorageUtils.exists(remote_path):
+        print (
+            "PublishedFile %s could not be found in the remote storage."
+            % published_file["id"]
+        )
+        return None
+
+    # TODO: maybe try and resolve the path rather than expecting to be able to place
+    #  it back in exactly the same location that it was when it was published
+    destination = published_file["path"]["local_path"]
+
+    if os.path.exists(destination):
+        print (
+            "PublishedFile %s already exists locally here: %s"
+            % (published_file["id"], destination)
+        )
+        return
+
+    else:
+        mwCloudStorageUtils.download(remote_path, destination)
+
+    return destination
 
 
 def getProject(returnId=False):

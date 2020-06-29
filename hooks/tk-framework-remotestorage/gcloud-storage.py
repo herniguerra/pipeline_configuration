@@ -20,11 +20,6 @@ HookBaseClass = sgtk.get_hook_baseclass()
 
 class LocalProvider(HookBaseClass):
 
-    """
-    This hooks is just an example hook that doesn't actually upload anything,
-    but instead copies thee files to a location, and then retrieves them on download.
-    """
-
     remote_storage_location = "gs:\\"
 
     def upload(self, published_file):
@@ -97,7 +92,8 @@ class LocalProvider(HookBaseClass):
             )
             return
 
-        mwCloudStorageUtils.download(remote_path, destination)
+        else:
+            mwCloudStorageUtils.download(remote_path, destination)
 
         return destination
 
