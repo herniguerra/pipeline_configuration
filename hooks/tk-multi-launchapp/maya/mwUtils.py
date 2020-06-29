@@ -4,6 +4,8 @@ import shutil
 import maya.mel as mel
 import mwRig
 
+import mwEyebrows_rigger
+
 # import mgear.core as mgear
 import getpass
 import re
@@ -1016,6 +1018,15 @@ def userSetup():
 
 
 def installMenu():
+    sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")
+
+    import mwEyebrows_rigger
+    import mwEyelids_rigger
+    import mwEyelines_rigger
+    import mwNose_rigger
+    import mwMouth_rigger
+    import mwCheek_rigger
+
     from functools import partial
     from mgear import anim_picker
 
@@ -1050,6 +1061,39 @@ def installMenu():
         label="Export nurbs correctives",
         command=mwRig.exportPolyCorrectives,
     )
+    cmds.menuItem(parent=rigging_menu, divider=True)
+    facial_menu = cmds.menuItem(
+        parent=rigging_menu, label="MW Facial Riggers", subMenu=True
+    )
+    cmds.menuItem(
+        parent=facial_menu,
+        label="MW Eyebrows Rigger",
+        command=mwEyebrows_rigger.showMwEyebrowsUI,
+    )
+    cmds.menuItem(
+        parent=facial_menu,
+        label="MW Eyelids Rigger",
+        command=mwEyelids_rigger.showMwEyelidsUI,
+    )
+    cmds.menuItem(
+        parent=facial_menu,
+        label="MW Eyelines Rigger",
+        command=mwEyelines_rigger.showMwEyelinesUI,
+    )
+    cmds.menuItem(
+        parent=facial_menu, label="MW Nose Rigger", command=mwNose_rigger.showMwNoseUI
+    )
+    cmds.menuItem(
+        parent=facial_menu,
+        label="MW Mouth Rigger",
+        command=mwMouth_rigger.showMwMouthUI,
+    )
+    cmds.menuItem(
+        parent=facial_menu,
+        label="MW Cheek Rigger",
+        command=mwCheek_rigger.showMwCheekUI,
+    )
+
     cmds.menuItem(parent=rigging_menu, divider=True)
     cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
 
