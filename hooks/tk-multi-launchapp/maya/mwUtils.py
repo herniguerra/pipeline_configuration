@@ -998,21 +998,21 @@ def getPath(to="work"):
         return tk.paths_from_entity("Task", task)
 
     if to == "skin":
-        return os.path.join(tk.paths_from_entity("Task", task)[0], "maya\\data\\skin")
+        return os.path.join(tk.paths_from_entity("Task", task)[1], "maya\\data\\skin")
 
     if to == "nurbsCorrectives":
         return os.path.join(
-            tk.paths_from_entity("Task", task)[0], "maya\\data\\nurbsCorrectives"
+            tk.paths_from_entity("Task", task)[1], "maya\\data\\nurbsCorrectives"
         )
 
     if to == "polyCorrectives":
         return os.path.join(
-            tk.paths_from_entity("Task", task)[0], "maya\\data\\polyCorrectives"
+            tk.paths_from_entity("Task", task)[1], "maya\\data\\polyCorrectives"
         )
 
     if to == "deformers":
         return os.path.join(
-            tk.paths_from_entity("Task", task)[0], "maya\\data\\deformers"
+            tk.paths_from_entity("Task", task)[1], "maya\\data\\deformers"
         )
 
 
