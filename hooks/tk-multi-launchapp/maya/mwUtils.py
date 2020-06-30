@@ -803,15 +803,12 @@ def connectRigs(source=None, dest=None, disconnect=False):
                                 )
 
 
-def bringPublishedModel(task=None, returnPath=False):
+def bringPublish(task="model", returnPath=False):
     import shotgun_api3
-
-    if task == None:
-        task = "model"
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
-        script_name="mwUtils_bringPublishedModel",
+        script_name="mwUtils_bringPublish",
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
@@ -829,12 +826,10 @@ def bringPublishedModel(task=None, returnPath=False):
         ["entity.Asset.code", "is", asset_name],
         ["task.Task.content", "is", task],
     ]
-    fields = ["path"]
+    fields = ["path", "name"]
     order = [{"field_name": "version_number", "direction": "desc"}]
 
     publishedFile = sg.find_one("PublishedFile", filters, fields, order)
-
-    download(publishedFile)
 
     filePath = publishedFile["path"]["local_path"]
 
@@ -849,8 +844,25 @@ def bringPublishedModel(task=None, returnPath=False):
             return filePath
 
     else:
-        cmds.warning("File does not exist locally and could not be found in mwCloud.")
-        return False
+        window = cmds.window(title="mwCloud", widthHeight=(400, 110))
+        cmds.columnLayout(adjustableColumn=True)
+        cmds.text(label="Downloading")
+        cmds.text(label=publishedFile["name"])
+        cmds.text(label="from mwCloud...")
+        cmds.setParent("..")
+        cmds.showWindow(window)
+
+        download(publishedFile)
+
+        cmds.deleteUI(window)
+
+        if returnPath == True:
+            return filePath
+
+        else:
+            cmds.file(filePath, i=True, defaultNamespace=True)
+
+            return filePath
 
 
 def download(published_file):
@@ -869,6 +881,8 @@ def download(published_file):
     remote_path = "{id}_{name}".format(
         id=published_file["id"], name=published_file["name"]
     )
+
+    print remote_path
 
     if not mwCloudStorageUtils.exists(remote_path):
         print (

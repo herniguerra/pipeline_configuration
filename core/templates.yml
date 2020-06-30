@@ -428,6 +428,8 @@ paths:
   asset_alembic_cache:
     definition: "@asset_root/publish/caches/{Asset}_{task_name}.v{version}.abc"
 
+  asset_rig_alembic_cache:
+    definition: "@asset_root/publish/{task_name}/caches/{Asset}_{task_name}.v{version}.abc"
   #
   # Photoshop
   #
@@ -489,7 +491,7 @@ paths:
 
   # define the location of a publish area
   asset_publish_area_maya:
-    definition: "@asset_root/publish/maya"
+    definition: "@asset_root/publish/{task_name}/maya"
   # The location of WIP files
   maya_asset_work:
     definition: "@asset_root/work/maya/{Asset}_{task_name}.v{version}.{maya_extension}"
@@ -501,6 +503,8 @@ paths:
   # The location of published maya files
   maya_asset_publish:
     definition: "@asset_root/publish/maya/{Asset}_{task_name}.v{version}.{maya_extension}"
+  maya_asset_rig_publish:
+    definition: "@asset_root/publish/{task_name}/maya/{Asset}_{task_name}.v{version}.{maya_extension}"
 
   #
   # Houdini

@@ -38,7 +38,7 @@ class LocalProvider(HookBaseClass):
             and "local_path" in published_file["path"]
             and published_file["path"]["local_path"]
         ):
-            # Build a path to copy the published file to in our mocked remote storage.
+            # Build a path to copy the published file to in remote storage.
             destination_path = self._generate_remote_path(published_file)
             self.logger.info("uploading file to %s" % destination_path)
             if os.path.exists(destination_path):
