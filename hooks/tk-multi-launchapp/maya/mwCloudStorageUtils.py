@@ -2,7 +2,9 @@ import sys
 import os
 from google.cloud import storage
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "M:/many-worlds-f7950661e149.json"
+os.environ[
+    "GOOGLE_APPLICATION_CREDENTIALS"
+] = "C:/Many-Worlds/many-worlds-f7950661e149.json"
 
 bucket_name = "manyworlds-test-bucket"
 

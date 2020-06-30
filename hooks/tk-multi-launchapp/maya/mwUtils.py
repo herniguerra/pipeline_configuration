@@ -1172,5 +1172,5 @@ def currentPath():
 
 
 def helloWorlds():
-    print ("Hello, worlds! :) Local")
+    print ("Hello, worlds! :)")
 
