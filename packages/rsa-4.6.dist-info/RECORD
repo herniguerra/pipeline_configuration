@@ -1,9 +1,9 @@
-../../Scripts/pyrsa-decrypt.exe,sha256=-uY6h51eF1NKINbN3RtGYSWZVBKF3XZOAfcp9r8WNPA,106328
-../../Scripts/pyrsa-encrypt.exe,sha256=wvAHEKPVkvf_YwrcuAs2h-8v8d5NVjyu2ZTMaL0N_Ao,106328
-../../Scripts/pyrsa-keygen.exe,sha256=1z7GoR2xQKhx6h8Xvc1-HQ6Z6YubVk6sMG5ZSggLcz8,106326
-../../Scripts/pyrsa-priv2pub.exe,sha256=1qN4gHPnyw9mWe3qIlCemozQ2cWScxcI68oDc_iqCPI,106349
-../../Scripts/pyrsa-sign.exe,sha256=q1sygRPdnWFViB_x3PI4Q3PAEUKgLN3nZgA-MFR3xjk,106322
-../../Scripts/pyrsa-verify.exe,sha256=g05TBIJtSyIqHpVSTwZwA7xvRjBdL9C05_pBMpNvu5k,106326
+../../bin/pyrsa-decrypt.exe,sha256=u6nNwT5IrQx_b0pevoeNw2iJj5VoVuMsS_YzqbSzYzM,106369
+../../bin/pyrsa-encrypt.exe,sha256=_CcpTWhnN3FxJsQiv2lV_vJkZFJS6v70OkCu7TQWdkg,106369
+../../bin/pyrsa-keygen.exe,sha256=cai2tuGHWrXLwO3xc34cVqFPrv1G7P52X1t7oP1AqOI,106367
+../../bin/pyrsa-priv2pub.exe,sha256=xGXJbYsjrfOcWP16xzQONfTld-bsC553fSRVTq-BCpY,106390
+../../bin/pyrsa-sign.exe,sha256=BSPPiBcpSfMuTFMTJBY3wyc54VmhfGRBpoCjNPiO5J8,106363
+../../bin/pyrsa-verify.exe,sha256=SqzVGFfS0_itbsHMDw-Ec6_dJaZYwyw7KnjRIhNTnB0,106367
 rsa-4.6.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 rsa-4.6.dist-info/LICENSE,sha256=Bz8ot9OJyP509gfhfCf4HqpazmntxDqITyP0G0HFxyY,577
 rsa-4.6.dist-info/METADATA,sha256=tF-qq6z4RpPWUg9pd050KMYgZFIhwyQQXQXkRQTSwkk,3208
