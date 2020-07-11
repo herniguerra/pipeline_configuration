@@ -12,7 +12,6 @@ import ast
 import re
 import json
 
-
 def facialDirectConnectionToMGearCtl(destCtl, j, dv, axis, name):
     cns = cmds.listRelatives(destCtl, p=1)[0]
 
@@ -926,7 +925,7 @@ def locator(name=None, n=None, ls=1, lsx=1, lsy=1, lsz=1):
 
 
 def createFacialGeoLayer(
-    faceGeo, addGeos, name, side="C", facePolys=None, addToBs=True
+    faceGeo, addGeos, name, side="C", facePolys=None, addToBs=True, snapType="meshSnap"
 ):
     # creates duplicate geometries and connections for facial setup
     cmds.setAttr(faceGeo + ".sx", lock=0)
@@ -961,12 +960,20 @@ def createFacialGeoLayer(
             cmds.delete()
             cmds.delete(ch=1)
 
-        # meshSnap
-        cmds.meshSnap(
-            facialBody,
-            facialCut,
-            name=mwUtils.renameSuffix(faceGeo, "meshSnap", add="facialCut"),
-        )
+        if snapType == "meshSnap":
+            # meshSnap
+            cmds.meshSnap(
+                facialBody,
+                facialCut,
+                name=mwUtils.renameSuffix(faceGeo, "meshSnap", add="facialCut"),
+            )
+        elif snapType == "cvWrap":
+            # cvWrap
+            cmds.cvWrap(
+                facialBody,
+                facialCut,
+                name=mwUtils.renameSuffix(faceGeo, "cvWrap", add="facialCut"),
+            )
 
     faceGeoPly = mwUtils.renameSuffix(faceGeo, "ply", add=name)
     bsName = mwUtils.renameSuffix(faceGeo, "bs", add="facialSystems")

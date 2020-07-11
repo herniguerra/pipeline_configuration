@@ -1074,14 +1074,15 @@ def userSetup():
 
 
 def installMenu():
+    print "Installing Many-Worlds menu..."
     sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")
 
+    import mwCheek_rigger
     import mwEyebrows_rigger
     import mwEyelids_rigger
     import mwEyelines_rigger
     import mwNose_rigger
     import mwMouth_rigger
-    import mwCheek_rigger
 
     from functools import partial
     from mgear import anim_picker
@@ -1151,7 +1152,14 @@ def installMenu():
     )
 
     cmds.menuItem(parent=rigging_menu, divider=True)
+
     cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
+    cmds.menuItem(parent=rigging_menu, divider=True)
+    cmds.menuItem(
+        parent=rigging_menu,
+        label="Reload MW scripts",
+        command="mwUtils.reloadScripts()",
+    )
 
     animation_menu = cmds.menuItem(parent=mw_menu, label="Animation", subMenu=True)
     cmds.menuItem(
@@ -1164,6 +1172,58 @@ def installMenu():
         label="Anim Picker Editor",
         command=partial(anim_picker.load, True, False),
     )
+
+    cmds.menuItem(parent=mw_menu, divider=True)
+    cmds.menuItem(
+        parent=mw_menu, label="Reload MW scripts", command="mwUtils.reloadScripts()"
+    )
+    cmds.menuItem(
+        parent=mw_menu, label="Reload MW menu", command="mwUtils.installMenu()"
+    )
+    print "Ok"
+
+
+def reloadScripts():
+    import mwUtils
+    import mwRig
+    import mwCheek_rigger
+    import mwEyebrows_rigger
+    import mwEyelids_rigger
+    import mwEyelines_rigger
+    import mwNose_rigger
+    import mwMouth_rigger
+
+    print "Reloading mwUtils..."
+    reload(mwUtils)
+    print "Ok"
+
+    print "Reloading mwWig..."
+    reload(mwRig)
+    print "Ok"
+
+    print "Reloading mwCheek_rigger..."
+    reload(mwCheek_rigger)
+    print "Ok"
+
+    print "Reloading mwEyebrows_rigger..."
+    reload(mwEyebrows_rigger)
+    print "Ok"
+
+    print "Reloading mwEyelids_rigger..."
+    reload(mwEyelids_rigger)
+    print "Ok"
+
+    print "Reloading mwEyelines_rigger..."
+    reload(mwEyelines_rigger)
+    print "Ok"
+
+    print "Reloading mwNose_rigger..."
+    reload(mwNose_rigger)
+    print "Ok"
+
+    print "Reloading mwMouth_rigger..."
+    reload(mwMouth_rigger)
+    print "Ok"
 
 
 def currentPath():

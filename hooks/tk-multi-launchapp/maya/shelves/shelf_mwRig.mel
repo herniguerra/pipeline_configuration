@@ -230,7 +230,7 @@ global proc shelf_mwRig () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mgear.rigbits as rigbits\nimport mwRig\nimport mwUtils\nimport mwCheek_rigger\nimport mwEyebrows_rigger\nimport mwEyelids_rigger\nimport mwEyelines_rigger\nimport mwNose_rigger\nimport mwMouth_rigger\n\n\nreload(rigbits)\nreload(mwRig)\nreload(mwUtils)\nreload(mwCheek_rigger)\nreload(mwEyebrows_rigger)\nreload(mwEyelids_rigger)\nreload(mwEyelines_rigger)\nreload(mwNose_rigger)\nreload(mwMouth_rigger)\n\n" 
+        -command "mwUtils.reloadScripts()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
