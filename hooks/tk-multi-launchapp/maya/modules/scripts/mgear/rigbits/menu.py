@@ -22,14 +22,6 @@ from functools import partial
 
 import sys
 
-sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")
-
-import mwEyebrows_rigger
-import mwEyelids_rigger
-import mwEyelines_rigger
-import mwNose_rigger
-import mwMouth_rigger
-import mwCheek_rigger
 
 menuID = "Rigbits"
 
@@ -69,13 +61,6 @@ def install():
         ("Channel Wrangler", channelWrangler.openChannelWrangler),
         ("-----", None),
         ("Facial Rigger", facial_rigger.show),
-        ("-----", None),
-        ("MW Eyebrows Rigger", mwEyebrows_rigger.showMwEyebrowsUI),
-        ("MW Eyelids Rigger", mwEyelids_rigger.showMwEyelidsUI),
-        ("MW Eyelines Rigger", mwEyelines_rigger.showMwEyelinesUI),
-        ("MW Nose Rigger", mwNose_rigger.showMwNoseUI),
-        ("MW Mouth Rigger", mwMouth_rigger.showMwMouthUI),
-        ("MW Cheek Rigger", mwCheek_rigger.showMwCheekUI),
         ("-----", None),
         ("Proxy Slicer", proxySlicer.slice),
         ("Proxy Slicer Parenting", partial(proxySlicer.slice, True)),

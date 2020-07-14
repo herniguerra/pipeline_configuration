@@ -992,27 +992,34 @@ def getPath(to="work"):
 
     tk = current_engine.sgtk
 
-    task = getTask(returnId=True)
+    task = getTask(returnId=False)
+    taskId = getTask(returnId=True)
 
     if to == "work":
-        return tk.paths_from_entity("Task", task)
+        return tk.paths_from_entity("Task", taskId)
 
     if to == "skin":
-        return os.path.join(tk.paths_from_entity("Task", task)[1], "maya\\data\\skin")
+        return os.path.join(
+            tk.paths_from_entity("Task", taskId)[1].replace(task, "RigPuppet"),
+            "maya\\data\\skin",
+        )
 
     if to == "nurbsCorrectives":
         return os.path.join(
-            tk.paths_from_entity("Task", task)[1], "maya\\data\\nurbsCorrectives"
+            tk.paths_from_entity("Task", taskId)[1].replace(task, "RigPuppet"),
+            "maya\\data\\nurbsCorrectives",
         )
 
     if to == "polyCorrectives":
         return os.path.join(
-            tk.paths_from_entity("Task", task)[1], "maya\\data\\polyCorrectives"
+            tk.paths_from_entity("Task", taskId)[1].replace(task, "RigPuppet"),
+            "maya\\data\\polyCorrectives",
         )
 
     if to == "deformers":
         return os.path.join(
-            tk.paths_from_entity("Task", task)[1], "maya\\data\\deformers"
+            tk.paths_from_entity("Task", taskId)[1].replace(task, "RigPuppet"),
+            "maya\\data\\deformers",
         )
 
 
@@ -1084,6 +1091,9 @@ def installMenu():
     import mwNose_rigger
     import mwMouth_rigger
 
+    from mgear.crank import crank_tool
+    from mgear.animbits import softTweaks
+
     from functools import partial
     from mgear import anim_picker
 
@@ -1097,8 +1107,12 @@ def installMenu():
             cmds.deleteUI(menu)
             break
 
-    # create Many-Worlds menu
+    # --- create Many-Worlds menu
     mw_menu = cmds.menu(parent=maya_main_window, label="Many-Worlds", tearOff=True)
+
+    ###########################
+    # --- create rigging menu
+    ###########################
 
     rigging_menu = cmds.menuItem(parent=mw_menu, label="Rigging", subMenu=True)
     cmds.menuItem(
@@ -1119,6 +1133,8 @@ def installMenu():
         command=mwRig.exportPolyCorrectives,
     )
     cmds.menuItem(parent=rigging_menu, divider=True)
+
+    # --- create rigging facial submenu
     facial_menu = cmds.menuItem(
         parent=rigging_menu, label="MW Facial Riggers", subMenu=True
     )
@@ -1153,15 +1169,55 @@ def installMenu():
 
     cmds.menuItem(parent=rigging_menu, divider=True)
 
-    cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
-    cmds.menuItem(parent=rigging_menu, divider=True)
+    # --- create nurbs submenu
+    nurbs_menu = cmds.menuItem(parent=rigging_menu, label="Nurbs", subMenu=True)
+
     cmds.menuItem(
-        parent=rigging_menu,
-        label="Reload MW scripts",
-        command="mwUtils.reloadScripts()",
+        parent=nurbs_menu, label="Flip", command=mwRig.flipNurbs,
     )
 
+    cmds.menuItem(
+        parent=nurbs_menu, label="Transfer shape", command=mwRig.transferNurbsShape,
+    )
+
+    cmds.menuItem(
+        parent=nurbs_menu,
+        label="Select U Vertices",
+        command=mwRig.selectNurbsUVertices,
+    )
+
+    cmds.menuItem(
+        parent=nurbs_menu,
+        label="Select V Vertices",
+        command=mwRig.selectNurbsVVertices,
+    )
+
+    cmds.menuItem(parent=rigging_menu, divider=True)
+
+    cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
+
+    ###########################
+    # --- create animation menu
+    ###########################
+
     animation_menu = cmds.menuItem(parent=mw_menu, label="Animation", subMenu=True)
+
+    import mgear.core.dagmenu as mgm
+
+    state = mgm.get_option_var_state()
+
+    cmds.menuItem(
+        "mgear_dagmenu_menuitem",
+        parent=animation_menu,
+        label="mGear Viewport Menu",
+        command=mgm.run,
+        checkBox=state,
+    )
+
+    mgm.run(state)
+
+    cmds.menuItem(divider=True)
+
     cmds.menuItem(
         parent=animation_menu,
         label="Anim Picker",
@@ -1171,6 +1227,35 @@ def installMenu():
         parent=animation_menu,
         label="Anim Picker Editor",
         command=partial(anim_picker.load, True, False),
+    )
+
+    cmds.menuItem(parent=animation_menu, divider=True)
+
+    cmds.menuItem(
+        parent=animation_menu,
+        label="Soft tweaks",
+        command=partial(softTweaks.openSoftTweakManager, False, False),
+    )
+    cmds.menuItem(
+        parent=animation_menu,
+        label="Crank: Shot sculpt",
+        command=partial(crank_tool.openUI, False, False),
+    )
+
+    ###########################
+    # --- create techAnim menu
+    ###########################
+
+    techAnim_menu = cmds.menuItem(parent=mw_menu, label="techAnim", subMenu=True)
+    cmds.menuItem(
+        parent=techAnim_menu,
+        label="Soft tweaks",
+        command=partial(softTweaks.openSoftTweakManager, False, False),
+    )
+    cmds.menuItem(
+        parent=techAnim_menu,
+        label="Crank: Shot sculpt",
+        command=partial(crank_tool.openUI, False, False),
     )
 
     cmds.menuItem(parent=mw_menu, divider=True)

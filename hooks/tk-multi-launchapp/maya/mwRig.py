@@ -12,6 +12,7 @@ import ast
 import re
 import json
 
+
 def facialDirectConnectionToMGearCtl(destCtl, j, dv, axis, name):
     cns = cmds.listRelatives(destCtl, p=1)[0]
 
@@ -300,13 +301,10 @@ def exportNurbsBlendShapeTargets(bsNode, path):
     path = os.path.join(path, bsNode + ".json")
 
     with open(path, "w") as outfile:
-        print "OUTFILE"
-        print outfile
         json.dump(data, outfile)
 
 
 def makeCorrectiveComboDict(bsNode, alias):
-    print "MAKE CORRECTIVE COMBO DICT ***************"
     comboDict = {}
     if cmds.listConnections(bsNode + "." + alias, s=1, d=0) != None:
         input = cmds.listConnections(bsNode + "." + alias, s=1, d=0)[0]
@@ -424,7 +422,7 @@ def extractNurbsTarget(bsNode, target, name=None):
     return dup
 
 
-def mirrorNurbs(nurbs=None):
+def mirrorNurbs(self, nurbs=None):
     if nurbs == None:
         nurbs = cmds.ls(sl=1)[0]
     numU, numV = getCVsInNurbs(nurbs)
@@ -440,7 +438,7 @@ def mirrorNurbs(nurbs=None):
             )
 
 
-def flipNurbs(nurbs=None):
+def flipNurbs(self, nurbs=None):
     if nurbs == None:
         nurbs = cmds.ls(sl=1)[0]
 
@@ -453,6 +451,70 @@ def flipNurbs(nurbs=None):
             cmds.xform(
                 nurbs + ".cv[" + str(u) + "][" + str(v) + "]",
                 t=[-pos[0], pos[1], pos[2]],
+                ws=1,
+            )
+
+
+def selectNurbsUVertices(self):
+    selection = cmds.ls(sl=1)
+    cmds.select(d=1)
+
+    for sel in selection:
+        uv = sel.split(".cv")[1]
+        uv = uv.replace("]", "").split("[")
+        u = uv[1]
+        v = uv[2]
+
+        cmds.select(sel.split(".cv")[0] + ".cv[" + u + "][:]", add=1)
+
+
+def selectNurbsVVertices(self):
+    selection = cmds.ls(sl=1)
+    cmds.select(d=1)
+
+    for sel in selection:
+        uv = sel.split(".cv")[1]
+        uv = uv.replace("]", "").split("[")
+        u = uv[1]
+        v = uv[2]
+
+        cmds.select(sel.split(".cv")[0] + ".cv[:][" + v + "]", add=1)
+
+
+def transferNurbsShape(self):
+    if len(cmds.ls(sl=1)) < 2:
+        cmds.warning("Please select origin and destination nurbs.")
+        return
+
+    nurbs1 = cmds.ls(sl=1)[0]
+    nurbs1Shape = cmds.listRelatives(nurbs1, c=1, s=1)[0]
+    nurbs2 = cmds.ls(sl=1)[1]
+    nurbs2Shape = cmds.listRelatives(nurbs2, c=1, s=1)[0]
+
+    posDict = {}
+
+    spansU = int(cmds.getAttr(nurbs1Shape + ".spansU"))
+    spansV = int(cmds.getAttr(nurbs1Shape + ".spansV"))
+    degreeU = int(cmds.getAttr(nurbs1Shape + ".degreeU"))
+    degreeV = int(cmds.getAttr(nurbs1Shape + ".degreeV"))
+
+    U = spansU + degreeU
+    V = spansV + degreeV
+
+    for u in range(0, U):
+        posDict[u] = {}
+        for v in range(0, V):
+            pos = cmds.xform(
+                nurbs1 + ".cv[" + str(u) + "][" + str(v) + "]", q=1, t=1, ws=1
+            )
+            posDict[u][v] = pos
+
+    for u in range(0, U):
+        for v in range(0, V):
+            pos = posDict[u][v]
+            cmds.xform(
+                nurbs2 + ".cv[" + str(u) + "][" + str(v) + "]",
+                t=[pos[0], pos[1], pos[2]],
                 ws=1,
             )
 
@@ -1538,45 +1600,45 @@ def addConnectTag(obj, connectID, connectObj=None):
 
 
 def buildRigBound(
-    skeletonGeo=True,
-    musclesGeo=True,
-    lowGeo=True,
-    highGeo=True,
+    skeletonGeo=False,
+    musclesGeo=False,
+    lowGeo=False,
+    highGeo=False,
     tagJoints=True,
     tagGeo=True,
 ):
     # builds rigBound from published rigPuppet and model
 
     if skeletonGeo == True:
-        skeletonGeo = mwUtils.bringPublished(subset="modelSkeleton")
+        skeletonGeo = mwUtils.bringPublish(task="ModelSkeleton")
         if skeletonGeo == True:
             cmds.rename("geo", "skeletonGeo")
             for g in cmds.listRelatives("skeletonGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_skeletonGeo"))
 
     if musclesGeo == True:
-        musclesGeo = mwUtils.bringPublished(subset="modelMuscles")
+        musclesGeo = mwUtils.bringPublish(task="ModelMuscles")
         if musclesGeo == True:
             cmds.rename("geo", "musclesGeo")
             for g in cmds.listRelatives("musclesGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_musclesGeo"))
 
     if lowGeo == True:
-        lowGeo = mwUtils.bringPublished(subset="modelLow")
+        lowGeo = mwUtils.bringPublish(task="ModelLow")
         if lowGeo == True:
             cmds.rename("geo", "lowGeo")
             for g in cmds.listRelatives("lowGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_lowGeo"))
 
     if highGeo == True:
-        highGeo = mwUtils.bringPublished(subset="modelHigh")
+        highGeo = mwUtils.bringPublish(task="ModelHigh")
         if highGeo == True:
             cmds.rename("geo", "highGeo")
             for g in cmds.listRelatives("highGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_highGeo"))
 
-    mwUtils.bringPublished(subset="modelDefault")
-    mwUtils.bringPublished(subset="rigPuppetDefault")
+    mwUtils.bringPublish(task="Model")
+    mwUtils.bringPublish(task="RigPuppet")
 
     joints = cmds.listRelatives("skeleton", ad=1, type="joint")
     rootJoint = getHierarchyRootJoint(joints[0])

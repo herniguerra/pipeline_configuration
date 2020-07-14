@@ -289,13 +289,13 @@ paths:
     definition: "@shot_root/publish/maya"
   # The location of WIP files
   maya_shot_work:
-    definition: "@shot_root/work/maya/{name}.v{version}.{maya_extension}"
+    definition: "@shot_root/work/maya/{Sequence}_{Shot}_{task_name}.v{version}.{maya_extension}"
   # The location of backups of WIP files
   maya_shot_snapshot:
     definition: "@shot_root/work/maya/snapshots/{name}.v{version}.{timestamp}.{maya_extension}"
   # The location of published maya files
   maya_shot_publish:
-    definition: "@shot_root/publish/maya/{name}.v{version}.{maya_extension}"
+    definition: "@shot_root/publish/maya/{Sequence}_{Shot}_{task_name}.v{version}.{maya_extension}"
 
   #
   # Houdini
