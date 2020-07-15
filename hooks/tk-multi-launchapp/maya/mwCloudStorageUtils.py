@@ -1,26 +1,32 @@
 import sys
 import os
-from google.cloud import storage
-
-os.environ[
-    "GOOGLE_APPLICATION_CREDENTIALS"
-] = "C:/Many-Worlds/many-worlds-f7950661e149.json"
-
-bucket_name = "manyworlds-test-bucket"
-
-storage_client = storage.Client()
-bucket = storage_client.get_bucket(bucket_name)
 
 
 def upload(source, dest):
-    blob = bucket.blob(dest)
-    blob.upload_from_filename(source)
+    rclonePath = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "rclone", "rclone.exe"
+    )
+    command = rclonePath + " copyto " + source + " sg_publishes:mw-testbucket/" + dest
+    os.popen(command)
 
 
 def download(source, dest):
-    blob = bucket.blob(source)
-    blob.download_to_filename(dest)
+    rclonePath = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "rclone", "rclone.exe"
+    )
+    command = rclonePath + " copyto sg_publishes:mw-testbucket/" + source + " " + dest
+    os.popen(command)
 
 
 def exists(source):
-    return storage.Blob(bucket=bucket, name=source).exists(storage_client)
+    rclonePath = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "rclone", "rclone.exe"
+    )
+    command = rclonePath + " lsf sg_publishes:mw-testbucket/" + source
+    os.system(command + " > M:/tmp")
+    result = open("M:/tmp", "r").readline().strip()
+
+    if result == source:
+        return True
+    else:
+        return False

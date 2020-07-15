@@ -1080,6 +1080,20 @@ def userSetup():
     task = getTask()
 
 
+def mwSplashScreen():
+    print ""
+    print ""
+    print ""
+    print "             __  __                 __      __       _    _    "
+    print "            |  \/  |__ _ _ _ _  _ __\ \    / /__ _ _| |__| |___"
+    print "            | |\/| / _` | ' \ || |___\ \/\/ / _ \ '_| / _` (_-<"
+    print "            |_|  |_\__,_|_||_\_, |    \_/\_/\___/_| |_\__,_/__/"
+    print "                             |__/                              "
+    print ""
+    print ""
+    print ""
+
+
 def installMenu():
     print "Installing Many-Worlds menu..."
     sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")

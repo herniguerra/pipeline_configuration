@@ -7,5 +7,5 @@ primary:
   linux_path: null
   mac_path: null
   shotgun_storage_id: 36
-  windows_path: G:\Shared drives\projects
+  windows_path: C:\Many-Worlds\pipeline\shotgun\projects
 # End of file.
