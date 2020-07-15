@@ -22,9 +22,13 @@ def exists(source):
     rclonePath = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "rclone", "rclone.exe"
     )
+    existsPath = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "rclone", "exists.tmp"
+    )
+
     command = rclonePath + " lsf sg_publishes:mw-testbucket/" + source
-    os.system(command + " > M:/tmp")
-    result = open("M:/tmp", "r").readline().strip()
+    os.system(command + " > " + existsPath)
+    result = open(existsPath, "r").readline().strip()
 
     if result == source:
         return True
