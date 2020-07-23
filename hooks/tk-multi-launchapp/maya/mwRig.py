@@ -745,11 +745,9 @@ def mwRivet_Build(input, ob, edgeMax, shape, count, name):
 
 
 def exportSkins(self):
-    # exports skin files from all skinned geos and nurbs
+    # exports skin files from all skinned objects
 
-    objs = cmds.ls(
-        "*_geo", "*_lowGeo", "*_highGeo", "*_skeletonGeo", "*_ply", "*_nurbs", "*_crv"
-    )
+    objs = cmds.ls("*", type="transform")
 
     skinnedObjs = []
 
