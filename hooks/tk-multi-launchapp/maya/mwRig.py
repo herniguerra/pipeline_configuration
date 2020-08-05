@@ -4,8 +4,6 @@ import mwUtils
 import pymel.core as pm
 import mgear.core as mgear
 import mgear.rigbits.sdk_io as sdk
-
-reload(sdk)
 import maya.mel as mel
 import math
 import ast
