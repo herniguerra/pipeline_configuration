@@ -7,7 +7,7 @@ global proc shelf_mwMuscle () {
     shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
-        -flexibleWidthValue 30
+        -flexibleWidthValue 32
         -enable 1
         -width 33
         -height 34
