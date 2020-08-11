@@ -20,7 +20,7 @@ from shiboken2 import wrapInstance
 
 from _Builders import mw_creature_manager_lib
 from _Collections import mw_json_utils, mw_maya_utils, mw_pyside_utils
-from _Widgets import mw_QPushButton, mw_QFrame, mw_QImportJoints, \
+from _Libraries.QT.Widgets import mw_QPushButton, mw_QFrame, mw_QImportJoints, \
     mw_QLabel, mw_QGroupBox, mw_QComboBox, mw_QSeparator, mw_QImportPackage, \
     mw_QCleanup, mw_QLoadSkinWeights, mw_QRunScript
     

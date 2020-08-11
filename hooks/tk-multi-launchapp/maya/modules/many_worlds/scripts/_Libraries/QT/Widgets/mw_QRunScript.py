@@ -19,7 +19,7 @@ from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 
 from _Collections import mw_maya_utils, mw_pyside_utils
-from _Widgets import mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
+from _Libraries.QT.Widgets import mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
      mw_QLabel, mw_QComboBox
 
 reload(mw_QLineEdit)

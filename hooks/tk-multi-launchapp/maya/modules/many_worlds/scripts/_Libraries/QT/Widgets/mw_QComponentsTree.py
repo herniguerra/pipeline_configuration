@@ -16,7 +16,7 @@ from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 
 # Many-Worlds Libraries
-from _Widgets import mw_QtDialog
+from _Libraries.QT.Widgets import mw_QtDialog
 from _Collections.mw_folder_manager import  MWFolderManager
 
 class MWQComponentsTreeView(mw_QtDialog.MWQDialog):

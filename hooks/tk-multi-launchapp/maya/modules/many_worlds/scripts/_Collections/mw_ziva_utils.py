@@ -25,7 +25,7 @@ import pymel.core
 
 from _Builders import mw_creature_manager_lib
 from _Collections import mw_maya_utils, mw_pyside_utils, mw_muscle_utils
-from _Widgets import mw_QPushButton, mw_QFrame, mw_QGroupBox, mw_QLabel, mw_QComboBox, mw_QtDialog, mw_QSeparator
+from _Libraries.QT.Widgets import mw_QPushButton, mw_QFrame, mw_QGroupBox, mw_QLabel, mw_QComboBox, mw_QtDialog, mw_QSeparator
 
 reload(mw_maya_utils)
 reload(mw_pyside_utils)

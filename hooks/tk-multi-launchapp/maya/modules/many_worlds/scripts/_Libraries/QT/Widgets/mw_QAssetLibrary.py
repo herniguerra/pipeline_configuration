@@ -20,7 +20,7 @@ from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 
 # Many-Worlds Libraries
 from _Collections import mw_pyside_utils
-from _Widgets import mw_QFrame, mw_QLabel, mw_QAssetsTree, mw_QtDialog, mw_QLineEdit
+from _Libraries.QT.Widgets import mw_QFrame, mw_QLabel, mw_QAssetsTree, mw_QtDialog, mw_QLineEdit
 
 reload(mw_pyside_utils)
 reload(mw_QFrame)

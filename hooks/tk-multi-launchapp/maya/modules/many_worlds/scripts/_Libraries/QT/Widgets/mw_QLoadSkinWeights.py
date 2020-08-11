@@ -20,7 +20,7 @@ from shiboken2 import wrapInstance
 
 from _Builders import mw_creature_manager_lib
 from _Collections import mw_json_utils, mw_maya_utils, mw_pyside_utils
-from _Widgets import mw_QPushButton, mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
+from _Libraries.QT.Widgets import mw_QPushButton, mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
      mw_QLabel
     
 # Get the main Many Worlds skin cluster class manager
