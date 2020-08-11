@@ -38,7 +38,7 @@ reload(mw_QComboBox)
 reload(mw_QtDialog)
 reload(mw_QSeparator)
 
-startingDirectory = 'M:/Many-Worlds/Maya/Projects/BigBang/Assets/Creatures/Dino/Maya/Rigs/Libraries/Ziva/Build_Files'
+startingDirectory = "C:/Many-Worlds/pipeline/shotgun/projects/mwBaseProject/assets/Character"
 
 def save_load_builds(file_path, solver=None, mode='load'):
     """ Save or load the a Ziva build file.

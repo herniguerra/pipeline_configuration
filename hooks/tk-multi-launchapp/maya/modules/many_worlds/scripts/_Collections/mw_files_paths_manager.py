@@ -14,6 +14,6 @@ To Do:
 
 # Many worls ui files.
 PROJECTDIRS = {
-    "BASEPROJECTDOC": "M:/Many-Worlds/Maya/Documents/Projects/mw_projectPaths_default.json",
+    "BASEPROJECTDOC": "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/modules/many_worlds/scripts/_Collections/jsons/mw_projectPaths_default.json",
 }
 

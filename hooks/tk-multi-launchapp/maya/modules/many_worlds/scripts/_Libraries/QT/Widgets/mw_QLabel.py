@@ -44,6 +44,6 @@ class MWQLabel(QtWidgets.QLabel):
 
 
         if style_sheet:
-            sshFile = "M:/Many-Worlds/Code/mw-Modules/Python/UIFiles/styleSheets/generic_Stylesheet.qss"
+            sshFile = "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/modules/many_worlds/scripts/_Libraries/QT/StyleSheets/generic_Stylesheet.qss"
             with open(sshFile,"r") as fh:
                 self.setStyleSheet(fh.read())

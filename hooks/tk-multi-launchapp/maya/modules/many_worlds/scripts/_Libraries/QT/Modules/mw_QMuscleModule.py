@@ -20,8 +20,8 @@ from shiboken2 import wrapInstance
 
 from _Builders import mw_creature_manager_lib
 from _Collections import mw_json_utils, mw_maya_utils, mw_pyside_utils
-from _Libraries.QT.Widgets import mw_QPushButton, mw_QFrame, mw_QImportJoints, \
-    mw_QLabel, mw_QGroupBox, mw_QComboBox, mw_QSeparator, mw_QImportPackage, \
+from _Libraries.QT.Widgets import mw_QPushButton, mw_QFrame, mw_QImportJoints, /
+    mw_QLabel, mw_QGroupBox, mw_QComboBox, mw_QSeparator, mw_QImportPackage, /
     mw_QCleanup, mw_QLoadSkinWeights, mw_QRunScript
     
 # pylint: disable=undefined-variable
@@ -162,7 +162,7 @@ class MWQMuscleModule(QtWidgets.QWidget):
     def create_custom_label(self):
         """ Create a custom label for the window."""
 
-        image_path = "M:/Many-Worlds/Resources/Images/Manage_Modules_icons/muscles01.png"
+        image_path = "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/muscles01.png"
         image_object = QtGui.QImage(image_path).scaled(
             60, 60,
             QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation

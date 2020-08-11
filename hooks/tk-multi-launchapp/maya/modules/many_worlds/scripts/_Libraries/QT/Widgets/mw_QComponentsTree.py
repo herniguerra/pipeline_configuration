@@ -17,7 +17,6 @@ from shiboken2 import wrapInstance
 
 # Many-Worlds Libraries
 from _Libraries.QT.Widgets import mw_QtDialog
-from _Collections.mw_folder_manager import  MWFolderManager
 
 class MWQComponentsTreeView(mw_QtDialog.MWQDialog):
 
@@ -32,7 +31,7 @@ class MWQComponentsTreeView(mw_QtDialog.MWQDialog):
         self.create_connections()
 
     def create_widgets(self):
-        root_path = "M:/Many-Worlds/Maya/Projects/BigBang/Assets/Creatures"
+        root_path = "C:/Many-Worlds/pipeline/shotgun/projects/mwBaseProject/assets/Character"
 
         self.model = QtWidgets.QFileSystemModel()
         self.model.setRootPath(root_path)

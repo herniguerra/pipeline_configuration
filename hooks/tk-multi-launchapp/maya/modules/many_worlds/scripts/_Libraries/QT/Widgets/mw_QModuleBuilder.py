@@ -20,7 +20,7 @@ from shiboken2 import wrapInstance
 
 from _Builders import mw_creature_manager_lib
 from _Collections import mw_json_utils, mw_maya_utils, mw_pyside_utils
-from _Libraries.QT.Widgets import mw_QPushButton, mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
+from _Libraries.QT.Widgets import mw_QPushButton, mw_QLineEdit, mw_QFrame, mw_QCheckBox,/
      mw_QLabel, mw_QComboBox, mw_QSeparator
     
 # Get the main Many Worlds skin cluster class manager
@@ -111,7 +111,7 @@ class MWQModuleConstructor(QtWidgets.QWidget):
     def create_custom_label(self):
         """ Create a custom label for the window."""
 
-        image_path = "M:/Many-Worlds/Resources/Images/Manage_Modules_icons/skeleton01.png"
+        image_path = "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/skeleton01.png"
         image_object = QtGui.QImage(image_path).scaled(
             25, 25,
             QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation

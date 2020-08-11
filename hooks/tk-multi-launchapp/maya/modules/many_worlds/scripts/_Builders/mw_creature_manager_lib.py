@@ -24,22 +24,6 @@ reload(mw_json_utils)
 reload(mw_maya_utils)
 reload(mw_ui_files_manager)
 
-# Constants
-
-
-data_file = {
-    "packageType":"anatomyAPKG",
-    "anatomicalComponents": {
-        "body": "M:/Many-Worlds/Maya/Gorilla/Maya/Models/MOD_body.0000.mb", 
-        "muscles": "M:/Many-Worlds/Maya/Gorilla/Maya/Models/MOD_muscles.0000.mb", 
-        "skeleton": "M:/Many-Worlds/Maya/Gorilla/Maya/Models/MOD_skeleton.0000.mb"
-    }, 
-    "artits": "Rigardo", 
-    "assetName": "Luismi", 
-    "assetType": "biped", 
-    "date": "16/20/2020", 
-    "task": "skeleton"
-}
 
 def serialize_creature_package_to_maya(package, filters=None):
     """Get the asset package file and serialize the data previous to build.

@@ -17,12 +17,12 @@ from shiboken2 import wrapInstance
 
 # Many-Worlds Libraries
 from _Libraries.QT.Widgets import mw_QtDialog
-from _Collections.mw_folder_manager import  MWFolderManager
+
 
 class MWQAssetsTreeView(mw_QtDialog.MWQDialog):
 
     WINDOW_TITLE = "File Explorer"
-    DIRECTORY_PATH = "M:/Many-Worlds/Maya/Projects/BigBang/Assets/Creatures"
+    DIRECTORY_PATH = "C:/Many-Worlds/pipeline/shotgun/projects/mwBaseProject/assets/Character"
 
     def __init__(self):
         super(MWQAssetsTreeView, self).__init__()
