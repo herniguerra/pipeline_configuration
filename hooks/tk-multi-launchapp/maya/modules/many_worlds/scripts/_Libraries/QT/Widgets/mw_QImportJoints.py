@@ -18,8 +18,8 @@ import logging
 from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 
-from Collections import mw_maya_utils, mw_pyside_utils
-from Widgets import mw_QPushButton, mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
+from _Collections import mw_maya_utils, mw_pyside_utils
+from _Widgets import mw_QPushButton, mw_QLineEdit, mw_QFrame, mw_QCheckBox,\
      mw_QLabel
 
 reload(mw_QPushButton)

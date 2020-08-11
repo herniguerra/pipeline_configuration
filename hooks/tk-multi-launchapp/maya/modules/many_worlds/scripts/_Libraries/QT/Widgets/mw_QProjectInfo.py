@@ -14,7 +14,7 @@ To Do:
 # Qt Libraries
 from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 
-from Widgets import mw_QFrame, mw_QLabel, mw_QLineEdit, mw_QComboBox
+from _Widgets import mw_QFrame, mw_QLabel, mw_QLineEdit, mw_QComboBox
 
 
 

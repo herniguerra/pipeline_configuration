@@ -19,7 +19,7 @@ from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 
 
-from Collections import mw_pyside_utils
+from _Collections import mw_pyside_utils
 
 reload(mw_pyside_utils)
 

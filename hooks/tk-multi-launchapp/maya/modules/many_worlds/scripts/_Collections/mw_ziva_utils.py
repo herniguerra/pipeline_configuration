@@ -23,9 +23,9 @@ import pymel.core
 #from zBuilder.builders import ziva
 
 
-from Builders import mw_creature_manager_lib
-from Collections import mw_maya_utils, mw_pyside_utils, mw_muscle_utils
-from Widgets import mw_QPushButton, mw_QFrame, mw_QGroupBox, mw_QLabel, mw_QComboBox, mw_QtDialog, mw_QSeparator
+from _Builders import mw_creature_manager_lib
+from _Collections import mw_maya_utils, mw_pyside_utils, mw_muscle_utils
+from _Widgets import mw_QPushButton, mw_QFrame, mw_QGroupBox, mw_QLabel, mw_QComboBox, mw_QtDialog, mw_QSeparator
 
 reload(mw_maya_utils)
 reload(mw_pyside_utils)
@@ -148,12 +148,12 @@ def rename_rivets():
         pymel.rename(item.getParent(), name + '_zRivet')
 
 
-class ZivaUtilitiesWindow(mw_QtDialog.MWQDialog):
+class ZivaUtilitiesWindow(QtWidgets.QWidget):
     """ Build a Ziva utils interface."""
-    
-    def __init__(self):
-        import zBuilder.builders.ziva as zva
-        super(ZivaUtilitiesWindow, self).__init__()
+    import zBuilder.builders.ziva as zva
+    def __init__(self, parent=None):
+        
+        super(ZivaUtilitiesWindow, self).__init__(parent)
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum))
         self.setObjectName('Ziva Utilities')
         self.setWindowTitle('Many Worlds Ziva Utilities v.001')

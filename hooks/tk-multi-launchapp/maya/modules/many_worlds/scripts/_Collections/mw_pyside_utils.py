@@ -20,10 +20,10 @@ from shiboken2 import wrapInstance
 
 # Maya libraries
 from maya import cmds, OpenMayaUI
-from Collections import mw_ui_files_manager
-from Collections.mw_maya_utils import *
-from Collections import mw_skin_manager
-from Builders.mw_creature_manager_lib import *
+from _Collections import mw_ui_files_manager
+from _Collections.mw_maya_utils import *
+from _Collections import mw_skin_manager
+from _Builders.mw_creature_manager_lib import *
 
 reload(mw_ui_files_manager)
 reload(mw_maya_utils)

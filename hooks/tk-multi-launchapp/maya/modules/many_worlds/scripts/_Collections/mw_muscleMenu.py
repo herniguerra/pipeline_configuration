@@ -80,7 +80,7 @@ class MWMuscleToolsMenu:
 
 
 def launch_ziva_toolbox(*args):
-    zivaWindow = mw_ziva_utils.ZivaUtilitiesWindow()
+    zivaWindow = mw_ziva_utils.ZivaUtilitiesWindow(mw_pyside_utils.maya_main_window())
     zivaWindow.show()
 
 
@@ -90,7 +90,6 @@ def open_APKG_builder(*args):
         apkg_builder = mw_pyside_utils.MWWidgetsFunctions.get_widget_by_name("MWapkgBuilder") # pylint: disable=used-before-assignment
         apkg_builder.close()
         apkg_builder.deleteLater()
-        print("holaaaaaaaaaa")
     except:
         pass
 

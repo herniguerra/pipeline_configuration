@@ -15,7 +15,7 @@ To Do:
 # Qt Libraries
 from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 
-from Collections import mw_pyside_utils
+from _Collections import mw_pyside_utils
 
 
 class MWClickableLabel(QtWidgets.QLabel):
