@@ -18,7 +18,7 @@ import logging
 from maya import cmds, OpenMaya
 
 # Many-Wrolds libraries.
-from Collections import mw_json_utils, mw_maya_utils, mw_ui_files_manager
+from _Collections import mw_json_utils, mw_maya_utils, mw_ui_files_manager
 
 reload(mw_json_utils)
 reload(mw_maya_utils)
