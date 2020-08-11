@@ -22,6 +22,7 @@ from shiboken2 import wrapInstance
 from maya import cmds, OpenMayaUI
 from _Collections import mw_ui_files_manager
 from _Collections.mw_maya_utils import *
+from _Collections import mw_maya_utils
 from _Collections import mw_skin_manager
 from _Builders.mw_creature_manager_lib import *
 
