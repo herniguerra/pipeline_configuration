@@ -11,6 +11,9 @@ import re
 
 import sgtk
 
+from _Collections import mw_muscleMenu
+reload(mw_muscleMenu)
+
 
 def mirrorName(name):
     if "_C" in name:
@@ -1211,6 +1214,11 @@ def installMenu():
     cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
 
     ###########################
+    # --- Create Muscle menu.
+    ###########################
+    mw_muscleMenu.MWMuscleToolsMenu(mw_menu)
+
+    ###########################
     # --- create animation menu
     ###########################
 
@@ -1279,7 +1287,6 @@ def installMenu():
     cmds.menuItem(
         parent=mw_menu, label="Reload MW menu", command="mwUtils.installMenu()"
     )
-    print "Ok"
 
 
 def reloadScripts():
