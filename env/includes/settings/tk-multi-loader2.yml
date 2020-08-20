@@ -123,9 +123,11 @@ settings.tk-multi-loader2.maya:
     Alembic Cache: [reference, import]
     Image: [texture_node, image_plane]
     Maya Scene: [reference, import]
+    Maya Shader Network: [reference]
     Photoshop Image: [texture_node, image_plane]
     Rendered Image: [texture_node, image_plane]
     Texture: [texture_node, image_plane]
+    FBX Camera: [reference, import]
   entities:
     - caption: Assets
       entity_type: Asset

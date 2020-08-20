@@ -289,14 +289,16 @@ paths:
     definition: "@shot_root/publish/maya"
   # The location of WIP files
   maya_shot_work:
-    definition: "@shot_root/work/maya/{Sequence}_{Shot}_{task_name}.v{version}.{maya_extension}"
+    definition: "@shot_root/work/maya/{Shot}_{task_name}.v{version}.{maya_extension}"
   # The location of backups of WIP files
   maya_shot_snapshot:
     definition: "@shot_root/work/maya/snapshots/{name}.v{version}.{timestamp}.{maya_extension}"
   # The location of published maya files
   maya_shot_publish:
-    definition: "@shot_root/publish/maya/{Sequence}_{Shot}_{task_name}.v{version}.{maya_extension}"
-
+    definition: "@shot_root/publish/maya/{Shot}_{task_name}.v{version}.{maya_extension}"
+  # The location of published Maya cameras
+  maya_shot_camera_publish:
+    definition: "@shot_root/publish/maya/cameras/{Shot}_{name}.v{version}.fbx"
   #
   # Houdini
   #
@@ -507,7 +509,9 @@ paths:
     definition: "@asset_root/publish/maya/{Asset}_{task_name}.v{version}.{maya_extension}"
   maya_asset_rig_publish:
     definition: "@asset_root/publish/{task_name}/maya/{Asset}_{task_name}.v{version}.{maya_extension}"
-
+  # The location where Maya shader networks are written/published
+  maya_shader_network_publish:
+    definition: "@asset_root/publish/maya/shaders/{name}.v{version}.ma"
   #
   # Houdini
   #

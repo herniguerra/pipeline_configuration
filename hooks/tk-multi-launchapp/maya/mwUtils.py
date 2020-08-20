@@ -12,6 +12,7 @@ import re
 import sgtk
 
 from _Collections import mw_muscleMenu
+
 reload(mw_muscleMenu)
 
 
@@ -441,82 +442,6 @@ def mayaSave(fileName):
     cmds.file(save=True, type="mayaAscii")
 
 
-def getLatestWorkFileVersion(new=False):
-    # returns latest work file version if new = False
-    # returns new, non existing file version if new = True
-
-    # gets comment in filename
-    filepath = cmds.file(q=True, sn=True)
-    filename = os.path.basename(filepath)
-
-    if len(filename.split("_")) == 5:
-        comment = filename.split("_")[4].split(".")[0]
-    else:
-        comment = ""
-
-    for i in reversed(range(1, 1000)):
-        work_file = getWorkFileName(i, comment)
-        root = getPath()
-
-        path = os.path.join(root, "maya", "scenes", work_file)
-
-        if os.path.exists(path):
-            if new == True:
-                work_file = getWorkFileName(i + 1, comment)
-                path = os.path.join(root, "maya", "scenes", work_file)
-                break
-            else:
-                break
-
-    return path
-
-
-def getWorkFileName(version, comment=""):
-    # get work file name
-    data = {
-        "project": io.find_one(
-            {"name": os.environ["AVALON_PROJECT"], "type": "project"}
-        ),
-        "asset": io.find_one({"name": os.environ["AVALON_ASSET"], "type": "asset"}),
-        "task": {
-            "name": os.environ["AVALON_TASK"].lower(),
-            "label": os.environ["AVALON_TASK"],
-        },
-        "version": version,
-        "user": getpass.getuser(),
-        "comment": comment,
-    }
-
-    template = "{task[name]}_v{version:0>4}<_{comment}>"
-    templates = data["project"]["config"]["template"]
-    if "workfile" in templates:
-        template = templates["workfile"]
-
-    if not data["comment"]:
-        data.pop("comment", None)
-
-    # remove optional missing keys
-    pattern = re.compile(r"<.*?>")
-    invalid_optionals = []
-    for group in pattern.findall(template):
-        try:
-            group.format(**data)
-        except KeyError:
-            invalid_optionals.append(group)
-
-    for group in invalid_optionals:
-        template = template.replace(group, "")
-
-    work_file = template.format(**data)
-
-    # remove optional symbols
-    work_file = work_file.replace("<", "")
-    work_file = work_file.replace(">", "")
-    work_file = work_file + ".ma"
-
-    return work_file
-
-
 def disconnectRigs(*args):
     connectRigs(disconnect=True)
 
@@ -911,6 +836,20 @@ def download(published_file):
     return destination
 
 
+def createCam():
+    camNum = str(len(cmds.ls("mwCam*", cameras=True)) + 1)
+
+    cmds.file(
+        "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/cams/mwCam.ma",
+        i=1,
+        type="mayaAscii",
+    )
+
+    cmds.rename("mwCam_grp", "mwCam" + camNum + "_grp")
+
+    cmds.rename("mwCam", "mwCam" + camNum)
+
+
 def getProject(returnId=False):
     # returns current project
 
@@ -1214,9 +1153,16 @@ def installMenu():
     cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
 
     ###########################
-    # --- Create Muscle menu.
+    # --- Create muscle menu
     ###########################
     mw_muscleMenu.MWMuscleToolsMenu(mw_menu)
+
+    ###########################
+    # --- Create layout menu
+    ###########################
+
+    layout_menu = cmds.menuItem(parent=mw_menu, label="Layout", subMenu=True)
+    cmds.menuItem(parent=layout_menu, label="Create Cam", command="mwUtils.createCam()")
 
     ###########################
     # --- create animation menu

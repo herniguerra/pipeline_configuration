@@ -22,7 +22,6 @@ prb = pairBlend
 skc = skinCluster
 ctl = control curve
 crv = nurbs curve
-skc = skinCluster
 pac = parentConstraint
 orc = orientConstraint
 scc = scaleConstraint
