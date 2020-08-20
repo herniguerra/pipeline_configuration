@@ -298,7 +298,7 @@ paths:
     definition: "@shot_root/publish/maya/{Sequence}_{Shot}_{task_name}.v{version}.{maya_extension}"
   # The location of published Maya cameras
   maya_shot_camera_publish:
-    definition: "@shot_root/publish/maya/cameras/{Shot}_{name}.v{version}.fbx"
+    definition: "@shot_root/publish/maya/cameras/{Sequence}_{Shot}_{name}.v{version}.abc"
   #
   # Houdini
   #

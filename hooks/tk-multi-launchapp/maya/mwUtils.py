@@ -836,11 +836,19 @@ def download(published_file):
     return destination
 
 
-def createCam():
+def createCam(type):
     camNum = str(len(cmds.ls("mwCam*", cameras=True)) + 1)
 
+    if type == 1:
+        camFile = "mwCam_hand.ma"
+    elif type == 2:
+        camFile = "mwCam_dolly.ma"
+    elif type == 3:
+        camFile = "mwCam_circle.ma"
+
     cmds.file(
-        "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/cams/mwCam.ma",
+        "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/cams/"
+        + camFile,
         i=1,
         type="mayaAscii",
     )
@@ -1162,7 +1170,21 @@ def installMenu():
     ###########################
 
     layout_menu = cmds.menuItem(parent=mw_menu, label="Layout", subMenu=True)
-    cmds.menuItem(parent=layout_menu, label="Create Cam", command="mwUtils.createCam()")
+    cmds.menuItem(
+        parent=layout_menu,
+        label="Create Cam - Handheld",
+        command="mwUtils.createCam(type=1)",
+    )
+    cmds.menuItem(
+        parent=layout_menu,
+        label="Create Cam - Dolly",
+        command="mwUtils.createCam(type=2)",
+    )
+    cmds.menuItem(
+        parent=layout_menu,
+        label="Create Cam - Circle Dolly",
+        command="mwUtils.createCam(type=3)",
+    )
 
     ###########################
     # --- create animation menu

@@ -229,14 +229,6 @@ class MayaCameraPublishPlugin(HookBaseClass):
             )
             return {"accepted": False}
 
-        # check that the FBXExport command is available!
-        if not mel.eval('exists "FBXExport"'):
-            self.logger.debug(
-                "Item not accepted because fbx export command 'FBXExport' "
-                "is not available. Perhaps the plugin is not enabled?"
-            )
-            return {"accepted": False}
-
         # all good!
         return {"accepted": True, "checked": True}
 
@@ -342,9 +334,10 @@ class MayaCameraPublishPlugin(HookBaseClass):
 
         # the camera to publish
         cam_shape = item.properties["camera_shape"]
+        cam_name = item.properties["camera_name"]
 
         # make sure it is selected
-        cmds.select(cam_shape)
+        cmds.select(cam_name)
 
         # get the path to create and publish
         publish_path = item.properties["publish_path"]
@@ -353,21 +346,27 @@ class MayaCameraPublishPlugin(HookBaseClass):
         publish_folder = os.path.dirname(publish_path)
         self.parent.ensure_folder_exists(publish_folder)
 
-        fbx_export_cmd = 'FBXExport -f "%s" -s' % (
-            publish_path.replace(os.path.sep, "/"),
+        frameStart = cmds.playbackOptions(q=1, minTime=1)
+        frameEnd = cmds.playbackOptions(q=1, maxTime=1)
+
+        args = (
+            "-worldSpace -dataFormat ogawa -frameRange '%s' '%s' -root '%s' -file '%s'"
+            % (frameStart, frameEnd, cam_name, publish_path.replace(os.path.sep, "/"),)
         )
+        abc_export_cmd = 'AbcExport -j "' + args + '";'
 
         # ...and execute it:
         try:
-            self.logger.debug("Executing command: %s" % fbx_export_cmd)
-            mel.eval(fbx_export_cmd)
+            self.logger.debug("Executing command: %s" % abc_export_cmd)
+            mel.eval(abc_export_cmd)
+
         except Exception, e:
             self.logger.error("Failed to export camera: %s" % e)
             return
 
         # set the publish type in the item's properties. the base plugin will
         # use this when registering the file with Shotgun
-        item.properties["publish_type"] = "FBX Camera"
+        item.properties["publish_type"] = "Alembic Camera"
 
         # Now that the path has been generated, hand it off to the
         super(MayaCameraPublishPlugin, self).publish(settings, item)
