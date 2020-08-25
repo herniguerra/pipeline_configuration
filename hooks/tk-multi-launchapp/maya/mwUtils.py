@@ -451,7 +451,8 @@ def connectRigs(source=None, dest=None, disconnect=False):
     # 0[1constraint] 1[1pac,  2orc, 3poc, 4scc] 2[mo] 3[s(t)x] 4[s(t)y] 5[s(t)z] 6[srx] 7[sry] 8[srz]
     # 0[2directConnect] 1[v] 2[tx] 3[ty] 4[tz] 5[rx] 6[ry] 7[rz] 8[sx] 9[sy] 10[sz]
     # 0[3blendShape] 1[foc]
-    # 0[4userDefined]
+    # 0[4inMesh]
+    # 0[5userDefined]
 
     if source == None or dest == None:
         sel = cmds.ls(sl=1)
@@ -462,18 +463,30 @@ def connectRigs(source=None, dest=None, disconnect=False):
             source = sel[0]
             dest = sel[1]
 
-    if ":" in source:
-        sourceNS = source.split(":")[0]
-    else:
-        sourceNS = ""
+        if ":" in source:
+            sourceNS = source.split(":")[0]
+        else:
+            sourceNS = ""
 
-    if ":" in dest:
-        destNS = dest.split(":")[0]
+        if ":" in dest:
+            destNS = dest.split(":")[0]
+        else:
+            destNS = ""
+
     else:
-        destNS = ""
+        if ":" in source:
+            sourceNS = source.split(":")[0]
+        else:
+            sourceNS = source
+
+        if ":" in dest:
+            destNS = dest.split(":")[0]
+        else:
+            destNS = dest
 
     objDict = {}
-    objList = cmds.ls(destNS + ":*", type=["joint", "transform"])
+    objList = cmds.ls(destNS + ":*", type=["joint", "transform", "shape"])
+
     for obj in objList:
         if cmds.objExists(obj + ".connectObj"):
             connectObj = sourceNS + ":" + cmds.getAttr(obj + ".connectObj")
@@ -689,13 +702,20 @@ def connectRigs(source=None, dest=None, disconnect=False):
                 # blendShape
                 bsn = connectObj + "_bs"
                 if disconnect == False:
-                    cmds.select(connectObj, r=1)
-                    cmds.select(obj, add=1)
-                    cmds.blendShape(foc=tag[1], n=bsn)
+                    cmds.select(obj, r=1)
+                    cmds.select(connectObj, add=1)
+                    cmds.blendShape(foc=bool(tag[1]), n=bsn, w=[0, 1])
                 else:
                     cmds.delete(bsn)
 
             if tag[0] == "4":
+                # inMesh
+                if disconnect == False:
+                    cmds.connectAttr(connectObj + ".outMesh", obj + ".inMesh", f=1)
+                else:
+                    cmds.disconnectAttr(connectObj + ".outMesh", obj + ".inMesh")
+
+            if tag[0] == "5":
                 # user defined
                 for attr in cmds.listAttr(connectObj, ud=1):
                     if cmds.objExists(obj + "." + attr):
@@ -748,7 +768,7 @@ def bringPublish(task="model", returnPath=False):
     template = tk.templates["maya_asset_publish"]
     fields = context.as_template_fields(template)
 
-    asset_name = getAsset()
+    asset_name = getEntity()
 
     filters = [
         ["entity.Asset.code", "is", asset_name],
@@ -870,16 +890,18 @@ def getProject(returnId=False):
         return context.project["id"]
 
 
-def getAsset(returnId=False):
+def getEntity(returnId=False, returnType=False):
     # returns current asset name
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
 
-    if returnId == False:
+    if returnId == False and returnType == False:
         return context.entity["name"]
-    else:
+    elif returnId == True and returnType == False:
         return context.entity["id"]
+    elif returnType == True:
+        return context.entity["type"]
 
 
 def getStep(returnId=False):
@@ -1026,7 +1048,7 @@ def userSetup():
     import maya.cmds as cmds
 
     project = getProject()
-    asset = getAsset()
+    asset = getEntity()
     task = getTask()
 
 
@@ -1079,6 +1101,9 @@ def installMenu():
     ###########################
 
     rigging_menu = cmds.menuItem(parent=mw_menu, label="Rigging", subMenu=True)
+    cmds.menuItem(
+        parent=rigging_menu, label="Add connect tags", command="mwRig.addConnectTags()"
+    )
     cmds.menuItem(
         parent=rigging_menu, label="Build rigBound", command=mwRig.buildRigBound
     )
@@ -1256,6 +1281,8 @@ def installMenu():
         parent=mw_menu, label="Reload MW menu", command="mwUtils.installMenu()"
     )
 
+    print "Menu installed"
+
 
 def reloadScripts():
     import mwUtils
@@ -1307,4 +1334,196 @@ def currentPath():
 
 def helloWorlds():
     print ("Hello, worlds! :)")
+
+
+def bringPublish2(
+    task="model",
+    returnPath=False,
+    template="maya_asset_publish",
+    asset_name="current",
+    published_file_type="Maya Scene",
+    namespace=None,
+):
+    import shotgun_api3
+
+    sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+
+    tk = current_engine.sgtk
+
+    template = tk.templates[template]
+    fields = context.as_template_fields(template)
+
+    if asset_name == "current":
+        asset_name = getEntity()
+
+    filters = [
+        ["entity.Asset.code", "is", asset_name],
+        ["task.Task.content", "is", task],
+        ["published_file_type.PublishedFileType.code", "is", published_file_type],
+    ]
+
+    fields = ["path", "name", "published_file_type"]
+    order = [
+        {"field_name": "version_number", "direction": "desc"},
+    ]
+
+    publishedFile = sg.find_one("PublishedFile", filters, fields, order)
+
+    filePath = publishedFile["path"]["local_path"]
+
+    print "***"
+    print filePath
+
+    if os.path.isfile(filePath):
+
+        if returnPath == True:
+            return filePath
+
+        if namespace == None:
+            cmds.file(filePath, i=True, defaultNamespace=True)
+            return filePath
+
+        else:
+            cmds.file(filePath, i=True, namespace=namespace)
+            return filePath
+
+    else:
+        window = cmds.window(title="mwCloud", widthHeight=(400, 110))
+        cmds.columnLayout(adjustableColumn=True)
+        cmds.text(label="Downloading")
+        cmds.text(label=publishedFile["name"])
+        cmds.text(label="from mwCloud...")
+        cmds.setParent("..")
+        cmds.showWindow(window)
+
+        download(publishedFile)
+
+        cmds.deleteUI(window)
+
+        if returnPath == True:
+            return filePath
+
+        else:
+            cmds.file(filePath, i=True, defaultNamespace=True)
+
+            return filePath
+
+    # bringPublish2(task="animTest", returnPath=False, template="maya_asset_publish", asset_name="current", published_file_type="Alembic Cache")
+
+
+def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
+    import shotgun_api3
+
+    sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+
+    project_id = mwUtils.getProject(returnId=True)
+    entity_id = mwUtils.getEntity(returnId=True)
+    entity_name = mwUtils.getEntity()
+    entity_type = mwUtils.getEntity(returnType=True)
+    step_id = mwUtils.getStep(returnId=True)
+
+    if entity_type == "Asset":
+        if animTask != None:
+            animTask = "_" + animTask
+        else:
+            animTask = ""
+
+        task_name = asset_name + "_" + chain_link + anim_task
+
+    elif entity_type == "Shot":
+        if asset_name == None:
+            cmds.warning(
+                "Missing asset_name argument in mwUtils.createCacheChainTask. Task was not created."
+            )
+            return
+
+        task_name = asset_name + "_" + chain_link
+
+    data = {
+        "project": {"type": "Project", "id": project_id},
+        "content": task_name,
+        "entity": {"type": "Asset", "id": entity_id},
+        "step": {"type": "Step", "id": step_id},
+    }
+    result = sg.create("Task", data)
+
+    print result
+
+
+def runCacheChain(anim_task=None):
+    import shotgun_api3
+
+    sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+
+    project_id = getProject(returnId=True)
+    entity_id = getEntity(returnId=True)
+    entity_name = getEntity()
+    entity_type = getEntity(returnType=True)
+    step_id = getStep(returnId=True)
+
+    if entity_type == "Asset":
+        if anim_task == None:
+            cmds.warning(
+                "Missing anim_task argument in mwUtils.runCacheChain. CacheChain aborted."
+            )
+            return
+
+        bringPublish2(
+            task=anim_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="RigMuscle",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        bringPublish2(
+            task="RigFascia",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="c",
+        )
+
+        bringPublish2(
+            task="RigFat",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="d",
+        )
+
+        bringPublish2(
+            task="RigSkin",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="e",
+        )
+
+        connectRigs("a", "b")
+        connectRigs("b", "c")
+        connectRigs("c", "d")
+        connectRigs("d", "e")
 

@@ -1575,7 +1575,7 @@ def distanceBetween(posA=None, posB=None, objA=None, objB=None):
     return distance
 
 
-def addConnectTag(obj, connectID, connectObj=None):
+def addConnectTags(obj=None, connectID=None, connectObj=None):
     # adds connectID attributes
 
     # connectID reference
@@ -1584,15 +1584,26 @@ def addConnectTag(obj, connectID, connectObj=None):
     # 0[3blendShape] 1[foc]
     # 0[4userDefined]
 
-    if connectObj == None:
-        connectObj = obj
-    if not cmds.objExists(obj + ".connectObj"):
-        cmds.addAttr(obj, ln="connectObj", dt="string")
-        cmds.setAttr(obj + ".connectObj", connectObj, type="string")
+    if obj == None:
+        obj = cmds.ls(sl=1)
 
-    if not cmds.objExists(obj + ".connectID"):
-        cmds.addAttr(obj, ln="connectID", dt="string")
-        cmds.setAttr(obj + ".connectID", connectID, type="string")
+    obj = mwUtils.convertToList(obj)
+
+    for o in obj:
+        if connectObj == None:
+            connectObj = str(o)
+        if not cmds.objExists(o + ".connectObj"):
+            cmds.addAttr(o, ln="connectObj", dt="string")
+            cmds.setAttr(o + ".connectObj", connectObj, type="string")
+
+        if connectID == None:
+            connectID = ""
+        if not cmds.objExists(o + ".connectID"):
+            cmds.addAttr(o, ln="connectID", dt="string")
+            cmds.setAttr(o + ".connectID", connectID, type="string")
+
+        connectObj = None
+        connectID = None
 
 
 def buildRigBound(
@@ -1642,15 +1653,15 @@ def buildRigBound(
     cmds.group(rootJoint, n="skeleton")
 
     if tagJoints == True:
-        addConnectTag(rootJoint, connectID="110000000-140000")
+        addConnectTags(rootJoint, connectID="110000000-140000")
         for j in joints:
-            addConnectTag(j, connectID="110000000")
+            addConnectTags(j, connectID="110000000")
 
     if tagGeo == True:
         geos = cmds.ls("*_geo")
         for g in geos:
             shape = cmds.listRelatives(g, c=1, s=1)[0]
-            addConnectTag(g, connectID="21000000000", connectObj=shape)
+            addConnectTags(g, connectID="21000000000", connectObj=shape)
 
     # unhides attrs
     for attr in cmds.listAttr(rootJoint, k=0, cb=1):
@@ -1667,7 +1678,7 @@ def buildRigBound(
     cmds.delete("*Matrix*")
 
     path = mwUtils.getPath(to="skin")
-    filename = os.path.join(path, mwUtils.getAsset() + ".gSkinPack")
+    filename = os.path.join(path, mwUtils.getEntity() + ".gSkinPack")
     mgear.skin.importSkinPack(filename)
 
     cmds.group("geo", "skeleton", n="ROOT")
