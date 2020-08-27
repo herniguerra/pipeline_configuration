@@ -117,6 +117,8 @@ class MayaSessionCollector(HookBaseClass):
 
         self._collect_cameras(item)
 
+        self._collect_outSet(item)
+
     def collect_current_maya_session(self, settings, parent_item):
         """
         Creates an item that represents the current maya session.
@@ -398,4 +400,21 @@ class MayaSessionCollector(HookBaseClass):
             # camera this item represents!
             cam_item.properties["camera_name"] = camera_name
             cam_item.properties["camera_shape"] = camera_shape
+
+    def _collect_outSet(self, parent_item):
+        """
+        Creates an item for the out_set.
+        """
+
+        if cmds.objExists("out_set") or cmds.objExists("*:out_set"):
+
+            icon_path = os.path.join(self.disk_location, os.pardir, "icons", "mesh.png")
+
+            outSet_item = parent_item.create_item(
+                "maya.session.out_set", "out_set", "out_set"
+            )
+
+            outSet_item.set_icon_from_path(icon_path)
+
+            outSet_item.properties["out_set"] = "out_set"
 

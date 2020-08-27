@@ -259,6 +259,8 @@ class MayaSessionGeometryPublishPlugin(HookBaseClass):
             "-writeFaceSets",
             # write uv's (only the current uv set gets written)
             "-uvWrite",
+            # write attribute prefix
+            "-attrPrefix 'connect'",
         ]
 
         # find the animated frame range to use:
@@ -269,9 +271,6 @@ class MayaSessionGeometryPublishPlugin(HookBaseClass):
         # Set the output path:
         # Note: The AbcExport command expects forward slashes!
         alembic_args.append("-file '%s'" % publish_path.replace("\\", "/"))
-
-        # Add attributes to include
-        alembic_args.append("-attrPrefix '%s'" % ("connect"))
 
         # build the export command.  Note, use AbcExport -help in Maya for
         # more detailed Alembic export help

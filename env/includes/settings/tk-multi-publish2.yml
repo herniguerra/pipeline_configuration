@@ -187,8 +187,8 @@ settings.tk-multi-publish2.maya.asset_step:
       hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
       settings:
         Publish Template: maya_asset_publish
-    - name: Publish to Shotgun
-      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_session_geometry.py"
+    - name: Publish out_set
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_outSet.py"
       settings:
         Publish Template: asset_alembic_cache
     - name: Publish Shaders
@@ -218,8 +218,8 @@ settings.tk-multi-publish2.maya.asset_rig_step:
       hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
       settings:
         Publish Template: maya_asset_rig_publish
-    - name: Publish to Shotgun
-      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_session_geometry.py"
+    - name: Publish out_set
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_outSet.py"
       settings:
         Publish Template: asset_rig_alembic_cache
   post_phase: "{config}/tk-multi-publish2/post_phase.py"

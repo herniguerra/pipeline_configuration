@@ -702,8 +702,8 @@ def connectRigs(source=None, dest=None, disconnect=False):
                 # blendShape
                 bsn = connectObj + "_bs"
                 if disconnect == False:
-                    cmds.select(obj, r=1)
-                    cmds.select(connectObj, add=1)
+                    cmds.select(connectObj, r=1)
+                    cmds.select(obj, add=1)
                     cmds.blendShape(foc=bool(tag[1]), n=bsn, w=[0, 1])
                 else:
                     cmds.delete(bsn)
@@ -891,7 +891,7 @@ def getProject(returnId=False):
 
 
 def getEntity(returnId=False, returnType=False):
-    # returns current asset name
+    # returns current entity (asset or shot)
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
@@ -905,7 +905,7 @@ def getEntity(returnId=False, returnType=False):
 
 
 def getStep(returnId=False):
-    # returns current task name
+    # returns current step
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
@@ -917,7 +917,7 @@ def getStep(returnId=False):
 
 
 def getTask(returnId=False):
-    # returns current task name
+    # returns current task
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
@@ -926,6 +926,17 @@ def getTask(returnId=False):
         return context.task["name"]
     else:
         return context.task["id"]
+
+
+def getUser(returnId=False):
+    # returns current user
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+
+    if returnId == False:
+        return context.user["login"]
+    else:
+        return context.user["id"]
 
 
 def getFrameRange():
@@ -1352,8 +1363,8 @@ def bringPublish2(
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
     current_engine = sgtk.platform.current_engine()
-    context = current_engine.context
 
+    context = current_engine.context
     tk = current_engine.sgtk
 
     template = tk.templates[template]
@@ -1426,19 +1437,29 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
-    project_id = mwUtils.getProject(returnId=True)
-    entity_id = mwUtils.getEntity(returnId=True)
-    entity_name = mwUtils.getEntity()
-    entity_type = mwUtils.getEntity(returnType=True)
-    step_id = mwUtils.getStep(returnId=True)
+    current_engine = sgtk.platform.current_engine()
+    tk = current_engine.sgtk
+
+    project_id = getProject(returnId=True)
+    user_id = getUser(returnId=True)
+    entity_id = getEntity(returnId=True)
+    entity_name = getEntity()
+    entity_type = getEntity(returnType=True)
 
     if entity_type == "Asset":
-        if animTask != None:
-            animTask = "_" + animTask
-        else:
-            animTask = ""
+        if anim_task == None:
+            cmds.warning(
+                "Missing anim_task argument in mwUtils.createCacheChainTask. Task was not created."
+            )
+            return
 
-        task_name = asset_name + "_" + chain_link + anim_task
+        task_name = anim_task + "_" + asset_name + "_" + chain_link
+        step_name = "Rig"
+
+        # find step_id
+        step_name = "Rig"
+        filters = [["code", "is", step_name]]
+        step_id = sg.find_one("Step", filters)["id"]
 
     elif entity_type == "Shot":
         if asset_name == None:
@@ -1447,17 +1468,44 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
             )
             return
 
-        task_name = asset_name + "_" + chain_link
+        task_name = entity_name + "_" + asset_name + "_" + chain_link
+        # find step_id
+        step_name = "CharacterFX"
+        filters = [["code", "is", step_name]]
+        step_id = sg.find_one("Step", filters)["id"]
 
-    data = {
-        "project": {"type": "Project", "id": project_id},
-        "content": task_name,
-        "entity": {"type": "Asset", "id": entity_id},
-        "step": {"type": "Step", "id": step_id},
-    }
-    result = sg.create("Task", data)
+    # verifies it doesn't exist
+    filters = [["entity.Asset.code", "is", asset_name], ["content", "is", task_name]]
 
-    print result
+    fields = ["path", "name"]
+
+    find = sg.find("Task", filters, fields)
+
+    if len(find) == 0:
+        data = {
+            "project": {"type": "Project", "id": project_id},
+            "content": task_name,
+            "entity": {"type": "Asset", "id": entity_id},
+            "step": {"type": "Step", "id": step_id},
+            "task_assignees": [{"type": "HumanUser", "id": user_id}],
+        }
+        result = sg.create("Task", data)
+
+        print "*** Task created"
+        task_id = result["id"]
+
+        # creates folders
+        tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
+
+    else:
+        print "*** Task", task_name, "already exists"
+        task_id = find[0]["id"]
+
+    # change context to task
+    new_context = tk.context_from_entity("Task", task_id)
+    sgtk.platform.change_context(new_context)
+
+    return task_name
 
 
 def runCacheChain(anim_task=None):
@@ -1482,6 +1530,11 @@ def runCacheChain(anim_task=None):
             )
             return
 
+        cmds.file(new=1, f=1)
+        muscle_task = createCacheChainTask(
+            "musclePass", anim_task=anim_task, asset_name=entity_name
+        )
+
         bringPublish2(
             task=anim_task,
             template="maya_asset_publish",
@@ -1498,12 +1551,44 @@ def runCacheChain(anim_task=None):
             namespace="b",
         )
 
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        fascia_task = createCacheChainTask(
+            "fasciaPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=muscle_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
         bringPublish2(
             task="RigFascia",
             template="maya_asset_publish",
             asset_name="current",
             published_file_type="Maya Scene",
-            namespace="c",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        fat_task = createCacheChainTask(
+            "fatPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=fascia_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
         )
 
         bringPublish2(
@@ -1511,7 +1596,23 @@ def runCacheChain(anim_task=None):
             template="maya_asset_publish",
             asset_name="current",
             published_file_type="Maya Scene",
-            namespace="d",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        skin_task = createCacheChainTask(
+            "skinPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=fat_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
         )
 
         bringPublish2(
@@ -1519,11 +1620,126 @@ def runCacheChain(anim_task=None):
             template="maya_asset_publish",
             asset_name="current",
             published_file_type="Maya Scene",
-            namespace="e",
+            namespace="b",
         )
 
         connectRigs("a", "b")
-        connectRigs("b", "c")
-        connectRigs("c", "d")
-        connectRigs("d", "e")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        groom_task = createCacheChainTask(
+            "groomPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=skin_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="Groom",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        cloth_task = createCacheChainTask(
+            "clothPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=skin_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="Cloth",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        print "Cache Chain Finished! :D"
+
+
+def saveAndPublish(template_name=None):
+    # need to have an engine running in a context where the publisher has been
+    # configured.
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+    tk = current_engine.sgtk
+
+    template = tk.templates[template_name]
+    fields = context.as_template_fields(template)
+    fields["version"] = get_next_version_number(tk, template_name, fields)
+    work_path = template.apply_fields(fields)
+    current_engine.ensure_folder_exists(os.path.dirname(work_path))
+    print work_path
+
+    cmds.file(rename=work_path)
+    cmds.file(save=1)
+
+    # get the publish app instance from the engine's list of configured apps
+    publish_app = current_engine.apps.get("tk-multi-publish2")
+
+    # ensure we have the publisher instance.
+    if not publish_app:
+        raise Exception("The publisher is not configured for this context.")
+
+    # create a new publish manager instance
+    manager = publish_app.create_publish_manager()
+
+    # now we can run the collector that is configured for this context
+    manager.collect_session()
+
+    # validate the items to publish
+    tasks_failed_validation = manager.validate()
+
+    # all good. let's publish and finalize
+    try:
+        manager.publish()
+        # If a plugin needed to version up a file name after publish
+        # it would be done in the finalize.
+        manager.finalize()
+    except Exception as error:
+        logger.error("There was trouble trying to publish!")
+        logger.error("Error: %s", error)
+
+
+def get_next_version_number(tk, template_name, fields):
+    template = tk.templates[template_name]
+
+    # Get a list of existing file paths on disk that match the template and provided fields
+    # Skip the version field as we want to find all versions, not a specific version.
+    skip_fields = ["version"]
+    file_paths = tk.paths_from_template(
+        template, fields, skip_fields, skip_missing_optional_keys=True
+    )
+
+    versions = []
+    for a_file in file_paths:
+        # extract the values from the path so we can read the version.
+        path_fields = template.get_fields(a_file)
+        versions.append(path_fields["version"])
+
+    # find the highest version in the list and add one.
+    if len(versions) == 0:
+        return 1
+    else:
+        return max(versions) + 1
 
