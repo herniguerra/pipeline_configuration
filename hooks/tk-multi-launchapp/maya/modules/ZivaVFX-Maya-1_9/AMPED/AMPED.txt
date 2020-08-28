@@ -1,0 +1,6 @@
+1. Install
+2. Use the provided RLM server to float the zivadyn.lic (run install.bat to install the server as a service)
+
+When in doubt check the included documentation.
+
+NJoy!!

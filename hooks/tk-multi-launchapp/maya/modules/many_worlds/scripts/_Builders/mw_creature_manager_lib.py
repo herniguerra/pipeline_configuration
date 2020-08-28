@@ -1,5 +1,5 @@
 """
-Many Worlds creture manager scripts main library.
+Many-Worlds creature manager scripts main library.
 
 :created: 16/04/2020
 :author: Jhon Ricardo Vasquez ricardo.v@many-worlds.com
@@ -43,14 +43,10 @@ def serialize_creature_package_to_maya(package, filters=None):
         )
 
     if not package["packageType"] == "anatomyAPKG":
-        OpenMaya.MGlobal.displayError(
-            "Please specified a correct anatomical package."
-        )
+        OpenMaya.MGlobal.displayError("Please specified a correct anatomical package.")
 
     if not package["anatomicalModels"]:
-        OpenMaya.MGlobal.displayError(
-            "Please specified a correct anatomical package."
-        )
+        OpenMaya.MGlobal.displayError("Please specified a correct anatomical package.")
 
     # Serialize pacakage
     anatomical_models = []
@@ -71,6 +67,7 @@ def serialize_creature_package_to_maya(package, filters=None):
 
     return anatomical_models
 
+
 def import_creature_package(files_paths, new_scene=False):
     """[summary]
     
@@ -85,15 +82,14 @@ def import_creature_package(files_paths, new_scene=False):
     # Import the file to current Maya scene.
     mw_maya_utils.import_multiples_files(files_paths)
 
+
 def generate_json_data(self):
     """ Base on input data generates a file."""
 
     # Get the data to be stored and save in the given path.
     file_path = self.ui.currentRootPathQle.text()
     asset = self.ui.currentAssetQcb.currentText()
-    file_name = file_path + asset +\
-            "/Maya/Packages/anatomicalComponents.v000.json"
+    file_name = file_path + asset + "/Maya/Packages/anatomicalComponents.v000.json"
     data = self.read_user_interface_data()
     mw_json_utils.mw_write_json(data, file_name)
-
 

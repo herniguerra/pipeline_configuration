@@ -1,3 +1,5 @@
 *.pyc
 hooks/tk-multi-launchapp/maya/rclone/exists.tmp
 
+*.pyc
+*.pyc

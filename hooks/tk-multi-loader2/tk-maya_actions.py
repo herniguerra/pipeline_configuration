@@ -14,6 +14,8 @@ Hook that loads defines all the available actions, broken down by publish type.
 
 import os
 import sgtk
+import maya.cmds as cmds
+import re
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -31,6 +33,9 @@ class MayaActions(HookBaseClass):
 
         # Now the file is downloaded we can let the base functionality run.
         super(MayaActions, self)._create_reference(file_path, sg_publish_data)
+
+        reference_node = cmds.referenceQuery(path, referenceNode=True)
+        _hookup_shaders(reference_node)
 
     def _do_import(self, path, sg_publish_data):
         """
@@ -77,3 +82,34 @@ class MayaActions(HookBaseClass):
                 "published one; original: %s downloaded: %s" % (path, downloaded_file)
             )
         return downloaded_file
+
+
+def _hookup_shaders(reference_node):
+    """
+       Reconnects published shaders to the corresponding mesh.
+       :return:
+       """
+
+    # find all shader hookup script nodes and extract the mesh object info
+    hookup_prefix = "SHADER_HOOKUP_"
+    shader_hookups = {}
+    for node in cmds.ls(type="script"):
+        node_parts = node.split(":")
+        node_base = node_parts[-1]
+        node_namespace = ":".join(node_parts[:-1])
+        if not node_base.startswith(hookup_prefix):
+            continue
+        obj_pattern = node_base.replace(hookup_prefix, "") + "\d*"
+        obj_pattern = "^" + obj_pattern + "$"
+        shader = cmds.scriptNode(node, query=True, beforeScript=True)
+        shader_hookups[obj_pattern] = node_namespace + ":" + shader
+
+    # if the object name matches an object in the file, connect the shaders
+    for node in cmds.ls(references=True, transforms=True) or []:
+        for (obj_pattern, shader) in shader_hookups.iteritems():
+            # get rid of namespacing
+            node_base = node.split(":")[-1]
+            if re.match(obj_pattern, node_base, re.IGNORECASE):
+                # assign the shader to the object
+                cmds.select(node, replace=True)
+                cmds.hyperShade(assign=shader)

@@ -25,7 +25,15 @@ import pymel.core as pymel
 
 from _Builders import mw_creature_manager_lib
 from _Collections import mw_maya_utils, mw_pyside_utils, mw_muscle_utils
-from _Libraries.QT.Widgets import mw_QPushButton, mw_QFrame, mw_QGroupBox, mw_QLabel, mw_QComboBox, mw_QtDialog, mw_QSeparator
+from _Libraries.QT.Widgets import (
+    mw_QPushButton,
+    mw_QFrame,
+    mw_QGroupBox,
+    mw_QLabel,
+    mw_QComboBox,
+    mw_QtDialog,
+    mw_QSeparator,
+)
 
 reload(mw_maya_utils)
 reload(mw_pyside_utils)
@@ -38,7 +46,10 @@ reload(mw_QComboBox)
 reload(mw_QtDialog)
 reload(mw_QSeparator)
 
-startingDirectory = "C:/Many-Worlds/pipeline/shotgun/projects/mwBaseProject/assets/Character"
+startingDirectory = (
+    "C:/Many-Worlds/pipeline/shotgun/projects/mwBaseProject/assets/Character"
+)
+
 
 def save_load_builds(file_path, solver=None, mode="load"):
     """ Save or load the a Ziva build file.
@@ -72,6 +83,7 @@ def build(ziva_file):
         ziva_file ([str]): File path to Ziva build file.
     """
     import zBuilder.builders.ziva as zva
+
     ziva_handle = zva.Ziva()
     ziva_handle.retrieve_from_file(ziva_file)
     ziva_handle.build()
@@ -132,8 +144,10 @@ class MuscleRigBuilder(object):
         package = mw_creature_manager_lib.serialize_creature_package_to_maya(self.anatomy_apkg)
         mw_creature_manager_lib.import_creature_package(package)
         cmds.refresh(currentView=True)
+
         if self.ziva_build:
             import zBuilder.builders.ziva as zva
+
             ziva_handle = zva.Ziva()
             ziva_handle.retrieve_from_file(self.ziva_build)
             ziva_handle.build()
@@ -151,7 +165,7 @@ def rename_rivets():
 class ZivaUtilitiesWindow(QtWidgets.QWidget):
     """ Build a Ziva utils interface."""
     def __init__(self, parent=None):
-        
+
         super(ZivaUtilitiesWindow, self).__init__(parent)
         self.setSizePolicy(QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Minimum,
@@ -228,11 +242,8 @@ class ZivaUtilitiesWindow(QtWidgets.QWidget):
         self.ziva_handle.retrieve_from_scene_selection()
 
     def retrieve_from_file(self):
-        """ Open file seach dialogue to retrieve Ziva data from file"""
         package_file = mw_maya_utils.open_file(
-            1,
-            filters="Ziva Files (*.ziva)",
-            initial_path=startingDirectory
+            1, filters="Ziva Files (*.ziva)", initial_path=startingDirectory
         )
         if package_file:
             self.ziva_handle.retrieve_from_file(package_file[0])
@@ -276,9 +287,6 @@ class ZivaUtilitiesWindow(QtWidgets.QWidget):
             self.save_ziva_build_selection
         )
         self.build_bttn.clicked.connect(self.ziva_build)
-
-    
-
 
 
 logger = logging.getLogger(__name__)

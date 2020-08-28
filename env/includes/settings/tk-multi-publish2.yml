@@ -170,7 +170,7 @@ settings.tk-multi-publish2.mari.asset_step:
 
 # asset step
 settings.tk-multi-publish2.maya.asset_step:
-  collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
+  collector: "{self}/collector.py:{config}/tk-multi-publish2/maya/collector.py"
   collector_settings:
     Work Template: maya_asset_work
   publish_plugins:
@@ -187,17 +187,21 @@ settings.tk-multi-publish2.maya.asset_step:
       hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
       settings:
         Publish Template: maya_asset_publish
-    - name: Publish to Shotgun
-      hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session_geometry.py"
+    - name: Publish out_set
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_outSet.py"
       settings:
         Publish Template: asset_alembic_cache
+    - name: Publish Shaders
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_shader_network.py"
+      settings:
+        Publish Template: maya_shader_network_publish
   post_phase: "{config}/tk-multi-publish2/post_phase.py"
   help_url: *help_url
   location: "@apps.tk-multi-publish2.location"
 
 # asset rig step
 settings.tk-multi-publish2.maya.asset_rig_step:
-  collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
+  collector: "{self}/collector.py:{config}/tk-multi-publish2/maya/collector.py"
   collector_settings:
     Work Template: maya_asset_rig_work
   publish_plugins:
@@ -214,8 +218,8 @@ settings.tk-multi-publish2.maya.asset_rig_step:
       hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
       settings:
         Publish Template: maya_asset_rig_publish
-    - name: Publish to Shotgun
-      hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session_geometry.py"
+    - name: Publish out_set
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_outSet.py"
       settings:
         Publish Template: asset_rig_alembic_cache
   post_phase: "{config}/tk-multi-publish2/post_phase.py"
@@ -224,7 +228,7 @@ settings.tk-multi-publish2.maya.asset_rig_step:
 
 # shot step
 settings.tk-multi-publish2.maya.shot_step:
-  collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
+  collector: "{self}/collector.py:{config}/tk-multi-publish2/maya/collector.py"
   collector_settings:
     Work Template: maya_shot_work
   publish_plugins:
@@ -241,6 +245,12 @@ settings.tk-multi-publish2.maya.shot_step:
       hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
       settings:
         Publish Template: maya_shot_publish
+    - name: Publish Cameras
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_camera.py"
+      settings:
+        Publish Template: maya_shot_camera_publish
+        Cameras: ["*mwCam*"]
+  post_phase: "{config}/tk-multi-publish2/post_phase.py"
   help_url: *help_url
   location: "@apps.tk-multi-publish2.location"
 

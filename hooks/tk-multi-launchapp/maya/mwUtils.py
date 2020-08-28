@@ -12,6 +12,7 @@ import re
 import sgtk
 
 from _Collections import mw_muscleMenu
+
 reload(mw_muscleMenu)
 
 
@@ -441,82 +442,6 @@ def mayaSave(fileName):
     cmds.file(save=True, type="mayaAscii")
 
 
-def getLatestWorkFileVersion(new=False):
-    # returns latest work file version if new = False
-    # returns new, non existing file version if new = True
-
-    # gets comment in filename
-    filepath = cmds.file(q=True, sn=True)
-    filename = os.path.basename(filepath)
-
-    if len(filename.split("_")) == 5:
-        comment = filename.split("_")[4].split(".")[0]
-    else:
-        comment = ""
-
-    for i in reversed(range(1, 1000)):
-        work_file = getWorkFileName(i, comment)
-        root = getPath()
-
-        path = os.path.join(root, "maya", "scenes", work_file)
-
-        if os.path.exists(path):
-            if new == True:
-                work_file = getWorkFileName(i + 1, comment)
-                path = os.path.join(root, "maya", "scenes", work_file)
-                break
-            else:
-                break
-
-    return path
-
-
-def getWorkFileName(version, comment=""):
-    # get work file name
-    data = {
-        "project": io.find_one(
-            {"name": os.environ["AVALON_PROJECT"], "type": "project"}
-        ),
-        "asset": io.find_one({"name": os.environ["AVALON_ASSET"], "type": "asset"}),
-        "task": {
-            "name": os.environ["AVALON_TASK"].lower(),
-            "label": os.environ["AVALON_TASK"],
-        },
-        "version": version,
-        "user": getpass.getuser(),
-        "comment": comment,
-    }
-
-    template = "{task[name]}_v{version:0>4}<_{comment}>"
-    templates = data["project"]["config"]["template"]
-    if "workfile" in templates:
-        template = templates["workfile"]
-
-    if not data["comment"]:
-        data.pop("comment", None)
-
-    # remove optional missing keys
-    pattern = re.compile(r"<.*?>")
-    invalid_optionals = []
-    for group in pattern.findall(template):
-        try:
-            group.format(**data)
-        except KeyError:
-            invalid_optionals.append(group)
-
-    for group in invalid_optionals:
-        template = template.replace(group, "")
-
-    work_file = template.format(**data)
-
-    # remove optional symbols
-    work_file = work_file.replace("<", "")
-    work_file = work_file.replace(">", "")
-    work_file = work_file + ".ma"
-
-    return work_file
-
-
 def disconnectRigs(*args):
     connectRigs(disconnect=True)
 
@@ -526,7 +451,8 @@ def connectRigs(source=None, dest=None, disconnect=False):
     # 0[1constraint] 1[1pac,  2orc, 3poc, 4scc] 2[mo] 3[s(t)x] 4[s(t)y] 5[s(t)z] 6[srx] 7[sry] 8[srz]
     # 0[2directConnect] 1[v] 2[tx] 3[ty] 4[tz] 5[rx] 6[ry] 7[rz] 8[sx] 9[sy] 10[sz]
     # 0[3blendShape] 1[foc]
-    # 0[4userDefined]
+    # 0[4inMesh]
+    # 0[5userDefined]
 
     if source == None or dest == None:
         sel = cmds.ls(sl=1)
@@ -537,18 +463,30 @@ def connectRigs(source=None, dest=None, disconnect=False):
             source = sel[0]
             dest = sel[1]
 
-    if ":" in source:
-        sourceNS = source.split(":")[0]
-    else:
-        sourceNS = ""
+        if ":" in source:
+            sourceNS = source.split(":")[0]
+        else:
+            sourceNS = ""
 
-    if ":" in dest:
-        destNS = dest.split(":")[0]
+        if ":" in dest:
+            destNS = dest.split(":")[0]
+        else:
+            destNS = ""
+
     else:
-        destNS = ""
+        if ":" in source:
+            sourceNS = source.split(":")[0]
+        else:
+            sourceNS = source
+
+        if ":" in dest:
+            destNS = dest.split(":")[0]
+        else:
+            destNS = dest
 
     objDict = {}
-    objList = cmds.ls(destNS + ":*", type=["joint", "transform"])
+    objList = cmds.ls(destNS + ":*", type=["joint", "transform", "shape"])
+
     for obj in objList:
         if cmds.objExists(obj + ".connectObj"):
             connectObj = sourceNS + ":" + cmds.getAttr(obj + ".connectObj")
@@ -766,11 +704,18 @@ def connectRigs(source=None, dest=None, disconnect=False):
                 if disconnect == False:
                     cmds.select(connectObj, r=1)
                     cmds.select(obj, add=1)
-                    cmds.blendShape(foc=tag[1], n=bsn)
+                    cmds.blendShape(foc=bool(tag[1]), n=bsn, w=[0, 1])
                 else:
                     cmds.delete(bsn)
 
             if tag[0] == "4":
+                # inMesh
+                if disconnect == False:
+                    cmds.connectAttr(connectObj + ".outMesh", obj + ".inMesh", f=1)
+                else:
+                    cmds.disconnectAttr(connectObj + ".outMesh", obj + ".inMesh")
+
+            if tag[0] == "5":
                 # user defined
                 for attr in cmds.listAttr(connectObj, ud=1):
                     if cmds.objExists(obj + "." + attr):
@@ -823,7 +768,7 @@ def bringPublish(task="model", returnPath=False):
     template = tk.templates["maya_asset_publish"]
     fields = context.as_template_fields(template)
 
-    asset_name = getAsset()
+    asset_name = getEntity()
 
     filters = [
         ["entity.Asset.code", "is", asset_name],
@@ -911,6 +856,28 @@ def download(published_file):
     return destination
 
 
+def createCam(type):
+    camNum = str(len(cmds.ls("mwCam*", cameras=True)) + 1)
+
+    if type == 1:
+        camFile = "mwCam_hand.ma"
+    elif type == 2:
+        camFile = "mwCam_dolly.ma"
+    elif type == 3:
+        camFile = "mwCam_circle.ma"
+
+    cmds.file(
+        "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/cams/"
+        + camFile,
+        i=1,
+        type="mayaAscii",
+    )
+
+    cmds.rename("mwCam_grp", "mwCam" + camNum + "_grp")
+
+    cmds.rename("mwCam", "mwCam" + camNum)
+
+
 def getProject(returnId=False):
     # returns current project
 
@@ -923,20 +890,22 @@ def getProject(returnId=False):
         return context.project["id"]
 
 
-def getAsset(returnId=False):
-    # returns current asset name
+def getEntity(returnId=False, returnType=False):
+    # returns current entity (asset or shot)
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
 
-    if returnId == False:
+    if returnId == False and returnType == False:
         return context.entity["name"]
-    else:
+    elif returnId == True and returnType == False:
         return context.entity["id"]
+    elif returnType == True:
+        return context.entity["type"]
 
 
 def getStep(returnId=False):
-    # returns current task name
+    # returns current step
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
@@ -948,7 +917,7 @@ def getStep(returnId=False):
 
 
 def getTask(returnId=False):
-    # returns current task name
+    # returns current task
 
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
@@ -957,6 +926,17 @@ def getTask(returnId=False):
         return context.task["name"]
     else:
         return context.task["id"]
+
+
+def getUser(returnId=False):
+    # returns current user
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+
+    if returnId == False:
+        return context.user["login"]
+    else:
+        return context.user["id"]
 
 
 def getFrameRange():
@@ -1079,7 +1059,7 @@ def userSetup():
     import maya.cmds as cmds
 
     project = getProject()
-    asset = getAsset()
+    asset = getEntity()
     task = getTask()
 
 
@@ -1132,6 +1112,9 @@ def installMenu():
     ###########################
 
     rigging_menu = cmds.menuItem(parent=mw_menu, label="Rigging", subMenu=True)
+    cmds.menuItem(
+        parent=rigging_menu, label="Add connect tags", command="mwRig.addConnectTags()"
+    )
     cmds.menuItem(
         parent=rigging_menu, label="Build rigBound", command=mwRig.buildRigBound
     )
@@ -1214,9 +1197,30 @@ def installMenu():
     cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
 
     ###########################
-    # --- Create Muscle menu.
+    # --- Create muscle menu
     ###########################
     mw_muscleMenu.MWMuscleToolsMenu(mw_menu)
+
+    ###########################
+    # --- Create layout menu
+    ###########################
+
+    layout_menu = cmds.menuItem(parent=mw_menu, label="Layout", subMenu=True)
+    cmds.menuItem(
+        parent=layout_menu,
+        label="Create Cam - Handheld",
+        command="mwUtils.createCam(type=1)",
+    )
+    cmds.menuItem(
+        parent=layout_menu,
+        label="Create Cam - Dolly",
+        command="mwUtils.createCam(type=2)",
+    )
+    cmds.menuItem(
+        parent=layout_menu,
+        label="Create Cam - Circle Dolly",
+        command="mwUtils.createCam(type=3)",
+    )
 
     ###########################
     # --- create animation menu
@@ -1288,6 +1292,8 @@ def installMenu():
         parent=mw_menu, label="Reload MW menu", command="mwUtils.installMenu()"
     )
 
+    print "Menu installed"
+
 
 def reloadScripts():
     import mwUtils
@@ -1339,4 +1345,401 @@ def currentPath():
 
 def helloWorlds():
     print ("Hello, worlds! :)")
+
+
+def bringPublish2(
+    task="model",
+    returnPath=False,
+    template="maya_asset_publish",
+    asset_name="current",
+    published_file_type="Maya Scene",
+    namespace=None,
+):
+    import shotgun_api3
+
+    sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+    current_engine = sgtk.platform.current_engine()
+
+    context = current_engine.context
+    tk = current_engine.sgtk
+
+    template = tk.templates[template]
+    fields = context.as_template_fields(template)
+
+    if asset_name == "current":
+        asset_name = getEntity()
+
+    filters = [
+        ["entity.Asset.code", "is", asset_name],
+        ["task.Task.content", "is", task],
+        ["published_file_type.PublishedFileType.code", "is", published_file_type],
+    ]
+
+    fields = ["path", "name", "published_file_type"]
+    order = [
+        {"field_name": "version_number", "direction": "desc"},
+    ]
+
+    publishedFile = sg.find_one("PublishedFile", filters, fields, order)
+
+    filePath = publishedFile["path"]["local_path"]
+
+    print "***"
+    print filePath
+
+    if os.path.isfile(filePath):
+
+        if returnPath == True:
+            return filePath
+
+        if namespace == None:
+            cmds.file(filePath, i=True, defaultNamespace=True)
+            return filePath
+
+        else:
+            cmds.file(filePath, i=True, namespace=namespace)
+            return filePath
+
+    else:
+        window = cmds.window(title="mwCloud", widthHeight=(400, 110))
+        cmds.columnLayout(adjustableColumn=True)
+        cmds.text(label="Downloading")
+        cmds.text(label=publishedFile["name"])
+        cmds.text(label="from mwCloud...")
+        cmds.setParent("..")
+        cmds.showWindow(window)
+
+        download(publishedFile)
+
+        cmds.deleteUI(window)
+
+        if returnPath == True:
+            return filePath
+
+        else:
+            cmds.file(filePath, i=True, defaultNamespace=True)
+
+            return filePath
+
+    # bringPublish2(task="animTest", returnPath=False, template="maya_asset_publish", asset_name="current", published_file_type="Alembic Cache")
+
+
+def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
+    import shotgun_api3
+
+    sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+
+    current_engine = sgtk.platform.current_engine()
+    tk = current_engine.sgtk
+
+    project_id = getProject(returnId=True)
+    user_id = getUser(returnId=True)
+    entity_id = getEntity(returnId=True)
+    entity_name = getEntity()
+    entity_type = getEntity(returnType=True)
+
+    if entity_type == "Asset":
+        if anim_task == None:
+            cmds.warning(
+                "Missing anim_task argument in mwUtils.createCacheChainTask. Task was not created."
+            )
+            return
+
+        task_name = anim_task + "_" + asset_name + "_" + chain_link
+        step_name = "Rig"
+
+        # find step_id
+        step_name = "Rig"
+        filters = [["code", "is", step_name]]
+        step_id = sg.find_one("Step", filters)["id"]
+
+    elif entity_type == "Shot":
+        if asset_name == None:
+            cmds.warning(
+                "Missing asset_name argument in mwUtils.createCacheChainTask. Task was not created."
+            )
+            return
+
+        task_name = entity_name + "_" + asset_name + "_" + chain_link
+        # find step_id
+        step_name = "CharacterFX"
+        filters = [["code", "is", step_name]]
+        step_id = sg.find_one("Step", filters)["id"]
+
+    # verifies it doesn't exist
+    filters = [["entity.Asset.code", "is", asset_name], ["content", "is", task_name]]
+
+    fields = ["path", "name"]
+
+    find = sg.find("Task", filters, fields)
+
+    if len(find) == 0:
+        data = {
+            "project": {"type": "Project", "id": project_id},
+            "content": task_name,
+            "entity": {"type": "Asset", "id": entity_id},
+            "step": {"type": "Step", "id": step_id},
+            "task_assignees": [{"type": "HumanUser", "id": user_id}],
+        }
+        result = sg.create("Task", data)
+
+        print "*** Task created"
+        task_id = result["id"]
+
+        # creates folders
+        tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
+
+    else:
+        print "*** Task", task_name, "already exists"
+        task_id = find[0]["id"]
+
+    # change context to task
+    new_context = tk.context_from_entity("Task", task_id)
+    sgtk.platform.change_context(new_context)
+
+    return task_name
+
+
+def runCacheChain(anim_task=None):
+    import shotgun_api3
+
+    sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+
+    project_id = getProject(returnId=True)
+    entity_id = getEntity(returnId=True)
+    entity_name = getEntity()
+    entity_type = getEntity(returnType=True)
+    step_id = getStep(returnId=True)
+
+    if entity_type == "Asset":
+        if anim_task == None:
+            cmds.warning(
+                "Missing anim_task argument in mwUtils.runCacheChain. CacheChain aborted."
+            )
+            return
+
+        cmds.file(new=1, f=1)
+        muscle_task = createCacheChainTask(
+            "musclePass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=anim_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="RigMuscle",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        fascia_task = createCacheChainTask(
+            "fasciaPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=muscle_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="RigFascia",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        fat_task = createCacheChainTask(
+            "fatPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=fascia_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="RigFat",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        skin_task = createCacheChainTask(
+            "skinPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=fat_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="RigSkin",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        groom_task = createCacheChainTask(
+            "groomPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=skin_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="Groom",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        cmds.file(new=1, f=1)
+        cloth_task = createCacheChainTask(
+            "clothPass", anim_task=anim_task, asset_name=entity_name
+        )
+
+        bringPublish2(
+            task=skin_task,
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Alembic Cache",
+            namespace="a",
+        )
+
+        bringPublish2(
+            task="Cloth",
+            template="maya_asset_publish",
+            asset_name="current",
+            published_file_type="Maya Scene",
+            namespace="b",
+        )
+
+        connectRigs("a", "b")
+        saveAndPublish(template_name="maya_asset_rig_work")
+
+        print "Cache Chain Finished! :D"
+
+
+def saveAndPublish(template_name=None):
+    # need to have an engine running in a context where the publisher has been
+    # configured.
+    current_engine = sgtk.platform.current_engine()
+    context = current_engine.context
+    tk = current_engine.sgtk
+
+    template = tk.templates[template_name]
+    fields = context.as_template_fields(template)
+    fields["version"] = get_next_version_number(tk, template_name, fields)
+    work_path = template.apply_fields(fields)
+    current_engine.ensure_folder_exists(os.path.dirname(work_path))
+    print work_path
+
+    cmds.file(rename=work_path)
+    cmds.file(save=1)
+
+    # get the publish app instance from the engine's list of configured apps
+    publish_app = current_engine.apps.get("tk-multi-publish2")
+
+    # ensure we have the publisher instance.
+    if not publish_app:
+        raise Exception("The publisher is not configured for this context.")
+
+    # create a new publish manager instance
+    manager = publish_app.create_publish_manager()
+
+    # now we can run the collector that is configured for this context
+    manager.collect_session()
+
+    # validate the items to publish
+    tasks_failed_validation = manager.validate()
+
+    # all good. let's publish and finalize
+    try:
+        manager.publish()
+        # If a plugin needed to version up a file name after publish
+        # it would be done in the finalize.
+        manager.finalize()
+    except Exception as error:
+        logger.error("There was trouble trying to publish!")
+        logger.error("Error: %s", error)
+
+
+def get_next_version_number(tk, template_name, fields):
+    template = tk.templates[template_name]
+
+    # Get a list of existing file paths on disk that match the template and provided fields
+    # Skip the version field as we want to find all versions, not a specific version.
+    skip_fields = ["version"]
+    file_paths = tk.paths_from_template(
+        template, fields, skip_fields, skip_missing_optional_keys=True
+    )
+
+    versions = []
+    for a_file in file_paths:
+        # extract the values from the path so we can read the version.
+        path_fields = template.get_fields(a_file)
+        versions.append(path_fields["version"])
+
+    # find the highest version in the list and add one.
+    if len(versions) == 0:
+        return 1
+    else:
+        return max(versions) + 1
 
