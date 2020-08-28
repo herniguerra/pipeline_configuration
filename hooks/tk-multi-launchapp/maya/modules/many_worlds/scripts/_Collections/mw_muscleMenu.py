@@ -78,10 +78,24 @@ class MWMuscleToolsMenu:
             command=launch_ziva_toolbox
         )
 
+        cmds.menuItem(
+            parent=mw_muscle_main_menu,
+            label="Rename Rivets",
+            image=mw_libraries_paths.muscle_icons["ZIVARVR"],
+            command=rename_scene_rivets
+        )
+
 
 def launch_ziva_toolbox(*args):
-    zivaWindow = mw_ziva_utils.ZivaUtilitiesWindow(mw_pyside_utils.maya_main_window())
-    zivaWindow.show()
+    try:
+        ziva_utils_win = mw_pyside_utils.MWWidgetsFunctions.get_widget_by_name("zivaUtilsWin") # pylint: disable=used-before-assignment
+        ziva_utils_win.close()
+        ziva_utils_win.deleteLater()
+    except:
+        pass
+
+    ziva_utils_win = mw_ziva_utils.ZivaUtilitiesWindow(mw_pyside_utils.maya_main_window())
+    ziva_utils_win.show()
 
 
 def open_APKG_builder(*args):
@@ -102,3 +116,6 @@ def open_APKG_builder(*args):
 def select_by_proximity_options(*args):
     mel.eval("ZivaSelectVerticesByProximityOptions")
 
+
+def rename_scene_rivets(*args):
+    mw_ziva_utils.rename_rivets()

@@ -147,6 +147,135 @@ def get_custom_nodes(type_node):
     """
     return pymel.PyNode(type_node)
 
+def attach_cam_to_mesh():
+    """ Create a camera attached to edges component selection."""
+
+    # Create the rivet node.
+    rivet = CreateRivet()
+    locator = rivet.node['locator'].getParent()
+
+    # Create and attach the camera.
+    camera = pymel.camera(name="{}_cam".format(locator.name()))[0]
+    pymel.parent(camera, locator)
+    for type_attribute in ["translate"]:
+        for atribute in ["X", "Y", "Z"]:
+            pymel.setAttr("{}.{}{}".format(
+                camera,
+                type_attribute, atribute), 0
+            )
+
+    pymel.lookThru(camera)
+    cmds.viewFit()
+
 
 def _print():
     print("holaaaaaaaa")
+
+
+class CreateRivet:
+    def __init__(self, rotation=False):
+        self.rotation = rotation
+        selection = pymel.ls(sl=1, fl=1)
+        if len(selection) == 2 and isinstance(
+            selection[0], pymel.MeshEdge
+        ) and isinstance(selection[1], pymel.MeshEdge):
+            self.main = {'meshObject': selection[0].node().getParent(),
+               'edgeIndex1': selection[0].indices()[0],
+               'edgeIndex2': selection[1].indices()[0]}
+            self.createNodes()
+            self.createConnections(rotation=self.rotation)
+            self.setAttributes()
+        else:
+            pymel.warning('Please make sure you select two edges only.')
+
+        self.node['locator'].getParent().rename(
+            "{}_rivet".format(selection[0].node().getParent().name())
+        )
+
+    def setAttributes(self):
+        self.node['meshEdgeNode1'].isHistoricallyInteresting.set(1)
+        self.node['meshEdgeNode2'].isHistoricallyInteresting.set(1)
+        self.node['meshEdgeNode1'].edgeIndex[0].set(self.main['edgeIndex1'])
+        self.node['meshEdgeNode2'].edgeIndex[0].set(self.main['edgeIndex2'])
+        self.node['loftNode'].reverseSurfaceNormals.set(1)
+        self.node['loftNode'].inputCurve.set(size=2)
+        self.node['loftNode'].uniform.set(True)
+        self.node['loftNode'].sectionSpans.set(3)
+        self.node['loftNode'].caching.set(True)
+        self.node['ptOnSurfaceIn'].turnOnPercentage.set(True)
+        self.node['ptOnSurfaceIn'].parameterU.set(0.5)
+        self.node['ptOnSurfaceIn'].parameterV.set(0.5)
+        self.node['ptOnSurfaceIn'].caching.set(True)
+
+    def createNodes(self, *args):
+        self.node = {'meshEdgeNode1': pymel.createNode('curveFromMeshEdge'),
+           'meshEdgeNode2': pymel.createNode('curveFromMeshEdge'),
+           'ptOnSurfaceIn': pymel.createNode('pointOnSurfaceInfo'),
+           'matrixNode': pymel.createNode('fourByFourMatrix'),
+           'decomposeMatrix': pymel.createNode('decomposeMatrix'),
+           'loftNode': pymel.createNode('loft'),
+           'locator': pymel.createNode('locator')}
+
+    def createConnections(self, rotation=None, *args):
+        """# Connect our main object's world mesh information. """
+        self.main['meshObject'].worldMesh.connect(
+            self.node['meshEdgeNode1'].inputMesh
+        )
+        self.main['meshObject'].worldMesh.connect(
+            self.node['meshEdgeNode2'].inputMesh
+        )
+        self.node['meshEdgeNode1'].outputCurve.connect(
+            self.node['loftNode'].inputCurve[0]
+        )
+        self.node['meshEdgeNode2'].outputCurve.connect(
+            self.node['loftNode'].inputCurve[1]
+        )
+        self.node['loftNode'].outputSurface.connect(
+            self.node['ptOnSurfaceIn'].inputSurface
+        )
+        self.node['ptOnSurfaceIn'].normalizedNormalX.connect(
+            self.node['matrixNode'].in00
+        )
+        self.node['ptOnSurfaceIn'].normalizedNormalY.connect(
+            self.node['matrixNode'].in01
+        )
+        self.node['ptOnSurfaceIn'].normalizedNormalZ.connect(
+            self.node['matrixNode'].in02
+        )
+        self.node['ptOnSurfaceIn'].normalizedTangentUX.connect(
+            self.node['matrixNode'].in10
+        )
+        self.node['ptOnSurfaceIn'].normalizedTangentUY.connect(
+            self.node['matrixNode'].in11
+        )
+        self.node['ptOnSurfaceIn'].normalizedTangentUZ.connect(
+            self.node['matrixNode'].in12
+        )
+        self.node['ptOnSurfaceIn'].normalizedTangentVX.connect(
+            self.node['matrixNode'].in20
+        )
+        self.node['ptOnSurfaceIn'].normalizedTangentVY.connect(
+            self.node['matrixNode'].in21
+        )
+        self.node['ptOnSurfaceIn'].normalizedTangentVZ.connect(
+            self.node['matrixNode'].in22
+        )
+        self.node['ptOnSurfaceIn'].positionX.connect(
+            self.node['matrixNode'].in30
+        )
+        self.node['ptOnSurfaceIn'].positionY.connect(
+            self.node['matrixNode'].in31
+        )
+        self.node['ptOnSurfaceIn'].positionZ.connect(
+            self.node['matrixNode'].in32
+        )
+        self.node['matrixNode'].output.connect(
+            self.node['decomposeMatrix'].inputMatrix
+        )
+        self.node['decomposeMatrix'].outputTranslate.connect(
+            self.node['locator'].getParent().translate
+        )
+        if rotation is True:
+            self.node['decomposeMatrix'].outputRotate.connect(
+                self.node['locator'].getParent().rotate
+            )
