@@ -35,7 +35,8 @@ def disconnectAll(node, source=True, destination=True):
             connectionPairs.extend(zip(conns[1::2], conns[::2]))
 
     if destination:
-        conns = cmds.listConnections(node, plugs=True, connections=True, source=False)
+        conns = cmds.listConnections(
+            node, plugs=True, connections=True, source=False)
         if conns:
             connectionPairs.extend(zip(conns[::2], conns[1::2]))
 
@@ -191,19 +192,22 @@ def constraint(
 
     if type == "orient":
         cmds.orientConstraint(
-            source, dest, mo=mo, skip=skip, n=renameSuffix(dest, "orc", add=addName)
+            source, dest, mo=mo, skip=skip, n=renameSuffix(
+                dest, "orc", add=addName)
         )
         return renameSuffix(dest, "orc", add=addName)
 
     if type == "point":
         cmds.pointConstraint(
-            source, dest, mo=mo, skip=skip, n=renameSuffix(dest, "poc", add=addName)
+            source, dest, mo=mo, skip=skip, n=renameSuffix(
+                dest, "poc", add=addName)
         )
         return renameSuffix(dest, "poc", add=addName)
 
     if type == "scale":
         cmds.scaleConstraint(
-            source, dest, mo=mo, skip=skip, n=renameSuffix(dest, "scc", add=addName)
+            source, dest, mo=mo, skip=skip, n=renameSuffix(
+                dest, "scc", add=addName)
         )
         return renameSuffix(dest, "scc", add=addName)
 
@@ -269,7 +273,8 @@ def connectAttr(sourceAttrs, destAttrs, mode="direct", offset=0, force=True):
                     cmds.connectAttr(s, d, f=force)
 
             else:
-                pma = cmds.createNode("plusMinusAverage", n=renameSuffix(s, "pma"))
+                pma = cmds.createNode("plusMinusAverage",
+                                      n=renameSuffix(s, "pma"))
                 cmds.connectAttr(s, pma + ".input1D[0]")
                 cmds.setAttr(pma + ".input1D[1]", offset)
 
@@ -286,7 +291,8 @@ def connectAttr(sourceAttrs, destAttrs, mode="direct", offset=0, force=True):
                     cmds.connectAttr(rev + ".outputX", d, f=force)
 
             else:
-                pma = cmds.createNode("plusMinusAverage", n=renameSuffix(s, "pma"))
+                pma = cmds.createNode("plusMinusAverage",
+                                      n=renameSuffix(s, "pma"))
                 cmds.connectAttr(rev + ".outputX", pma + ".input1D[0]")
                 cmds.setAttr(pma + ".input1D[1]", offset)
 
@@ -304,7 +310,8 @@ def connectAttr(sourceAttrs, destAttrs, mode="direct", offset=0, force=True):
                     cmds.connectAttr(mdv + ".outputX", d, f=force)
 
             else:
-                pma = cmds.createNode("plusMinusAverage", n=renameSuffix(s, "pma"))
+                pma = cmds.createNode("plusMinusAverage",
+                                      n=renameSuffix(s, "pma"))
                 cmds.connectAttr(mdv + ".outputX", pma + ".input1D[0]")
                 cmds.setAttr(pma + ".input1D[1]", offset)
 
@@ -638,7 +645,8 @@ def connectRigs(source=None, dest=None, disconnect=False):
                 if tag[1] == "1":
                     # visibility
                     if disconnect == False:
-                        connectAttr(connectObj + ".visibility", obj + ".visibility")
+                        connectAttr(connectObj + ".visibility",
+                                    obj + ".visibility")
                     else:
                         cmds.disconnectAttr(
                             connectObj + ".visibility", obj + ".visibility"
@@ -711,9 +719,11 @@ def connectRigs(source=None, dest=None, disconnect=False):
             if tag[0] == "4":
                 # inMesh
                 if disconnect == False:
-                    cmds.connectAttr(connectObj + ".outMesh", obj + ".inMesh", f=1)
+                    cmds.connectAttr(connectObj + ".outMesh",
+                                     obj + ".inMesh", f=1)
                 else:
-                    cmds.disconnectAttr(connectObj + ".outMesh", obj + ".inMesh")
+                    cmds.disconnectAttr(
+                        connectObj + ".outMesh", obj + ".inMesh")
 
             if tag[0] == "5":
                 # user defined
@@ -721,7 +731,8 @@ def connectRigs(source=None, dest=None, disconnect=False):
                     if cmds.objExists(obj + "." + attr):
                         if disconnect == False:
                             try:
-                                connectAttr(connectObj + "." + attr, obj + "." + attr)
+                                connectAttr(connectObj + "." +
+                                            attr, obj + "." + attr)
                             except:
                                 cmds.warning(
                                     "Error connecting "
@@ -1023,7 +1034,8 @@ def rigPuppetWorkSetup(project, asset):
 
         # copies preBuild scripts from template folder
         path = "C:/Many-Worlds/rigging/mw_rig_dev/mGear_steps/template_pre/"
-        scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+        scripts = [f for f in os.listdir(
+            path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
             src = path + script
@@ -1035,7 +1047,8 @@ def rigPuppetWorkSetup(project, asset):
 
         # copies postBuild scripts from template folder
         path = "C:/Many-Worlds/rigging/mw_rig_dev/mGear_steps/template_post/"
-        scripts = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+        scripts = [f for f in os.listdir(
+            path) if os.path.isfile(os.path.join(path, f))]
 
         for script in scripts:
             src = path + script
@@ -1105,7 +1118,8 @@ def installMenu():
             break
 
     # --- create Many-Worlds menu
-    mw_menu = cmds.menu(parent=maya_main_window, label="Many-Worlds", tearOff=True)
+    mw_menu = cmds.menu(parent=maya_main_window,
+                        label="Many-Worlds", tearOff=True)
 
     ###########################
     # --- create rigging menu
@@ -1118,10 +1132,13 @@ def installMenu():
     cmds.menuItem(
         parent=rigging_menu, label="Build rigBound", command=mwRig.buildRigBound
     )
-    cmds.menuItem(parent=rigging_menu, label="Connect rigs", command=connectRigs)
-    cmds.menuItem(parent=rigging_menu, label="Disconnect rigs", command=disconnectRigs)
+    cmds.menuItem(parent=rigging_menu,
+                  label="Connect rigs", command=connectRigs)
+    cmds.menuItem(parent=rigging_menu, label="Disconnect rigs",
+                  command=disconnectRigs)
     cmds.menuItem(parent=rigging_menu, divider=True)
-    cmds.menuItem(parent=rigging_menu, label="Export skins", command=mwRig.exportSkins)
+    cmds.menuItem(parent=rigging_menu, label="Export skins",
+                  command=mwRig.exportSkins)
     cmds.menuItem(
         parent=rigging_menu,
         label="Export poly correctives",
@@ -1170,7 +1187,8 @@ def installMenu():
     cmds.menuItem(parent=rigging_menu, divider=True)
 
     # --- create nurbs submenu
-    nurbs_menu = cmds.menuItem(parent=rigging_menu, label="Nurbs", subMenu=True)
+    nurbs_menu = cmds.menuItem(
+        parent=rigging_menu, label="Nurbs", subMenu=True)
 
     cmds.menuItem(
         parent=nurbs_menu, label="Flip", command=mwRig.flipNurbs,
@@ -1194,7 +1212,8 @@ def installMenu():
 
     cmds.menuItem(parent=rigging_menu, divider=True)
 
-    cmds.menuItem(parent=rigging_menu, label="Ziva mirror", command=mwRig.zivaMirror)
+    cmds.menuItem(parent=rigging_menu, label="Ziva mirror",
+                  command=mwRig.zivaMirror)
 
     ###########################
     # --- Create muscle menu
@@ -1226,7 +1245,8 @@ def installMenu():
     # --- create animation menu
     ###########################
 
-    animation_menu = cmds.menuItem(parent=mw_menu, label="Animation", subMenu=True)
+    animation_menu = cmds.menuItem(
+        parent=mw_menu, label="Animation", subMenu=True)
 
     import mgear.core.dagmenu as mgm
 
@@ -1272,7 +1292,8 @@ def installMenu():
     # --- create techAnim menu
     ###########################
 
-    techAnim_menu = cmds.menuItem(parent=mw_menu, label="techAnim", subMenu=True)
+    techAnim_menu = cmds.menuItem(
+        parent=mw_menu, label="techAnim", subMenu=True)
     cmds.menuItem(
         parent=techAnim_menu,
         label="Soft tweaks",
@@ -1428,7 +1449,7 @@ def bringPublish2(
     # bringPublish2(task="animTest", returnPath=False, template="maya_asset_publish", asset_name="current", published_file_type="Alembic Cache")
 
 
-def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
+def createCacheChainTask(chain_link, anim_task=None, entity_type=None, entity_name=None):
     import shotgun_api3
 
     sg = shotgun_api3.Shotgun(
@@ -1442,9 +1463,14 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
 
     project_id = getProject(returnId=True)
     user_id = getUser(returnId=True)
-    entity_id = getEntity(returnId=True)
-    entity_name = getEntity()
-    entity_type = getEntity(returnType=True)
+
+    if entity_name == None:
+        entity_name = getEntity()
+    else:
+        entity_name = entity_name
+
+    if entity_type == None:
+        entity_type = getEntity(returnType=True)
 
     if entity_type == "Asset":
         if anim_task == None:
@@ -1453,7 +1479,7 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
             )
             return
 
-        task_name = anim_task + "_" + asset_name + "_" + chain_link
+        task_name = anim_task + "_" + entity_name + "_" + chain_link
         step_name = "Rig"
 
         # find step_id
@@ -1462,20 +1488,21 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
         step_id = sg.find_one("Step", filters)["id"]
 
     elif entity_type == "Shot":
-        if asset_name == None:
+        if entity_name == None:
             cmds.warning(
-                "Missing asset_name argument in mwUtils.createCacheChainTask. Task was not created."
+                "Missing entity_name argument in mwUtils.createCacheChainTask. Task was not created."
             )
             return
 
-        task_name = entity_name + "_" + asset_name + "_" + chain_link
+        task_name = entity_name + "_" + entity_name + "_" + chain_link
         # find step_id
         step_name = "CharacterFX"
         filters = [["code", "is", step_name]]
         step_id = sg.find_one("Step", filters)["id"]
 
     # verifies it doesn't exist
-    filters = [["entity.Asset.code", "is", asset_name], ["content", "is", task_name]]
+    filters = [["entity.Asset.code", "is", entity_name],
+               ["content", "is", task_name]]
 
     fields = ["path", "name"]
 
@@ -1485,7 +1512,7 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
         data = {
             "project": {"type": "Project", "id": project_id},
             "content": task_name,
-            "entity": {"type": "Asset", "id": entity_id},
+            "entity": {"type": "Asset", "content": entity_name},
             "step": {"type": "Step", "id": step_id},
             "task_assignees": [{"type": "HumanUser", "id": user_id}],
         }
@@ -1508,7 +1535,7 @@ def createCacheChainTask(chain_link, anim_task=None, asset_name=None):
     return task_name
 
 
-def runCacheChain(anim_task=None):
+def runCacheChain(anim_task=None, entity_type=None, entity_name=None):
     import shotgun_api3
 
     sg = shotgun_api3.Shotgun(
@@ -1518,10 +1545,10 @@ def runCacheChain(anim_task=None):
     )
 
     project_id = getProject(returnId=True)
-    entity_id = getEntity(returnId=True)
-    entity_name = getEntity()
-    entity_type = getEntity(returnType=True)
-    step_id = getStep(returnId=True)
+    if entity_name == None:
+        entity_name = getEntity()
+    if entity_type == None:
+        entity_type = getEntity(returnType=True)
 
     if entity_type == "Asset":
         if anim_task == None:
@@ -1532,7 +1559,7 @@ def runCacheChain(anim_task=None):
 
         cmds.file(new=1, f=1)
         muscle_task = createCacheChainTask(
-            "musclePass", anim_task=anim_task, asset_name=entity_name
+            "musclePass", anim_task=anim_task, entity_type=entity_type, entity_name=entity_name
         )
 
         bringPublish2(
@@ -1556,7 +1583,7 @@ def runCacheChain(anim_task=None):
 
         cmds.file(new=1, f=1)
         fascia_task = createCacheChainTask(
-            "fasciaPass", anim_task=anim_task, asset_name=entity_name
+            "fasciaPass", anim_task=anim_task, entity_type=entity_type, entity_name=entity_name
         )
 
         bringPublish2(
@@ -1580,7 +1607,7 @@ def runCacheChain(anim_task=None):
 
         cmds.file(new=1, f=1)
         fat_task = createCacheChainTask(
-            "fatPass", anim_task=anim_task, asset_name=entity_name
+            "fatPass", anim_task=anim_task, entity_type=entity_type, entity_name=entity_name
         )
 
         bringPublish2(
@@ -1602,9 +1629,12 @@ def runCacheChain(anim_task=None):
         connectRigs("a", "b")
         saveAndPublish(template_name="maya_asset_rig_work")
 
+        print "Cache Chain Finished! :D"
+
+        """
         cmds.file(new=1, f=1)
         skin_task = createCacheChainTask(
-            "skinPass", anim_task=anim_task, asset_name=entity_name
+            "skinPass", anim_task=anim_task, entity_name=entity_name
         )
 
         bringPublish2(
@@ -1628,7 +1658,7 @@ def runCacheChain(anim_task=None):
 
         cmds.file(new=1, f=1)
         groom_task = createCacheChainTask(
-            "groomPass", anim_task=anim_task, asset_name=entity_name
+            "groomPass", anim_task=anim_task, entity_name=entity_name
         )
 
         bringPublish2(
@@ -1652,7 +1682,7 @@ def runCacheChain(anim_task=None):
 
         cmds.file(new=1, f=1)
         cloth_task = createCacheChainTask(
-            "clothPass", anim_task=anim_task, asset_name=entity_name
+            "clothPass", anim_task=anim_task, entity_name=entity_name
         )
 
         bringPublish2(
@@ -1675,6 +1705,8 @@ def runCacheChain(anim_task=None):
         saveAndPublish(template_name="maya_asset_rig_work")
 
         print "Cache Chain Finished! :D"
+
+        """
 
 
 def saveAndPublish(template_name=None):
@@ -1742,4 +1774,3 @@ def get_next_version_number(tk, template_name, fields):
         return 1
     else:
         return max(versions) + 1
-

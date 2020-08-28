@@ -336,17 +336,6 @@ class MayaOutSetPublishPlugin(HookBaseClass):
             roots = roots.replace("-root", "")
             samples = 1
 
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-
-            print start_frame
-            print end_frame
-
-            print roots
-
             args = '-writeAlembic "%s" -range %s %s -samples %s %s' % (
                 publish_path.replace(os.path.sep, "/"),
                 start_frame,
