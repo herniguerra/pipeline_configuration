@@ -19,7 +19,7 @@ import os, re, logging
 from PySide2 import QtCore, QtUiTools, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 from maya import cmds, mel, OpenMaya
-import pymel.core
+import pymel.core as pymel
 #from zBuilder.builders import ziva
 
 
@@ -40,7 +40,7 @@ reload(mw_QSeparator)
 
 startingDirectory = "C:/Many-Worlds/pipeline/shotgun/projects/mwBaseProject/assets/Character"
 
-def save_load_builds(file_path, solver=None, mode='load'):
+def save_load_builds(file_path, solver=None, mode="load"):
     """ Save or load the a Ziva build file.
 
     Arguments:
@@ -51,15 +51,15 @@ def save_load_builds(file_path, solver=None, mode='load'):
         mode {str} -- [Define operation method] (default: {"load"})
     """
     from zBuilder import utils as ziva_utils
-    if mode == 'load':
+    if mode == "load":
         ziva_utils.load_rig(file_path, solver_name=solver)
-    elif mode == 'save':
+    elif mode == "save":
         if os.path.isfile(file_path):
-            result = cmds.confirmDialog(title='Confirm', message='File exists, do you want to overwrite?', button=[
-             'Yes', 'No'], defaultButton='Yes', cancelButton='No', dismissString='No')
-            if result == 'Yes':
+            result = cmds.confirmDialog(title="Confirm", message="File exists, do you want to overwrite?", button=[
+             "Yes", "No"], defaultButton="Yes", cancelButton="No", dismissString="No")
+            if result == "Yes":
                 ziva_utils.save_rig(file_path, split_data=False, ziva_node=solver)
-            elif result == 'No':
+            elif result == "No":
                 return
         else:
             ziva_utils.save_rig(file_path, split_data=False, ziva_node=solver)
@@ -94,8 +94,8 @@ def switch_tissue(elements=None):
     procesed_items = []
     for element in pymel.ls(selection=True):
         zgeo_node = pymel.listConnections(element.worldMatrix[0])[0]
-        if zgeo_node.type() == 'zGeo':
-            tissue_node = [ node for node in pymel.listConnections(zgeo_node.oGeo) if node.type() == 'zTissue'
+        if zgeo_node.type() == "zGeo":
+            tissue_node = [ node for node in pymel.listConnections(zgeo_node.oGeo) if node.type() == "zTissue"
                           ][0] or None
         if tissue_node is not None:
             if tissue_node.enable.get() != state:
@@ -128,7 +128,7 @@ class MuscleRigBuilder(object):
     def build(self):
         """Bring the anatomy package"""
         if self.new_scene:
-            mw_maya_utils.edit_maya_scene('new')
+            mw_maya_utils.edit_maya_scene("new")
         package = mw_creature_manager_lib.serialize_creature_package_to_maya(self.anatomy_apkg)
         mw_creature_manager_lib.import_creature_package(package)
         cmds.refresh(currentView=True)
@@ -141,29 +141,38 @@ class MuscleRigBuilder(object):
 
 def rename_rivets():
     """ Rename zRivets types on the scene."""
-    for item in pymel.ls(type='zRivetToBoneLocator'):
-        input = pymel.listConnections(('{}.segments').format(item))[0]
-        mesh = pymel.listConnections(('{}.rivetMesh').format(input))[0].name()
-        name = ('{}_to_{}').format(input.name().rsplit('_', 1)[0], mesh.rsplit('_', 1)[0])
-        pymel.rename(item.getParent(), name + '_zRivet')
+    for item in pymel.ls(type="zRivetToBoneLocator"):
+        input = pymel.listConnections(("{}.segments").format(item))[0]
+        mesh = pymel.listConnections(("{}.rivetMesh").format(input))[0].name()
+        name = ("{}_to_{}").format(input.name().rsplit("_", 1)[0], mesh.rsplit("_", 1)[0])
+        pymel.rename(item.getParent(), name + "_zRivet")
 
 
 class ZivaUtilitiesWindow(QtWidgets.QWidget):
     """ Build a Ziva utils interface."""
-    import zBuilder.builders.ziva as zva
     def __init__(self, parent=None):
         
         super(ZivaUtilitiesWindow, self).__init__(parent)
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum))
-        self.setObjectName('Ziva Utilities')
-        self.setWindowTitle('Many Worlds Ziva Utilities v.001')
+        self.setSizePolicy(QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum)
+        )
+        self.setObjectName("Ziva Utilities")
+        self.setWindowTitle("Many Worlds Ziva Utilities v.001")
         self.setWindowFlags(QtCore.Qt.WindowType.Window)
-        
-        self.ziva_handle = zva.Ziva()
         self.create_widgets()
         self.create_layouts()
         self.create_connections()
         self.resize(350, 200)
+        self.setObjectName("zivaUtilsWin")
+
+        import zBuilder.builders.ziva
+        self.ziva_handle = zBuilder.builders.ziva.Ziva()
+
+        import ziva_marking_menu
+        reload(ziva_marking_menu)
+        ziva_marking_menu.ZivaMarkingMenu()
+
 
     def create_layouts(self):
         """ Create the main layout for the widget."""
@@ -191,56 +200,86 @@ class ZivaUtilitiesWindow(QtWidgets.QWidget):
 
     def create_widgets(self):
         """Create the window widgets."""
-        self.tittle = mw_QLabel.MWQLabel(custom_text='Ziva Utilities')
-        self.retrieve_from_scene_bttn = mw_QPushButton.MWQPushButton(text='Retrieve From Scene')
-        self.retrieve_scene_selection_bttn = mw_QPushButton.MWQPushButton(text='Retrieve Scene Selection')
-        self.retrieve_from_file_bttn = mw_QPushButton.MWQPushButton(text='Retrieve From File')
-        self.save_from_scene_bttn = mw_QPushButton.MWQPushButton(text='Save From Scene')
-        self.save_from_selection_bttn = mw_QPushButton.MWQPushButton(text='Save From Selection')
-        self.build_bttn = mw_QPushButton.MWQPushButton(text='Build')
+        self.tittle = mw_QLabel.MWQLabel(custom_text="Ziva Utilities")
+        self.retrieve_from_scene_bttn = mw_QPushButton.MWQPushButton(
+            text="Retrieve From Scene"
+        )
+        self.retrieve_scene_selection_bttn = mw_QPushButton.MWQPushButton(
+            text="Retrieve Scene Selection"
+        )
+        self.retrieve_from_file_bttn = mw_QPushButton.MWQPushButton(
+            text="Retrieve From File"
+        )
+        self.save_from_scene_bttn = mw_QPushButton.MWQPushButton(
+            text="Save From Scene"
+        )
+        self.save_from_selection_bttn = mw_QPushButton.MWQPushButton(
+            text="Save From Selection"
+        )
+        self.build_bttn = mw_QPushButton.MWQPushButton(text="Build")
         self.separator = mw_QSeparator.MWQFrame()
 
     def retrieve_from_scene(self):
-        ziva_handle = zva.Ziva()
-        ziva_handle.retrieve_from_scene()
+        """ Use Ziva methods to retrieve data from scene. """
+        self.ziva_handle.retrieve_from_scene()
 
     def retrieve_from_scene_selection(self):
-        ziva_handle = zva.Ziva()
-        ziva_handle.retrieve_from_scene_selection()
+        """ Use Ziva methods to retrieve data from selection. """
+        self.ziva_handle.retrieve_from_scene_selection()
 
     def retrieve_from_file(self):
-        package_file = mw_maya_utils.open_file(1, filters='Ziva Files (*.ziva)', initial_path=startingDirectory)
+        """ Open file seach dialogue to retrieve Ziva data from file"""
+        package_file = mw_maya_utils.open_file(
+            1,
+            filters="Ziva Files (*.ziva)",
+            initial_path=startingDirectory
+        )
         if package_file:
-            ziva_handle = zva.Ziva()
-            ziva_handle.retrieve_from_file(package_file[0])
-            ziva_handle.build()
+            self.ziva_handle.retrieve_from_file(package_file[0])
+            self.ziva_handle.build()
 
     def save_ziva_build_scene(self):
-        package_file = mw_maya_utils.open_file(0, filters='Ziva Files (*.ziva)', initial_path=startingDirectory)
+        """ Open file seach dialogue to save Ziva data from scene"""
+        package_file = mw_maya_utils.open_file(
+            0,
+            filters="Ziva Files (*.ziva)",
+            initial_path=startingDirectory
+        )
         if package_file:
-            ziva_handle = zva.Ziva()
-            ziva_handle.retrieve_from_scene()
-            ziva_handle.write(package_file[0])
+            self.ziva_handle.retrieve_from_scene()
+            self.ziva_handle.write(package_file[0])
 
     def save_ziva_build_selection(self):
-        package_file = mw_maya_utils.open_file(0, filters='Ziva Files (*.ziva)', initial_path=startingDirectory)
+        """ Open file seach dialogue to save Ziva data from selection"""
+        package_file = mw_maya_utils.open_file(
+            0,
+            filters="Ziva Files (*.ziva)",
+            initial_path=startingDirectory
+        )
         if package_file:
-            import zBuilder.builders.ziva as zva
-            ziva_handle = zva.Ziva()
-            ziva_handle.retrieve_from_scene_selection()
-            ziva_handle.write(package_file[0])
+            self.ziva_handle.retrieve_from_scene_selection()
+            self.ziva_handle.write(package_file[0])
 
     def ziva_build(self):
+        """ Build from Ziva data in memory."""
         self.ziva_handle.build()
 
     def create_connections(self):
+        """ Create connections between methods and widgets. """
         self.retrieve_from_scene_bttn.clicked.connect(self.retrieve_from_scene)
-        self.retrieve_scene_selection_bttn.clicked.connect(self.retrieve_from_scene_selection)
+        self.retrieve_scene_selection_bttn.clicked.connect(
+            self.retrieve_from_scene_selection
+        )
         self.retrieve_from_file_bttn.clicked.connect(self.retrieve_from_file)
         self.save_from_scene_bttn.clicked.connect(self.save_ziva_build_scene)
-        self.save_from_selection_bttn.clicked.connect(self.save_ziva_build_selection)
+        self.save_from_selection_bttn.clicked.connect(
+            self.save_ziva_build_selection
+        )
         self.build_bttn.clicked.connect(self.ziva_build)
+
+    
+
 
 
 logger = logging.getLogger(__name__)
-logger.info(('A new instance of the class {} was created').format(ZivaUtilitiesWindow.__name__))
+logger.info(("A new instance of the class {} was created").format(ZivaUtilitiesWindow.__name__))

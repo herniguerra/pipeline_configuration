@@ -17,7 +17,7 @@ import re
 
 # Maya imports.
 from maya import cmds, mel
-import pymel.core as pm
+import pymel.core as pymel
 
 MENU_NAME = "ZivaMarkingMenu"
 
@@ -204,15 +204,19 @@ def select_by_proximity_options(*args):
 
 
 def auto_rename(*args):
+    import zBuilder.zMaya as zMaya
     zMaya.rename_ziva_nodes()
 
 def ziva_rig_cut(*args):
+    import zBuilder.zMaya as zMaya
     utility.rig_cut()
 
 def ziva_rig_copy(*args):
+    import zBuilder.zMaya as zMaya
     utility.rig_copy()
 
 def ziva_rig_paste(*args):
+    import zBuilder.zMaya as zMaya
     utility.rig_paste()
 
 def create_loa(*args):

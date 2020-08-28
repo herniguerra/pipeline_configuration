@@ -23,5 +23,6 @@ mw_ui_stylesheets = {
 muscle_icons = {
     "RIGBUILDER": "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/mwBuilder.png",
     "APKG": "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/apkg.png",
-    "ZIVATBX": "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/ziva_toolbox01.png"
+    "ZIVATBX": "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/ziva_toolbox01.png",
+    "ZIVARVR": "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/rename.png",
 }
