@@ -66,10 +66,20 @@ def save_load_builds(file_path, solver=None, mode="load"):
         ziva_utils.load_rig(file_path, solver_name=solver)
     elif mode == "save":
         if os.path.isfile(file_path):
-            result = cmds.confirmDialog(title="Confirm", message="File exists, do you want to overwrite?", button=[
-             "Yes", "No"], defaultButton="Yes", cancelButton="No", dismissString="No")
+            result = cmds.confirmDialog(
+                title="Confirm",
+                message="File exists, do you want to overwrite?",
+                button=["Yes", "No"],
+                defaultButton="Yes",
+                cancelButton="No",
+                dismissString="No"
+            )
             if result == "Yes":
-                ziva_utils.save_rig(file_path, split_data=False, ziva_node=solver)
+                ziva_utils.save_rig(
+                    file_path,
+                    split_data=False,
+                    ziva_node=solver
+                )
             elif result == "No":
                 return
         else:
@@ -107,7 +117,7 @@ def switch_tissue(elements=None):
     for element in pymel.ls(selection=True):
         zgeo_node = pymel.listConnections(element.worldMatrix[0])[0]
         if zgeo_node.type() == "zGeo":
-            tissue_node = [ node for node in pymel.listConnections(zgeo_node.oGeo) if node.type() == "zTissue"
+            tissue_node = [node for node in pymel.listConnections(zgeo_node.oGeo) if node.type() == "zTissue"
                           ][0] or None
         if tissue_node is not None:
             if tissue_node.enable.get() != state:
@@ -124,7 +134,12 @@ def switch_tissue(elements=None):
 class MuscleRigBuilder(object):
     """Main Ziva rig builder class"""
 
-    def __init__(self, anatomy_apkg, ziva_build=None, cache_file=None, new_scene=True):
+    def __init__(
+        self,
+        anatomy_apkg,
+        ziva_build=None,
+        cache_file=None,
+        new_scene=True):
         """[summary]
 
         Args:
