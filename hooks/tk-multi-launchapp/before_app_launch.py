@@ -44,11 +44,16 @@ class BeforeAppLaunch(sgtk.Hook):
             associated with this launch command.
         """
 
+        os.system('setx MW_MAYA_PATH ' +
+                  os.path.join(self.disk_location, "maya") + "")
+
         if engine_name == "tk-maya":
+
             sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial/")
 
             sgtk.util.append_path_to_env_var(
-                "MAYA_SHELF_PATH", os.path.join(self.disk_location, "maya/shelves")
+                "MAYA_SHELF_PATH", os.path.join(
+                    self.disk_location, "maya/shelves")
             )
             sgtk.util.append_path_to_env_var(
                 "PYTHONPATH", os.path.join(self.disk_location, "maya")
@@ -57,13 +62,16 @@ class BeforeAppLaunch(sgtk.Hook):
                 "PYTHONPATH", os.path.join(self.disk_location, "maya/python")
             )
             sgtk.util.append_path_to_env_var(
-                "MAYA_MODULE_PATH", os.path.join(self.disk_location, "maya/modules")
+                "MAYA_MODULE_PATH", os.path.join(
+                    self.disk_location, "maya/modules")
             )
             sgtk.util.append_path_to_env_var(
-                "MAYA_SCRIPT_PATH", os.path.join(self.disk_location, "maya/scripts")
+                "MAYA_SCRIPT_PATH", os.path.join(
+                    self.disk_location, "maya/scripts")
             )
             sgtk.util.append_path_to_env_var(
-                "MAYA_PLUG_IN_PATH", os.path.join(self.disk_location, "maya/plugins")
+                "MAYA_PLUG_IN_PATH", os.path.join(
+                    self.disk_location, "maya/plugins")
             )
             sgtk.util.append_path_to_env_var(
                 "XBMLANGPATH", os.path.join(self.disk_location, "maya/icons")
@@ -148,7 +156,8 @@ class BeforeAppLaunch(sgtk.Hook):
 
         # Import the sg_setup.py and run the execute method inside it.
         # If you're using Python 3 then you will want to use importlib.util instead
-        setup = imp.load_source(software_plugin["code"] + "_sg_setup", setup_file)
+        setup = imp.load_source(
+            software_plugin["code"] + "_sg_setup", setup_file)
         setup.execute(
             plugin_version_folder,
             software_plugin,
@@ -171,7 +180,8 @@ class BeforeAppLaunch(sgtk.Hook):
             return
 
         # Get/Create folder specific to the software where we can store the plugins.
-        software_folder = os.path.join(plugin_root_folder, software_plugin["code"])
+        software_folder = os.path.join(
+            plugin_root_folder, software_plugin["code"])
         self.parent.ensure_folder_exists(software_folder)
 
         # Check if we have already downloaded this version.
@@ -187,7 +197,8 @@ class BeforeAppLaunch(sgtk.Hook):
         self.sg.download_attachment(
             software_plugin["sg_payload"], file_path=version_temp_download_location
         )
-        self.logger.debug("Downloaded zip to %s" % version_temp_download_location)
+        self.logger.debug("Downloaded zip to %s" %
+                          version_temp_download_location)
 
         # Unzip it into a temp folder
         version_temp_unzip_location = version_folder + ".tmp"
@@ -201,7 +212,8 @@ class BeforeAppLaunch(sgtk.Hook):
             if "__MACOSX" in folders:
                 folders.remove("__MACOSX")
             if len(folders) == 1:
-                unzipped_folder = os.path.join(version_temp_unzip_location, folders[0])
+                unzipped_folder = os.path.join(
+                    version_temp_unzip_location, folders[0])
                 os.rename(unzipped_folder, version_folder)
             else:
                 self.logger.warning(
@@ -210,7 +222,9 @@ class BeforeAppLaunch(sgtk.Hook):
                 )
                 return
         finally:
-            sgtk.util.filesystem.safe_delete_folder(version_temp_unzip_location)
-            sgtk.util.filesystem.safe_delete_file(version_temp_download_location)
+            sgtk.util.filesystem.safe_delete_folder(
+                version_temp_unzip_location)
+            sgtk.util.filesystem.safe_delete_file(
+                version_temp_download_location)
 
         return version_folder

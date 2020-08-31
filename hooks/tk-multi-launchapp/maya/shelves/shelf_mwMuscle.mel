@@ -33,7 +33,7 @@ global proc shelf_mwMuscle () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "from maya import cmds, mel\n\ndef shelf_test(a, b, arg):\n    \"\"\" Temporal function. \"\"\"\n    print(a + b)\n    for item in arg:\n        print(item)\n        \n        \nshelf_test(1, 2, [\"mundo\", \"infierno\"])" 
+        -command "" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
