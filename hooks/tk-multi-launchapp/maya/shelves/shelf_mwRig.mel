@@ -62,8 +62,8 @@ global proc shelf_mwRig () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/multiMirror.png" 
-        -image1 "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-multi-launchapp/maya/icons/multiMirror.png" 
+        -image "multiMirror.png" 
+        -image1 "multiMirror.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
