@@ -6,9 +6,10 @@ import maya.cmds as cmds
 def run():
     sgBootstrap()
 
-    print "*********************"
+    '''
     modulesPath = os.environ['MAYA_MODULE_PATH']
     print modulesPath
+    '''
 
     import mwUtils
 

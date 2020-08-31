@@ -1,0 +1,5 @@
+string $sourceLocationPath = `workspace -q -dir`;
+python("import sys");
+python("sys.path.append('" + $sourceLocationPath + "')"); 
+python("import bootstrap");
+python("bootstrap.run()");
