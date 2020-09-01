@@ -113,7 +113,7 @@ class MayaSessionCollector(HookBaseClass):
         if cmds.ls(geometry=True, noIntermediate=True):
             self._collect_session_geometry(item)
 
-        self._collect_meshes(item)
+        # self._collect_meshes(item)
 
         self._collect_cameras(item)
 
@@ -146,7 +146,8 @@ class MayaSessionCollector(HookBaseClass):
         )
 
         # get the icon path to display for this item
-        icon_path = os.path.join(self.disk_location, os.pardir, "icons", "maya.png")
+        icon_path = os.path.join(
+            self.disk_location, os.pardir, "icons", "maya.png")
         session_item.set_icon_from_path(icon_path)
 
         # discover the project root which helps in discovery of other
@@ -209,7 +210,8 @@ class MayaSessionCollector(HookBaseClass):
 
             # allow the base class to collect and create the item. it knows how
             # to handle alembic files
-            super(MayaSessionCollector, self)._collect_file(parent_item, cache_path)
+            super(MayaSessionCollector, self)._collect_file(
+                parent_item, cache_path)
 
     def _collect_session_geometry(self, parent_item):
         """
@@ -223,7 +225,8 @@ class MayaSessionCollector(HookBaseClass):
         )
 
         # get the icon path to display for this item
-        icon_path = os.path.join(self.disk_location, os.pardir, "icons", "geometry.png")
+        icon_path = os.path.join(
+            self.disk_location, os.pardir, "icons", "geometry.png")
 
         geo_item.set_icon_from_path(icon_path)
 
@@ -329,7 +332,8 @@ class MayaSessionCollector(HookBaseClass):
         # location refers to the path of this hook file. this means that
         # the icon should live one level above the hook in an "icons"
         # folder.
-        icon_path = os.path.join(self.disk_location, os.pardir, "icons", "mesh.png")
+        icon_path = os.path.join(
+            self.disk_location, os.pardir, "icons", "mesh.png")
 
         # iterate over all top-level transforms and create mesh items
         # for any mesh.
@@ -349,7 +353,8 @@ class MayaSessionCollector(HookBaseClass):
                 # items to act upon. We also give the item a display type and
                 # display name (the group name). In the future, other publish
                 # plugins might attach to these mesh items to publish other things
-                mesh_item = parent_item.create_item("maya.session.mesh", "Mesh", object)
+                mesh_item = parent_item.create_item(
+                    "maya.session.mesh", "Mesh", object)
 
                 # set the icon for the item
                 mesh_item.set_icon_from_path(icon_path)
@@ -371,7 +376,8 @@ class MayaSessionCollector(HookBaseClass):
         # location refers to the path of this hook file. this means that
         # the icon should live one level above the hook in an "icons"
         # folder.
-        icon_path = os.path.join(self.disk_location, os.pardir, "icons", "camera.png")
+        icon_path = os.path.join(
+            self.disk_location, os.pardir, "icons", "camera.png")
 
         # iterate over each camera and create an item for it
         for camera_shape in cmds.ls(cameras=True):
@@ -403,18 +409,28 @@ class MayaSessionCollector(HookBaseClass):
 
     def _collect_outSet(self, parent_item):
         """
-        Creates an item for the out_set.
+        Creates an item for each out_set.
         """
 
-        if cmds.objExists("out_set") or cmds.objExists("*:out_set"):
+        icon_path = os.path.join(
+            self.disk_location, os.pardir, "icons", "mesh.png")
 
-            icon_path = os.path.join(self.disk_location, os.pardir, "icons", "mesh.png")
-
+        if cmds.objExists("out_set"):
             outSet_item = parent_item.create_item(
                 "maya.session.out_set", "out_set", "out_set"
             )
 
             outSet_item.set_icon_from_path(icon_path)
 
-            outSet_item.properties["out_set"] = "out_set"
+            outSet_item.properties["outSet_name"] = "out_set"
 
+        if cmds.objExists("*:out_set"):
+            for ns in cmds.ls("*:out_set"):
+                asset = ns.split(":")[0].split("_")[0]
+
+                outSet_item = parent_item.create_item(
+                    "maya.session.out_set", "out_set", asset)
+
+                outSet_item.set_icon_from_path(icon_path)
+
+                outSet_item.properties["outSet_name"] = asset

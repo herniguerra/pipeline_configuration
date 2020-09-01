@@ -4,20 +4,18 @@ import os
 
 def sgBootstrap():
     MW_MAYA_PATH = os.environ["MW_MAYA_PATH"]
-    print "--------------------------------------"
-    print MW_MAYA_PATH
     # import a standalone sgtk API instance, you don't need to insert the path if you pip installed the API
     sys.path.insert(
         0, "C:/Program Files/Shotgun/Resources/Python/tk-framework-desktopstartup/python/tk-core/python")
+
+    sys.path.insert(
+        0, "C:/Program Files/Shotgun/Resources/Python/tk-framework-desktopstartup/python/tk-core/python/tank_vendor")
 
     sys.path.insert(
         0, os.path.join(MW_MAYA_PATH, "modules/mGear/scripts"))
 
     sys.path.insert(
         0, os.path.join(MW_MAYA_PATH, "modules/many_worlds/scripts"))
-
-    sys.path.insert(
-        0, "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/packages")
 
     import sgtk
 
@@ -38,13 +36,12 @@ def sgBootstrap():
     mgr = sgtk.bootstrap.ToolkitManager(sg_user=user)
     mgr.plugin_id = "basic."
     # you don't need to specify a config, the bootstrap process will automatically pick one if you don't
-    #mgr.pipeline_configuration = "dev"
+    # mgr.pipeline_configuration = "dev"
 
     engine = mgr.bootstrap_engine("tk-maya", entity=project)
 
     # As we imported sgtk prior to bootstrapping we should import it again now as the bootstrap process swapped the standalone sgtk out for the project's sgtk.
     import sgtk
-    import mwUtils
 
     print ("engine", engine)
     print ("context", engine.context)
@@ -52,7 +49,9 @@ def sgBootstrap():
     print ("Shotgun API instance", engine.shotgun)
 
 
-def createCacheChainTask(chain_link, anim_task=None, entity_type=None, entity_name=None):
+def createCacheChainTask(anim_task, chain_mode, asset_name, pass_name):
+    import sgtk
+    import mwUtils
     import shotgun_api3
 
     sg = shotgun_api3.Shotgun(
@@ -64,44 +63,36 @@ def createCacheChainTask(chain_link, anim_task=None, entity_type=None, entity_na
     current_engine = sgtk.platform.current_engine()
     tk = current_engine.sgtk
 
-    project_id = getProject(returnId=True)
-    user_id = getUser(returnId=True)
+    project_id = mwUtils.getProject(returnId=True)
+    user_id = mwUtils.getUser(returnId=True)
 
-    if entity_name == None:
-        entity_name = getEntity()
-    else:
-        entity_name = entity_name
-
-    if entity_type == None:
-        entity_type = getEntity(returnType=True)
-
-    if entity_type == "Asset":
-        if anim_task == None:
-            cmds.warning(
-                "Missing anim_task argument in mwUtils.createCacheChainTask. Task was not created."
-            )
-            return
-
-        task_name = anim_task + "_" + entity_name + "_" + chain_link
-        step_name = "Rig"
+    if chain_mode == "Asset":
+        task_name = anim_task + "_" + pass_name
+        step_name = "CharacterFX"
 
         # find step_id
-        step_name = "Rig"
-        filters = [["code", "is", step_name]]
+        filters = [["code", "is", step_name], ["entity_type", "is", "Asset"]]
+
         step_id = sg.find_one("Step", filters)["id"]
 
-    elif entity_type == "Shot":
+        # find entity_id
+        filters = [["code", "is", asset_name]]
+        entity_id = sg.find_one("Asset", filters)["id"]
+
+    '''
+    elif chain_mode == "Shot":
         if entity_name == None:
             cmds.warning(
                 "Missing entity_name argument in mwUtils.createCacheChainTask. Task was not created."
             )
             return
 
-        task_name = entity_name + "_" + entity_name + "_" + chain_link
+        task_name = entity_name + "_" + entity_name + "_" + pass_name
         # find step_id
         step_name = "CharacterFX"
         filters = [["code", "is", step_name]]
         step_id = sg.find_one("Step", filters)["id"]
+    '''
 
     # verifies it doesn't exist
     filters = [["entity.Asset.code", "is", entity_name],
@@ -113,9 +104,9 @@ def createCacheChainTask(chain_link, anim_task=None, entity_type=None, entity_na
 
     if len(find) == 0:
         data = {
-            "project": {"type": "Project", "id": project_id},
             "content": task_name,
-            "entity": {"type": "Asset", "content": entity_name},
+            "project": {"type": "Project", "id": project_id},
+            "entity": {"type": "Asset", "id": entity_id},
             "step": {"type": "Step", "id": step_id},
             "task_assignees": [{"type": "HumanUser", "id": user_id}],
         }
@@ -130,6 +121,7 @@ def createCacheChainTask(chain_link, anim_task=None, entity_type=None, entity_na
     else:
         print "*** Task", task_name, "already exists"
         task_id = find[0]["id"]
+        tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
 
     # change context to task
     new_context = tk.context_from_entity("Task", task_id)
@@ -138,8 +130,15 @@ def createCacheChainTask(chain_link, anim_task=None, entity_type=None, entity_na
     return task_name
 
 
-def runCacheChain(anim_task=None, entity_type=None, entity_name=None):
+def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, source_task):
+    import maya.cmds as cmds
+    import mwUtils
     import shotgun_api3
+    import sgtk
+
+    cmds.loadPlugin("atomImportExport.mll", quiet=True)
+    cmds.loadPlugin("AbcImport.mll", quiet=True)
+    cmds.loadPlugin("AbcExport.mll", quiet=True)
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
@@ -147,184 +146,179 @@ def runCacheChain(anim_task=None, entity_type=None, entity_name=None):
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
-    project_id = getProject(returnId=True)
-    if entity_name == None:
-        entity_name = getEntity()
-    if entity_type == None:
-        entity_type = getEntity(returnType=True)
-
-    if entity_type == "Asset":
-        if anim_task == None:
-            cmds.warning(
-                "Missing anim_task argument in mwUtils.runCacheChain. CacheChain aborted."
-            )
-            return
-
-        cmds.file(new=1, f=1)
-        muscle_task = createCacheChainTask(
-            "musclePass", anim_task=anim_task, entity_type=entity_type, entity_name=entity_name
-        )
-
-        bringPublish(
-            task=anim_task,
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Alembic Cache",
-            namespace="a",
-        )
-
-        bringPublish(
-            task="RigMuscle",
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Maya Scene",
-            namespace="b",
-        )
-
-        connectRigs("a", "b")
-        saveAndPublish(template_name="maya_asset_rig_work")
-
-        cmds.file(new=1, f=1)
-        fascia_task = createCacheChainTask(
-            "fasciaPass", anim_task=anim_task, entity_type=entity_type, entity_name=entity_name
-        )
-
-        bringPublish(
-            task=muscle_task,
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Alembic Cache",
-            namespace="a",
-        )
-
-        bringPublish(
-            task="RigFascia",
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Maya Scene",
-            namespace="b",
-        )
-
-        connectRigs("a", "b")
-        saveAndPublish(template_name="maya_asset_rig_work")
-
-        cmds.file(new=1, f=1)
-        fat_task = createCacheChainTask(
-            "fatPass", anim_task=anim_task, entity_type=entity_type, entity_name=entity_name
-        )
-
-        bringPublish(
-            task=fascia_task,
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Alembic Cache",
-            namespace="a",
-        )
-
-        bringPublish(
-            task="RigFat",
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Maya Scene",
-            namespace="b",
-        )
-
-        connectRigs("a", "b")
-        saveAndPublish(template_name="maya_asset_rig_work")
-
-        print "Cache Chain Finished! :D"
-
-        """
-        cmds.file(new=1, f=1)
-        skin_task = createCacheChainTask(
-            "skinPass", anim_task=anim_task, entity_name=entity_name
-        )
-
-        bringPublish(
-            task=fat_task,
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Alembic Cache",
-            namespace="a",
-        )
-
-        bringPublish(
-            task="RigSkin",
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Maya Scene",
-            namespace="b",
-        )
-
-        connectRigs("a", "b")
-        saveAndPublish(template_name="maya_asset_rig_work")
-
-        cmds.file(new=1, f=1)
-        groom_task = createCacheChainTask(
-            "groomPass", anim_task=anim_task, entity_name=entity_name
-        )
-
-        bringPublish(
-            task=skin_task,
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Alembic Cache",
-            namespace="a",
-        )
-
-        bringPublish(
-            task="Groom",
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Maya Scene",
-            namespace="b",
-        )
-
-        connectRigs("a", "b")
-        saveAndPublish(template_name="maya_asset_rig_work")
-
-        cmds.file(new=1, f=1)
-        cloth_task = createCacheChainTask(
-            "clothPass", anim_task=anim_task, entity_name=entity_name
-        )
-
-        bringPublish(
-            task=skin_task,
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Alembic Cache",
-            namespace="a",
-        )
-
-        bringPublish(
-            task="Cloth",
-            template="maya_asset_publish",
-            asset_name="current",
-            published_file_type="Maya Scene",
-            namespace="b",
-        )
-
-        connectRigs("a", "b")
-        saveAndPublish(template_name="maya_asset_rig_work")
-
-        print "Cache Chain Finished! :D"
-
-        """
-
-
-def saveAndPublish(template_name=None):
-    # need to have an engine running in a context where the publisher has been
-    # configured.
     current_engine = sgtk.platform.current_engine()
     context = current_engine.context
     tk = current_engine.sgtk
 
+    project_id = mwUtils.getProject(returnId=True)
+
+    step_name = "CharacterFX"
+    user_id = mwUtils.getUser(returnId=True)
+
+    if chain_mode == "Asset":
+        template_name = "maya_asset_work"
+        task_name = anim_task + "_" + pass_name
+
+        if source_task == None:
+            source_task = anim_task
+        else:
+            source_task = anim_task+"_"+source_task
+
+        # find step_id
+        filters = [["code", "is", step_name], ["entity_type", "is", "Asset"]]
+        step_id = sg.find_one("Step", filters)["id"]
+
+        # find asset_id
+        filters = [["code", "is", asset_name]]
+        asset_id = sg.find_one("Asset", filters)["id"]
+
+        # verifies it doesn't exist
+        filters = [["entity.Asset.code", "is", asset_name],
+                   ["content", "is", task_name]]
+
+        fields = ["path", "name"]
+
+        find = sg.find("Task", filters, fields)
+
+        if len(find) == 0:
+            data = {
+                "content": task_name,
+                "project": {"type": "Project", "id": project_id},
+                "entity": {"type": "Asset", "id": asset_id},
+                "step": {"type": "Step", "id": step_id},
+                "task_assignees": [{"type": "HumanUser", "id": user_id}],
+            }
+            result = sg.create("Task", data)
+
+            print "*** Task created"
+            task_id = result["id"]
+
+            # creates folders
+            tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
+
+        else:
+            print "*** Task", task_name, "already exists"
+            task_id = find[0]["id"]
+            tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
+
+        # change context to task
+        cmds.file(new=1, f=1)
+
+        new_context = tk.context_from_entity("Task", task_id)
+        sgtk.platform.change_context(new_context)
+
+        mwUtils.bringPublish(
+            entity_type="Asset",
+            task=source_task,
+            template="maya_asset_publish",
+            entity_name=asset_name,
+            published_file_type="Alembic Cache",
+            namespace=asset_name+"_"+source_task,
+        )
+
+        mwUtils.bringPublish(
+            entity_type="Asset",
+            task=pass_task,
+            template="maya_asset_publish",
+            entity_name=asset_name,
+            published_file_type="Maya Scene",
+            namespace=asset_name+"_"+pass_task,
+        )
+
+        mwUtils.connectRigs(asset_name+"_"+source_task,
+                            asset_name+"_"+pass_task)
+
+    if chain_mode == "Shot":
+        seq = anim_task.split("_")[0]
+        sht = anim_task.split("_")[1]
+
+        template_name = "maya_shot_work"
+        task_name = asset_name + "_" + pass_name
+
+        if source_task == None:
+            source_task = "Animation"
+        else:
+            source_task = asset_name + "_" + source_task
+
+        # find step_id
+        filters = [["code", "is", step_name], ["entity_type", "is", "Shot"]]
+        step_id = sg.find_one("Step", filters)["id"]
+
+        # find seq_id
+        filters = [["code", "is", seq], ["project",
+                                         "is", {"type": "Project", "id": project_id}]]
+        seq_id = sg.find_one("Sequence", filters)["id"]
+
+        # find shot_id
+        filters = [["code", "is", sht], ["project", "is", {"type": "Project", "id": project_id}], [
+            'sg_sequence', 'is', {'type': 'Sequence', 'id': seq_id}]]
+        shot_id = sg.find_one("Shot", filters)["id"]
+
+        # verifies new task doesn't exist
+        filters = [["entity.Shot.id", "is", shot_id],
+                   ["content", "is", task_name]]
+
+        fields = ["path", "name"]
+
+        find = sg.find("Task", filters, fields)
+
+        if len(find) == 0:
+            data = {
+                "content": task_name,
+                "project": {"type": "Project", "id": project_id},
+                "entity": {"type": "Shot", "id": shot_id},
+                "step": {"type": "Step", "id": step_id},
+                "task_assignees": [{"type": "HumanUser", "id": user_id}],
+            }
+            result = sg.create("Task", data)
+
+            print "*** Task created"
+            task_id = result["id"]
+
+            # creates folders
+            tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
+
+        else:
+            print "*** Task", task_name, "already exists"
+            task_id = find[0]["id"]
+            tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
+
+        # change context to task
+        cmds.file(new=1, f=1)
+
+        new_context = tk.context_from_entity("Task", task_id)
+
+        sgtk.platform.change_context(new_context)
+
+        mwUtils.bringPublish(
+            entity_type="Shot",
+            task=source_task,
+            template="maya_shot_publish",
+            published_file_type="Alembic Cache",
+            namespace=asset_name+"_"+source_task,
+        )
+
+        mwUtils.bringPublish(
+            entity_type="Asset",
+            task=pass_task,
+            template="maya_asset_publish",
+            entity_name=asset_name,
+            published_file_type="Maya Scene",
+            namespace=asset_name+"_"+pass_task,
+        )
+
+        mwUtils.connectRigs(asset_name+"_"+source_task,
+                            asset_name+"_"+pass_task)
+
+    ### save and publish
+    # need to have an engine running in a context where the publisher has been
+    # configured.
+
     template = tk.templates[template_name]
-    fields = context.as_template_fields(template)
+    fields = new_context.as_template_fields(template)
     fields["version"] = get_next_version_number(tk, template_name, fields)
     work_path = template.apply_fields(fields)
     current_engine.ensure_folder_exists(os.path.dirname(work_path))
-    print work_path
 
     cmds.file(rename=work_path)
     cmds.file(save=1)
@@ -355,6 +349,8 @@ def saveAndPublish(template_name=None):
         logger.error("There was trouble trying to publish!")
         logger.error("Error: %s", error)
 
+    print "Link done!"
+
 
 def get_next_version_number(tk, template_name, fields):
     template = tk.templates[template_name]
@@ -381,7 +377,57 @@ def get_next_version_number(tk, template_name, fields):
 
 def startCache():
     sgBootstrap()
-    print "OKKKKKKKKKKKKKKK"
-    runCacheChain(anim_task="animTest",
-                  entity_type="Asset", entity_name="Pipe")
-    print "DONEEEE"
+
+    cacheChainDict = {"anim_task": "animTest", "entity_type": "Asset", "asset_name": "Pipe",
+                      "chain": [
+                          {"pass_name": "musclePass",
+                              "pass_task": "rigMuscle", "task_step": "Rig", "source_task": None},
+
+                          {"pass_name": "fasciaPass",
+                              "pass_task": "rigFascia", "task_step": "Rig", "source_task": "musclePass"},
+
+                          {"pass_name": "fatPass",
+                              "pass_task": "rigFat", "task_step": "Rig", "source_task": "fasciaPass"},
+
+                          {"pass_name": "skinPass",
+                              "pass_task": "rigSkin", "task_step": "Rig", "source_task": "fatPass"},
+                      ]
+                      }
+    '''
+
+    cacheChainDict = {"anim_task": "SQ0010_SH0010", "entity_type": "Shot", "asset_name": "Pipe",
+                      "chain": [
+                          {"pass_name": "musclePass",
+                              "pass_task": "rigMuscle", "task_step": "Rig", "source_task": None},
+
+                          {"pass_name": "fasciaPass",
+                              "pass_task": "rigFascia", "task_step": "Rig", "source_task": "musclePass"},
+
+                          {"pass_name": "fatPass",
+                              "pass_task": "rigFat", "task_step": "Rig", "source_task": "fasciaPass"},
+
+                          {"pass_name": "skinPass",
+                              "pass_task": "rigSkin", "task_step": "Rig", "source_task": "fatPass"},
+                      ]
+                      }
+    '''
+
+    anim_task = cacheChainDict["anim_task"]
+    entity_type = cacheChainDict["entity_type"]
+    asset_name = cacheChainDict["asset_name"]
+    chain = cacheChainDict["chain"]
+
+    for link in chain:
+        pass_name = link["pass_name"]
+        pass_task = link["pass_task"]
+        source_task = link["source_task"]
+        print "***"
+        print "Creating cacheChainLink:"
+        print pass_name
+        print "from:"
+        print source_task
+
+        cacheChainLink(anim_task, entity_type,
+                       asset_name, pass_name, pass_task, source_task)
+
+    print "Cache Chain Finished! :D"

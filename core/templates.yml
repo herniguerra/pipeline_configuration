@@ -281,6 +281,13 @@ paths:
   # Maya
   #
 
+  #
+  # Alembic caches
+  #
+
+  shot_alembic_cache:
+    definition: "@shot_root/publish/caches/{Sequence}_{Shot}_{task_name}.v{version}.abc"
+
   # define the location of a work area
   shot_work_area_maya:
     definition: "@shot_root/work/maya"

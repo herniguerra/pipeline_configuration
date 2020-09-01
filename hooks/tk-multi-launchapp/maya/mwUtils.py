@@ -1307,10 +1307,11 @@ def helloWorlds():
 
 
 def bringPublish(
+    entity_type="Asset",
     task="model",
     returnPath=False,
     template="maya_asset_publish",
-    asset_name="current",
+    entity_name="current",
     published_file_type="Maya Scene",
     namespace=None,
 ):
@@ -1329,11 +1330,11 @@ def bringPublish(
     template = tk.templates[template]
     fields = context.as_template_fields(template)
 
-    if asset_name == "current":
-        asset_name = getEntity()
+    if entity_name == "current":
+        entity_name = getEntity()
 
     filters = [
-        ["entity.Asset.code", "is", asset_name],
+        ["entity."+entity_type+".code", "is", entity_name],
         ["task.Task.content", "is", task],
         ["published_file_type.PublishedFileType.code", "is", published_file_type],
     ]
@@ -1383,5 +1384,3 @@ def bringPublish(
             cmds.file(filePath, i=True, defaultNamespace=True)
 
             return filePath
-
-    # bringPublish(task="animTest", returnPath=False, template="maya_asset_publish", asset_name="current", published_file_type="Alembic Cache")

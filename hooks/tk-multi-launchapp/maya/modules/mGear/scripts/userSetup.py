@@ -4,18 +4,6 @@ from maya import cmds
 from pymel import mayautils
 from cvwrap.menu import create_menuitems
 
-print("""
- ____________________________________
-|             _____                  |
-|            / ____|                 |
-|  _ __ ___ | |  __  ___  __ _ _ __  |
-| | '_ ` _ \| | |_ |/ _ \/ _` | '__| |
-| | | | | | | |__| |  __/ (_| | |    |
-| |_| |_| |_|\_____|\___|\__,_|_|    |
-|____________________________________|
-
-""")
-
 
 def mGear_menu_loader():
     """Create mGear menu"""

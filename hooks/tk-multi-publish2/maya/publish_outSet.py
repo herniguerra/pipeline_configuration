@@ -242,6 +242,8 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         # get the normalized path
         path = sgtk.util.ShotgunPath.normalize(path)
 
+        outSet_name = item.properties["outSet_name"]
+
         # get the configured work file template
         work_template = item.parent.properties.get("work_template")
         publish_template = item.properties.get("publish_template")
@@ -251,7 +253,7 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         work_fields = work_template.get_fields(path)
 
         # include the out_set name in the fields
-        work_fields["name"] = "out_set"
+        work_fields["name"] = outSet_name
 
         # ensure the fields work for the publish template
         missing_keys = publish_template.missing_keys(work_fields)

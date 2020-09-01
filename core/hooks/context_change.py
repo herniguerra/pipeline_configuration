@@ -69,23 +69,25 @@ class ContextChange(get_hook_baseclass()):
         # Check we are in the right engine
         if engine and engine.name == "tk-maya":
 
-            # Frame rate
-            if current_context.entity and current_context.entity["type"] == "Shot":
-                # Now perform any Maya specific logic
-                # For example we could query Shotgun for some specific data
-                project = engine.shotgun.find_one(
-                    "Project",
-                    ["id", "is", current_context.project["id"]],
-                    ["sg_frame_rate"],
-                )
+            '''
+              # Frame rate
+              if current_context.entity and current_context.entity["type"] == "Shot":
+                  # Now perform any Maya specific logic
+                  # For example we could query Shotgun for some specific data
+                  project = engine.shotgun.find_one(
+                      "Project",
+                      ["id", "is", current_context.project["id"]],
+                      ["sg_frame_rate"],
+                  )
 
-                # Import the Maya API now we are sure we are running in the Maya engine.
-                import maya.cmds as cmds
+                  # Import the Maya API now we are sure we are running in the Maya engine.
+                  import maya.cmds as cmds
 
-                # Convert the Shotgun value into a format that Maya understands.
-                frame_rate = "{0}fps".format(project["sg_frame_rate"])
-                # Now set the Maya framerate based on the data in Shotgun
-                cmds.currentUnit(time=frame_rate)
+                  # Convert the Shotgun value into a format that Maya understands.
+                  frame_rate = "{0}fps".format(project["sg_frame_rate"])
+                  # Now set the Maya framerate based on the data in Shotgun
+                  cmds.currentUnit(time=frame_rate)
+            '''
 
             if current_context.entity and current_context.entity["type"] == "Asset":
                 if current_context.task["name"] == "RigPuppet":
