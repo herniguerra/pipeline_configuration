@@ -853,6 +853,51 @@ def getEntity(returnId=False, returnType=False):
         return context.entity["type"]
 
 
+def getAsset(returnId=False):
+    if getEntity(returnType=True) == "Asset":
+        return getEntity(returnId=returnId)
+    else:
+        cmds.warning("Current context's entity type is Shot")
+        return None
+
+
+def getShot(returnId=False):
+    if getEntity(returnType=True) == "Shot":
+        return getEntity(returnId=returnId)
+    else:
+        cmds.warning("Current context's entity type is Asset")
+        return None
+
+
+def getSequence(returnId=False):
+    if getEntity(returnType=True) == "Shot":
+        import shotgun_api3
+        sg = shotgun_api3.Shotgun(
+            "https://many-worlds.shotgunstudio.com",
+            script_name="mwUtils_bringPublish",
+            api_key="wmNnyhwfdpuecdstofw0^gjkk",
+        )
+
+        if returnId == False:
+            field = "code"
+        else:
+            field = "id"
+        shot_id = getEntity(returnId=True)
+        project_id = getProject(returnId=True)
+        filters = [["project", "is", {"type": "Project", "id": project_id}],
+                   {"filter_operator": "any", "filters": [
+                       ["shots", "is", {"type": "Shot", "id": shot_id}]]}]
+
+        fields = [field]
+
+        find = sg.find_one("Sequence", filters, fields)
+
+        return find["code"]
+    else:
+        cmds.warning("Current context's entity type is Asset")
+        return None
+
+
 def getStep(returnId=False):
     # returns current step
 

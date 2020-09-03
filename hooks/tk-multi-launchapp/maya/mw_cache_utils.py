@@ -49,87 +49,6 @@ def sgBootstrap():
     print ("Shotgun API instance", engine.shotgun)
 
 
-def createCacheChainTask(anim_task, chain_mode, asset_name, pass_name):
-    import sgtk
-    import mwUtils
-    import shotgun_api3
-
-    sg = shotgun_api3.Shotgun(
-        "https://many-worlds.shotgunstudio.com",
-        script_name="mwUtils_bringPublish",
-        api_key="wmNnyhwfdpuecdstofw0^gjkk",
-    )
-
-    current_engine = sgtk.platform.current_engine()
-    tk = current_engine.sgtk
-
-    project_id = mwUtils.getProject(returnId=True)
-    user_id = mwUtils.getUser(returnId=True)
-
-    if chain_mode == "Asset":
-        task_name = anim_task + "_" + pass_name
-        step_name = "CharacterFX"
-
-        # find step_id
-        filters = [["code", "is", step_name], ["entity_type", "is", "Asset"]]
-
-        step_id = sg.find_one("Step", filters)["id"]
-
-        # find entity_id
-        filters = [["code", "is", asset_name]]
-        entity_id = sg.find_one("Asset", filters)["id"]
-
-    '''
-    elif chain_mode == "Shot":
-        if entity_name == None:
-            cmds.warning(
-                "Missing entity_name argument in mwUtils.createCacheChainTask. Task was not created."
-            )
-            return
-
-        task_name = entity_name + "_" + entity_name + "_" + pass_name
-        # find step_id
-        step_name = "CharacterFX"
-        filters = [["code", "is", step_name]]
-        step_id = sg.find_one("Step", filters)["id"]
-    '''
-
-    # verifies it doesn't exist
-    filters = [["entity.Asset.code", "is", entity_name],
-               ["content", "is", task_name]]
-
-    fields = ["path", "name"]
-
-    find = sg.find("Task", filters, fields)
-
-    if len(find) == 0:
-        data = {
-            "content": task_name,
-            "project": {"type": "Project", "id": project_id},
-            "entity": {"type": "Asset", "id": entity_id},
-            "step": {"type": "Step", "id": step_id},
-            "task_assignees": [{"type": "HumanUser", "id": user_id}],
-        }
-        result = sg.create("Task", data)
-
-        print "*** Task created"
-        task_id = result["id"]
-
-        # creates folders
-        tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
-
-    else:
-        print "*** Task", task_name, "already exists"
-        task_id = find[0]["id"]
-        tk.create_filesystem_structure("Task", task_id, engine="tk-maya")
-
-    # change context to task
-    new_context = tk.context_from_entity("Task", task_id)
-    sgtk.platform.change_context(new_context)
-
-    return task_name
-
-
 def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, source_task):
     import maya.cmds as cmds
     import mwUtils
@@ -172,6 +91,12 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
         filters = [["code", "is", asset_name]]
         asset_id = sg.find_one("Asset", filters)["id"]
 
+        # find animTask_id
+        filters = [["code", "is", anim_task], [
+            "entity", "is", {"type": "Asset", "id": asset_id}]]
+
+        animTask_id = sg.find_one("Task", filters)["id"]
+
         # verifies it doesn't exist
         filters = [["entity.Asset.code", "is", asset_name],
                    ["content", "is", task_name]]
@@ -187,6 +112,7 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
                 "entity": {"type": "Asset", "id": asset_id},
                 "step": {"type": "Step", "id": step_id},
                 "task_assignees": [{"type": "HumanUser", "id": user_id}],
+                "upstream_tasks": [{"type": "Task", "id": animTask_id}]
             }
             result = sg.create("Task", data)
 
@@ -378,13 +304,16 @@ def get_next_version_number(tk, template_name, fields):
 def startCache():
     sgBootstrap()
 
-    cacheChainDict = {"anim_task": "animTest", "entity_type": "Asset", "asset_name": "Pipe",
+    cacheChainDict = {"anim_task": "jumpAround", "entity_type": "Asset", "asset_name": "Pipe",
                       "chain": [
                           {"pass_name": "musclePass",
                               "pass_task": "rigMuscle", "task_step": "Rig", "source_task": None},
 
                           {"pass_name": "fasciaPass",
-                              "pass_task": "rigFascia", "task_step": "Rig", "source_task": "musclePass"},
+                              "pass_task": "rigFascia", "task_step": "Rig", "source_task": "musclePass"}, ]
+                      }
+
+    '''
 
                           {"pass_name": "fatPass",
                               "pass_task": "rigFat", "task_step": "Rig", "source_task": "fasciaPass"},
@@ -393,7 +322,7 @@ def startCache():
                               "pass_task": "rigSkin", "task_step": "Rig", "source_task": "fatPass"},
                       ]
                       }
-    '''
+ 
 
     cacheChainDict = {"anim_task": "SQ0010_SH0010", "entity_type": "Shot", "asset_name": "Pipe",
                       "chain": [
