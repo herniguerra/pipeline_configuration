@@ -1,6 +1,4 @@
 $sourceLocationPath = `getenv "MW_MAYA_PATH"`;
-print "!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-print $sourceLocationPath;
 python("import sys");
 python("sys.path.append('" + $sourceLocationPath + "')"); 
 python("import mw_cache_utils");

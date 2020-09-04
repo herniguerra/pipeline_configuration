@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 
 
 def sgBootstrap():
@@ -49,7 +50,7 @@ def sgBootstrap():
     print ("Shotgun API instance", engine.shotgun)
 
 
-def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, source_task):
+def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, pass_task, source_task, from_id):
     import maya.cmds as cmds
     import mwUtils
     import shotgun_api3
@@ -69,8 +70,6 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
     context = current_engine.context
     tk = current_engine.sgtk
 
-    project_id = mwUtils.getProject(returnId=True)
-
     step_name = "CharacterFX"
     user_id = mwUtils.getUser(returnId=True)
 
@@ -78,21 +77,17 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
         template_name = "maya_asset_work"
         task_name = anim_task + "_" + pass_name
 
-        if source_task == None:
-            source_task = anim_task
-        else:
-            source_task = anim_task+"_"+source_task
-
         # find step_id
         filters = [["code", "is", step_name], ["entity_type", "is", "Asset"]]
         step_id = sg.find_one("Step", filters)["id"]
 
         # find asset_id
-        filters = [["code", "is", asset_name]]
+        filters = [["code", "is", asset_name], ["project",
+                                                "is", {"type": "Project", "id": project_id}]]
         asset_id = sg.find_one("Asset", filters)["id"]
 
         # find animTask_id
-        filters = [["code", "is", anim_task], [
+        filters = [["content", "is", anim_task], [
             "entity", "is", {"type": "Asset", "id": asset_id}]]
 
         animTask_id = sg.find_one("Task", filters)["id"]
@@ -133,23 +128,24 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
         new_context = tk.context_from_entity("Task", task_id)
         sgtk.platform.change_context(new_context)
 
-        mwUtils.bringPublish(
-            entity_type="Asset",
-            task=source_task,
-            template="maya_asset_publish",
-            entity_name=asset_name,
-            published_file_type="Alembic Cache",
-            namespace=asset_name+"_"+source_task,
-        )
+        print "----------", source_task
+
+        if from_id == True:
+            mwUtils.bringPublish(id=sourcePublish_id,
+                                 namespace=asset_name+"_"+source_task)
+
+        else:
+            mwUtils.bringPublish(
+                entity_type="Asset",
+                task=anim_task+"_"+source_task,
+                template="maya_asset_publish",
+                entity_name=asset_name,
+                published_file_type="Alembic Cache",
+                namespace=asset_name+"_"+source_task,
+            )
 
         mwUtils.bringPublish(
-            entity_type="Asset",
-            task=pass_task,
-            template="maya_asset_publish",
-            entity_name=asset_name,
-            published_file_type="Maya Scene",
-            namespace=asset_name+"_"+pass_task,
-        )
+            id=linkPublish_id, namespace=asset_name+"_"+pass_task)
 
         mwUtils.connectRigs(asset_name+"_"+source_task,
                             asset_name+"_"+pass_task)
@@ -160,11 +156,6 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
 
         template_name = "maya_shot_work"
         task_name = asset_name + "_" + pass_name
-
-        if source_task == None:
-            source_task = "Animation"
-        else:
-            source_task = asset_name + "_" + source_task
 
         # find step_id
         filters = [["code", "is", step_name], ["entity_type", "is", "Shot"]]
@@ -216,27 +207,25 @@ def cacheChainLink(anim_task, chain_mode, asset_name, pass_name, pass_task, sour
 
         sgtk.platform.change_context(new_context)
 
-        mwUtils.bringPublish(
-            entity_type="Shot",
-            task=source_task,
-            template="maya_shot_publish",
-            published_file_type="Alembic Cache",
-            namespace=asset_name+"_"+source_task,
-        )
+        if from_id == True:
+            mwUtils.bringPublish(id=sourcePublish_id,
+                                 namespace=asset_name+"_"+source_task)
+        else:
+            mwUtils.bringPublish(
+                entity_type="Shot",
+                task=asset_name+"_"+source_task,
+                template="maya_shot_publish",
+                published_file_type="Alembic Cache",
+                namespace=asset_name+"_"+source_task,
+            )
 
         mwUtils.bringPublish(
-            entity_type="Asset",
-            task=pass_task,
-            template="maya_asset_publish",
-            entity_name=asset_name,
-            published_file_type="Maya Scene",
-            namespace=asset_name+"_"+pass_task,
-        )
+            id=linkPublish_id, namespace=asset_name+"_"+pass_task)
 
         mwUtils.connectRigs(asset_name+"_"+source_task,
                             asset_name+"_"+pass_task)
 
-    ### save and publish
+    # save and publish
     # need to have an engine running in a context where the publisher has been
     # configured.
 
@@ -301,62 +290,35 @@ def get_next_version_number(tk, template_name, fields):
         return max(versions) + 1
 
 
-def startCache():
-    sgBootstrap()
+def startCache(currentSession=False):
+    if currentSession == False:
+        sgBootstrap()
 
-    cacheChainDict = {"anim_task": "jumpAround", "entity_type": "Asset", "asset_name": "Pipe",
-                      "chain": [
-                          {"pass_name": "musclePass",
-                              "pass_task": "rigMuscle", "task_step": "Rig", "source_task": None},
+    mw_maya_path = os.getenv("MW_MAYA_PATH")
+    file_path = os.path.join(mw_maya_path, "mwCacheApp_data.json")
 
-                          {"pass_name": "fasciaPass",
-                              "pass_task": "rigFascia", "task_step": "Rig", "source_task": "musclePass"}, ]
-                      }
+    with open(file_path, 'r') as fp:
+        mwCacheApp_data = json.load(fp)
 
-    '''
-
-                          {"pass_name": "fatPass",
-                              "pass_task": "rigFat", "task_step": "Rig", "source_task": "fasciaPass"},
-
-                          {"pass_name": "skinPass",
-                              "pass_task": "rigSkin", "task_step": "Rig", "source_task": "fatPass"},
-                      ]
-                      }
- 
-
-    cacheChainDict = {"anim_task": "SQ0010_SH0010", "entity_type": "Shot", "asset_name": "Pipe",
-                      "chain": [
-                          {"pass_name": "musclePass",
-                              "pass_task": "rigMuscle", "task_step": "Rig", "source_task": None},
-
-                          {"pass_name": "fasciaPass",
-                              "pass_task": "rigFascia", "task_step": "Rig", "source_task": "musclePass"},
-
-                          {"pass_name": "fatPass",
-                              "pass_task": "rigFat", "task_step": "Rig", "source_task": "fasciaPass"},
-
-                          {"pass_name": "skinPass",
-                              "pass_task": "rigSkin", "task_step": "Rig", "source_task": "fatPass"},
-                      ]
-                      }
-    '''
-
-    anim_task = cacheChainDict["anim_task"]
-    entity_type = cacheChainDict["entity_type"]
-    asset_name = cacheChainDict["asset_name"]
-    chain = cacheChainDict["chain"]
-
-    for link in chain:
+    for link in mwCacheApp_data:
+        project_id = link["project_id"]
+        sourcePublish_id = link["sourcePublish_id"]
+        linkPublish_id = link["linkPublish_id"]
+        anim_task = link["anim_task"]
+        chain_mode = link["chain_mode"]
+        asset_name = link["asset_name"]
         pass_name = link["pass_name"]
         pass_task = link["pass_task"]
         source_task = link["source_task"]
+        from_id = link["from_id"]
+
         print "***"
         print "Creating cacheChainLink:"
         print pass_name
         print "from:"
         print source_task
 
-        cacheChainLink(anim_task, entity_type,
-                       asset_name, pass_name, pass_task, source_task)
+        cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode,
+                       asset_name, pass_name, pass_task, source_task, from_id)
 
     print "Cache Chain Finished! :D"

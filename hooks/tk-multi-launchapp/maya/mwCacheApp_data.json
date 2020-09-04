@@ -1,0 +1,74 @@
+[
+    {
+        "anim_task": "animTest", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "from_id": true, 
+        "linkPublish_id": 918, 
+        "pass_name": "musclePass", 
+        "pass_task": "RigMuscle", 
+        "project_id": 157, 
+        "sourcePublish_id": 1050, 
+        "source_task": "animTest"
+    }, 
+    {
+        "anim_task": "animTest", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "from_id": false, 
+        "linkPublish_id": 894, 
+        "pass_name": "fasciaPass", 
+        "pass_task": "RigFascia", 
+        "project_id": 157, 
+        "sourcePublish_id": 1050, 
+        "source_task": "musclePass"
+    }, 
+    {
+        "anim_task": "animTest", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "from_id": false, 
+        "linkPublish_id": 895, 
+        "pass_name": "fatPass", 
+        "pass_task": "RigFat", 
+        "project_id": 157, 
+        "sourcePublish_id": 1050, 
+        "source_task": "fasciaPass"
+    }, 
+    {
+        "anim_task": "animTest", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "from_id": false, 
+        "linkPublish_id": 896, 
+        "pass_name": "skinPass", 
+        "pass_task": "RigSkin", 
+        "project_id": 157, 
+        "sourcePublish_id": 1050, 
+        "source_task": "fatPass"
+    }, 
+    {
+        "anim_task": "animTest", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "from_id": false, 
+        "linkPublish_id": 959, 
+        "pass_name": "clothPass", 
+        "pass_task": "Cloth", 
+        "project_id": 157, 
+        "sourcePublish_id": 1050, 
+        "source_task": "skinPass"
+    }, 
+    {
+        "anim_task": "animTest", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "from_id": false, 
+        "linkPublish_id": 951, 
+        "pass_name": "groomPass", 
+        "pass_task": "Groom", 
+        "project_id": 157, 
+        "sourcePublish_id": 1050, 
+        "source_task": "skinPass"
+    }
+]

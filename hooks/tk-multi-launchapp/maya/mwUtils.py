@@ -846,11 +846,20 @@ def getEntity(returnId=False, returnType=False):
     context = current_engine.context
 
     if returnId == False and returnType == False:
-        return context.entity["name"]
+        try:
+            return context.entity["name"]
+        except:
+            return None
     elif returnId == True and returnType == False:
-        return context.entity["id"]
+        try:
+            return context.entity["id"]
+        except:
+            return None
     elif returnType == True:
-        return context.entity["type"]
+        try:
+            return context.entity["type"]
+        except:
+            return None
 
 
 def getAsset(returnId=False):
@@ -1352,6 +1361,7 @@ def helloWorlds():
 
 
 def bringPublish(
+    id=None,
     entity_type="Asset",
     task="model",
     returnPath=False,
@@ -1372,24 +1382,34 @@ def bringPublish(
     context = current_engine.context
     tk = current_engine.sgtk
 
-    template = tk.templates[template]
-    fields = context.as_template_fields(template)
+    if id == None:
+        print None, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        template = tk.templates[template]
+        fields = context.as_template_fields(template)
 
-    if entity_name == "current":
-        entity_name = getEntity()
+        if entity_name == "current":
+            entity_name = getEntity()
 
-    filters = [
-        ["entity."+entity_type+".code", "is", entity_name],
-        ["task.Task.content", "is", task],
-        ["published_file_type.PublishedFileType.code", "is", published_file_type],
-    ]
+        filters = [
+            ["entity."+entity_type+".code", "is", entity_name],
+            ["task.Task.content", "is", task],
+            ["published_file_type.PublishedFileType.code", "is", published_file_type],
+        ]
 
-    fields = ["path", "name", "published_file_type"]
-    order = [
-        {"field_name": "version_number", "direction": "desc"},
-    ]
+        fields = ["path", "name", "published_file_type"]
+        order = [
+            {"field_name": "version_number", "direction": "desc"},
+        ]
 
-    publishedFile = sg.find_one("PublishedFile", filters, fields, order)
+        publishedFile = sg.find_one("PublishedFile", filters, fields, order)
+
+    else:
+        print id, "!!!!!!!!!!!!"
+        filters = [["id", "is", id]]
+
+        fields = ["path", "name", "published_file_type"]
+
+        publishedFile = sg.find_one("PublishedFile", filters, fields)
 
     filePath = publishedFile["path"]["local_path"]
 

@@ -1,0 +1,14 @@
+import os
+
+env = os.environ.copy()
+env['SGTK_ENGINE'] = 'tk-maya'
+env['SGTK_CONTEXT'] = sgtk.platform.current_engine().context.serialize()
+
+mw_maya_path = os.getenv("MW_MAYA_PATH")
+maya_location = os.getenv("MAYA_LOCATION")
+mayabatch = os.path.join(maya_location, "bin", "mayabatch.exe")
+melscript = os.path.join(mw_maya_path, "cache.mel")
+
+p = subprocess.Popen([mayabatch, '-script', melscript], env=env)
+
+    

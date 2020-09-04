@@ -4,13 +4,17 @@ from functools import partial
 import sgtk
 import mwUtils
 import shotgun_api3
+import os
+import json
+import subprocess
 
 
 def run():
     global main
+    global animSource
 
     main = createUI()
-    MainSettingsModule()
+    animSource = AnimSourceModule()
 
 
 class createUI(object):
@@ -21,48 +25,53 @@ class createUI(object):
             script_name="mwUtils_bringPublish",
             api_key="wmNnyhwfdpuecdstofw0^gjkk",
         )
-        self.modules = []
+        self.links = []
+        self.lastLinkNum = 1
         self.project_id = mwUtils.getProject(returnId=True)
         self.project_name = mwUtils.getProject()
         self.entity_name = mwUtils.getEntity()
         self.entity_id = mwUtils.getEntity(returnId=True)
-        self.sequence_name = mwUtils.getSequence()
+        self.entity_type = mwUtils.getEntity(returnType=True)
+        if self.entity_type == "Shot":
+            self.sequence_name = mwUtils.getSequence()
 
         if cmds.window('mwCache_window', exists=True):
             cmds.deleteUI('mwCache_window')
 
-        self.window = cmds.window('mwCache_window', title='mwCache v0.0.1',
+        self.window = cmds.window('mwCache_window', title='mwCacheApp v0.0.1',
                                   w=350, h=600, mxb=0, mnb=0, sizeable=0, menuBar=True)
         cmds.menu(label='File')
-        cmds.menuItem(label='New', command='mwCacheApp.deleteAllModules()')
+        cmds.menuItem(label='New', command='mwCacheApp.deleteAllLinks()')
         cmds.menuItem(divider=True)
         cmds.menuItem(label='Exit', command='cmds.deleteUI("mwCache_window")')
         cmds.menu(label='Help', helpMenu=True)
         cmds.scrollLayout(w=320, h=600)
         self.mainLayout = cmds.columnLayout(w=320)
-        self.modulesColumnLayout = cmds.rowColumnLayout(w=320)
+        self.mainColumnLayout = cmds.rowColumnLayout(w=320)
         cmds.setParent(self.mainLayout)
         self.bottomColumnLayout = cmds.columnLayout(w=320)
         cmds.setParent(self.bottomColumnLayout)
-        cmds.button('newModuleButton', label='New module', bgc=[0.1, 0.4, 0.1],
-                    command='mwCacheApp.NewModule()')
+        cmds.button('newLinkButton', label='New link', bgc=[0.1, 0.4, 0.1],
+                    command='mwCacheApp.NewLink()')
         cmds.text(l='')
         cmds.button('generateButton', label='Run Cache Chain', bgc=[0.4, 0.1, 0.1],
                     command='mwCacheApp.runCacheChain()')
         cmds.showWindow(self.window)
 
 
-class MainSettingsModule(object):
+class AnimSourceModule(object):
 
-    def __init__(self, label="Main Settings"):
+    def __init__(self, label="Source animation"):
 
         self.label = label
 
         # attributes
-        cmds.setParent(main.modulesColumnLayout)
+        cmds.setParent(main.mainColumnLayout)
         self.frameLayout = cmds.frameLayout(
             collapsable=True, collapse=False, w=340, label=self.label)
         cmds.scrollLayout(w=300, h=200)
+
+        cmds.text(l='')
 
         self.projectOptionMenuGrp = cmds.optionMenuGrp(
             label='Project:', changeCommand=partial(self.projectChangeCmd))
@@ -76,6 +85,10 @@ class MainSettingsModule(object):
             label='Source:', changeCommand=partial(self.sourceChangeCmd))
         cmds.menuItem(label='Shot')
         cmds.menuItem(label='Asset')
+        if main.entity_type == "Shot":
+            cmds.optionMenuGrp(self.sourceOptionMenuGrp, e=1, v="Shot")
+        else:
+            cmds.optionMenuGrp(self.sourceOptionMenuGrp, e=1, v="Asset")
 
         self.seqOptionMenuGrp = cmds.optionMenuGrp(
             label='Seq:', changeCommand=partial(self.seqChangeCmd))
@@ -86,7 +99,7 @@ class MainSettingsModule(object):
         cmds.menuItem(label='None')
 
         self.animTaskOptionMenuGrp = cmds.optionMenuGrp(
-            label='Anim Task:', changeCommand=partial(self.animTaskChangeCmd))
+            label='Anim Task:', vis=False, changeCommand=partial(self.animTaskChangeCmd))
         cmds.menuItem(label='None')
 
         self.stepOptionMenuGrp = cmds.optionMenuGrp(
@@ -94,10 +107,12 @@ class MainSettingsModule(object):
         cmds.menuItem(label='Animation')
         cmds.menuItem(label='CharacterFX')
 
-        self.taskOptionMenuGrp = cmds.optionMenuGrp(label='Task:')
+        self.taskOptionMenuGrp = cmds.optionMenuGrp(
+            label='Task:', changeCommand=partial(self.taskChangeCmd))
         cmds.menuItem(label='None')
 
-        self.versionOptionMenuGrp = cmds.optionMenuGrp(label='Version:')
+        self.versionOptionMenuGrp = cmds.optionMenuGrp(
+            label='Version:', changeCommand=partial(self.versionChangeCmd))
         cmds.menuItem(label='None')
 
         # self.liveTweakButton = cmds.button(label='Live tweak', bgc=[0.2, 0.2, 0.2], w=310)
@@ -105,8 +120,8 @@ class MainSettingsModule(object):
         self.populateProject()
 
     def projectChangeCmd(self, *args):
-        main.currentProjectName = cmds.optionMenuGrp(
-            self.sourceOptionMenuGrp, q=1, v=1)
+        self.currentProjectName = cmds.optionMenuGrp(
+            self.projectOptionMenuGrp, q=1, v=1)
 
         filters = [["is_demo", "is", False], [
             "is_template", "is", False], ["archived", "is", False]]
@@ -117,18 +132,18 @@ class MainSettingsModule(object):
         for f in find:
             proj = f["name"]
 
-            if proj == main.currentProjectName:
-                main.currentProjectId = f["id"]
+            if proj == self.currentProjectName:
+                self.currentProjectId = f["id"]
 
         self.populateAsset()
 
     def assetChangeCmd(self, *args):
         # find and store asset_id
-        main.currentAssetName = cmds.optionMenuGrp(
+        self.currentAssetName = cmds.optionMenuGrp(
             self.assetOptionMenuGrp, q=True, v=True)
-        filters = [["code", "is", main.currentAssetName], [
-            "project", "is", {"type": "Project", "id": main.currentProjectId}]]
-        main.currentAssetId = main.sg.find_one("Asset", filters)["id"]
+        filters = [["code", "is", self.currentAssetName], [
+            "project", "is", {"type": "Project", "id": self.currentProjectId}]]
+        self.currentAssetId = main.sg.find_one("Asset", filters)["id"]
 
         self.sourceChangeCmd()
 
@@ -147,52 +162,103 @@ class MainSettingsModule(object):
 
     def seqChangeCmd(self, *args):
         # find and store seq_id
-        main.currentSequenceName = cmds.optionMenuGrp(
+        self.currentSequenceName = cmds.optionMenuGrp(
             self.seqOptionMenuGrp, q=True, v=True)
-        filters = [["code", "is", main.currentSequenceName], [
-            "project", "is", {"type": "Project", "id": main.currentProjectId}]]
-        main.currentSequenceId = main.sg.find_one("Sequence", filters)["id"]
+        filters = [["code", "is", self.currentSequenceName], [
+            "project", "is", {"type": "Project", "id": self.currentProjectId}]]
+        try:
+            self.currentSequenceId = main.sg.find_one(
+                "Sequence", filters)["id"]
+        except:
+            0
 
         self.populateShot()
 
     def shotChangeCmd(self, *args):
         # find and store shot_id
-        main.currentShotName = cmds.optionMenuGrp(
+        self.currentShotName = cmds.optionMenuGrp(
             self.shotOptionMenuGrp, q=True, v=True)
-        filters = [["code", "is", main.currentShotName], [
-            "project", "is", {"type": "Project", "id": main.currentProjectId}]]
-        main.currentShotId = main.sg.find_one("Shot", filters)["id"]
+        filters = [["code", "is", self.currentShotName], [
+            "project", "is", {"type": "Project", "id": self.currentProjectId}]]
+
+        try:
+            self.currentShotId = main.sg.find_one("Shot", filters)["id"]
+        except:
+            0
 
         self.populateTask()
 
     def animTaskChangeCmd(self, *args):
         # find and store animTaskId
-        main.currentAnimTaskName = cmds.optionMenuGrp(
+        self.currentAnimTaskName = cmds.optionMenuGrp(
             self.animTaskOptionMenuGrp, q=True, v=True)
         # find step_id
         filters = [["code", "is", "Animation"],
                    ["entity_type", "is", "Asset"]]
-        step_id = sg.find_one("Step", filters)["id"]
+        step_id = main.sg.find_one("Step", filters)["id"]
 
-        filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+        filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                    ["step", "is", {"type": "Step",
                                    "id": step_id}]]
         fields = ["entity", "content"]
         find = main.sg.find("Task", filters, fields)
 
         for task in find:
-            if task["entity"]["name"] == main.currentAssetName and task["content"] == main.currentAnimTaskName:
-                main.currentAnimTaskId = task["id"]
+            if task["entity"]["name"] == self.currentAssetName and task["content"] == self.currentAnimTaskName:
+                self.currentAnimTaskId = task["id"]
 
-        self.populateTask()
+        self.stepChangeCmd()
 
     def stepChangeCmd(self, *args):
         self.populateTask()
 
     def taskChangeCmd(self, *args):
+        self.currentTaskName = cmds.optionMenuGrp(
+            self.taskOptionMenuGrp, q=True, v=True)
+
+        for task in self.taskList:
+            if task[0] == self.currentTaskName:
+                self.currentTaskId = task[1]
+
+        if self.currentTaskName == "None":
+            self.currentTaskId = 0
+
         self.populateVersion()
 
+    def versionChangeCmd(self, *args):
+        try:
+            self.currentVersionNumber = int(cmds.optionMenuGrp(
+                self.versionOptionMenuGrp, q=True, v=True))
+
+            filters = [
+                ["task.Task.id", "is", self.currentTaskId],
+                ["version_number", "is", self.currentVersionNumber],
+                ["published_file_type.PublishedFileType.code", "is", "Alembic Cache"],
+            ]
+
+            fields = ["path", "name", "version_number"]
+
+            version = main.sg.find_one("PublishedFile", filters, fields)
+
+            print version["path"]["local_path_windows"]
+
+            self.publishedVersion = version["id"]
+        except:
+            print "No path was found."
+
+        # loaded color
+        cmds.optionMenuGrp(
+            self.versionOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.versionOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
     def populateProject(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.projectOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
             self.projectOptionMenuGrp, q=True, itemListLong=True)
@@ -205,6 +271,13 @@ class MainSettingsModule(object):
         order = [{'field_name': 'name', 'direction': 'asc'}]
         find = main.sg.find("Project", filters, fields, order)
 
+        # loaded color
+        cmds.optionMenuGrp(
+            self.projectOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.projectOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
         if len(find) == 0:
             cmds.menuItem(parent=(self.projectOptionMenuGrp +
                                   '|OptionMenu'), label="None")
@@ -215,8 +288,8 @@ class MainSettingsModule(object):
                 cmds.menuItem(parent=(self.projectOptionMenuGrp +
                                       '|OptionMenu'), label=proj)
                 if proj == main.project_name:
-                    main.currentProjectName = proj
-                    main.currentProjectId = f["id"]
+                    self.currentProjectName = proj
+                    self.currentProjectId = f["id"]
 
             try:
                 cmds.optionMenuGrp(self.projectOptionMenuGrp,
@@ -224,16 +297,22 @@ class MainSettingsModule(object):
 
             except:
                 0
+
             self.populateAsset()
 
     def populateAsset(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.assetOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
             self.assetOptionMenuGrp, q=True, itemListLong=True)
         if menuItems:
             cmds.deleteUI(menuItems)
 
-        filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+        filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                    ["sg_asset_type", "is", "Character"]]
         fields = ["code", "id"]
         order = [{'field_name': 'code', 'direction': 'asc'}]
@@ -255,16 +334,21 @@ class MainSettingsModule(object):
             except:
                 0
 
-            # find and store asset_id
-            main.currentAssetName = cmds.optionMenuGrp(
-                self.assetOptionMenuGrp, q=True, v=True)
-            filters = [["code", "is", main.currentAssetName], [
-                "project", "is", {"type": "Project", "id": main.currentProjectId}]]
-            main.currentAssetId = main.sg.find_one("Asset", filters)["id"]
+        # loaded color
+        cmds.optionMenuGrp(
+            self.assetOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.assetOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
 
         self.assetChangeCmd()
 
     def populateSeq(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.seqOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
             self.seqOptionMenuGrp, q=True, itemListLong=True)
@@ -272,9 +356,9 @@ class MainSettingsModule(object):
             cmds.deleteUI(menuItems)
 
         # find all shots in project that have the asset
-        filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+        filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                    {"filter_operator": "any", "filters": [
-                       ["assets", "is", {"type": "Asset", "id": main.currentAssetId}]]}]
+                       ["assets", "is", {"type": "Asset", "id": self.currentAssetId}]]}]
         fields = ["code"]
         order = [{'field_name': 'code', 'direction': 'asc'}]
         find = main.sg.find("Shot", filters, fields, order)
@@ -283,7 +367,7 @@ class MainSettingsModule(object):
 
         # find all sequences that belong to those shots
         for f in find:
-            filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+            filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                        {"filter_operator": "any", "filters": [
                            ["shots", "is", {"type": "Shot", "id": f["id"]}]]}]
 
@@ -294,6 +378,13 @@ class MainSettingsModule(object):
 
             if find["code"] not in seqList:
                 seqList.append(find["code"])
+
+        # loaded color
+        cmds.optionMenuGrp(
+            self.seqOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.seqOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
 
         if len(seqList) == 0:
             cmds.menuItem(parent=(self.seqOptionMenuGrp +
@@ -310,17 +401,13 @@ class MainSettingsModule(object):
             except:
                 0
 
-            # find and store seq_id
-            main.currentSequenceName = cmds.optionMenuGrp(
-                self.seqOptionMenuGrp, q=True, v=True)
-            filters = [["code", "is", main.currentSequenceName], [
-                "project", "is", {"type": "Project", "id": main.currentProjectId}]]
-            main.currentSequenceId = main.sg.find_one(
-                "Sequence", filters)["id"]
-
-            self.populateShot()
+        self.seqChangeCmd()
 
     def populateShot(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.shotOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
             self.shotOptionMenuGrp, q=True, itemListLong=True)
@@ -328,9 +415,9 @@ class MainSettingsModule(object):
             cmds.deleteUI(menuItems)
 
         # find all shots in project that have the asset
-        filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+        filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                    {"filter_operator": "any", "filters": [
-                       ["assets", "is", {"type": "Asset", "id": main.currentAssetId}]]}]
+                       ["assets", "is", {"type": "Asset", "id": self.currentAssetId}]]}]
         fields = ["code"]
         order = [{'field_name': 'code', 'direction': 'asc'}]
         find = main.sg.find("Shot", filters, fields, order)
@@ -338,7 +425,7 @@ class MainSettingsModule(object):
         shotList = []
 
         for f in find:
-            filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+            filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                        {"filter_operator": "any", "filters": [
                            ["shots", "is", {"type": "Shot", "id": f["id"]}]]}]
 
@@ -347,8 +434,15 @@ class MainSettingsModule(object):
 
             find2 = main.sg.find_one("Sequence", filters, fields)
 
-            if find2["code"] == main.currentSequenceName:
+            if find2["code"] == self.currentSequenceName:
                 shotList.append(f["code"])
+
+        # loaded color
+        cmds.optionMenuGrp(
+            self.shotOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.shotOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
 
         if len(shotList) == 0:
             cmds.menuItem(parent=(self.shotOptionMenuGrp +
@@ -367,16 +461,14 @@ class MainSettingsModule(object):
             except:
                 0
 
-            # find and store shot_id
-            main.currentShotName = cmds.optionMenuGrp(
-                self.shotOptionMenuGrp, q=True, v=True)
-            filters = [["code", "is", main.currentShotName], [
-                "project", "is", {"type": "Project", "id": main.currentProjectId}]]
-            main.currentShotId = main.sg.find_one("Shot", filters)["id"]
-
-            self.populateTask()
+            self.shotChangeCmd()
 
     def populateAnimTask(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.animTaskOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
             self.animTaskOptionMenuGrp, q=True, itemListLong=True)
@@ -386,31 +478,38 @@ class MainSettingsModule(object):
         # find step_id
         filters = [["code", "is", "Animation"],
                    ["entity_type", "is", "Asset"]]
-        step_id = sg.find_one("Step", filters)["id"]
+        step_id = main.sg.find_one("Step", filters)["id"]
 
-        filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+        filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                    ["step", "is", {"type": "Step",
                                    "id": step_id}]]
         fields = ["entity", "content"]
         find = main.sg.find("Task", filters, fields)
 
-        taskList = []
+        self.taskList = []
         for task in find:
-            if task["entity"]["name"] == main.currentAssetName:
-                taskList.append([task["content"], task["id"]])
+            if task["entity"]["name"] == self.currentAssetName:
+                self.taskList.append([task["content"], task["id"]])
 
-        if len(taskList) == 0:
+        # loaded color
+        cmds.optionMenuGrp(
+            self.animTaskOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.animTaskOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
+        if len(self.taskList) == 0:
             cmds.menuItem(parent=(self.animTaskOptionMenuGrp +
                                   '|OptionMenu'), label="None")
 
         else:
             i = 0
-            for task in taskList:
+            for task in self.taskList:
                 cmds.menuItem(parent=(self.animTaskOptionMenuGrp +
                                       '|OptionMenu'), label=task[0])
                 if i == 0:
-                    main.currentAnimTaskName = task[0]
-                    main.currentAnimTaskId = task[1]
+                    self.currentAnimTaskName = task[0]
+                    self.currentAnimTaskId = task[1]
                 i += 1
 
             try:
@@ -418,17 +517,22 @@ class MainSettingsModule(object):
                 cmds.optionMenuGrp(
                     self.taskOptionMenuGrp, e=1, v=task_name)
 
-                for task in taskList:
+                for task in self.taskList:
                     if task[0] == task_name:
-                        main.currentAnimTaskName = task[0]
-                        main.currentAnimTaskId = task[1]
+                        self.currentAnimTaskName = task[0]
+                        self.currentAnimTaskId = task[1]
 
             except:
                 0
 
-            self.populateVersion()
+        self.animTaskChangeCmd()
 
     def populateTask(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.taskOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
             self.taskOptionMenuGrp, q=True, itemListLong=True)
@@ -445,68 +549,87 @@ class MainSettingsModule(object):
             # find step_id
             filters = [["code", "is", step_name],
                        ["entity_type", "is", "Shot"]]
-            main.currentStepId = sg.find_one("Step", filters)["id"]
+            self.currentStepId = main.sg.find_one("Step", filters)["id"]
 
-            filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+            filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                        ["step", "is", {"type": "Step",
-                                       "id": main.currentStepId}]]
+                                       "id": self.currentStepId}]]
             fields = ["entity", "content"]
             find = main.sg.find("Task", filters, fields)
 
-            taskList = []
+            self.taskList = []
 
             for f in find:
-                task_id = f["entity"]["id"]
+                task_id = f["id"]
                 task_name = f["content"]
+                shot_id = f["entity"]["id"]
+                shot_name = f["entity"]["name"]
 
-                filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
-                           {"filter_operator": "any", "filters": [
-                            ["shots", "is", {"type": "Shot", "id": task_id}]]}]
-
-                fields = ["code"]
-
-                find2 = main.sg.find_one("Sequence", filters, fields)
-
-                if find2["code"] == main.currentSequenceName:
-                    taskList.append([task_name, task_id])
+                if shot_id == self.currentShotId:
+                    self.taskList.append([task_name, task_id])
 
         elif source == "Asset":
             if step_name == "Animation":
+                # find step_id
+                filters = [["code", "is", step_name],
+                           ["entity_type", "is", "Asset"]]
+                self.currentStepId = main.sg.find_one("Step", filters)["id"]
+
+                filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
+                           ["step", "is", {"type": "Step",
+                                           "id": self.currentStepId}]]
+                fields = ["entity", "content"]
+                find = main.sg.find("Task", filters, fields)
+
+                self.taskList = []
+                for f in find:
+                    asset_id = f["entity"]["id"]
+                    task_name = f["content"]
+                    task_id = f["id"]
+
+                    if asset_id == self.currentAssetId and task_id == self.currentAnimTaskId:
+                        self.taskList.append([task_name, task_id])
+
                 cmds.optionMenuGrp(self.taskOptionMenuGrp, e=1, vis=False)
-                return
 
             else:
                 cmds.optionMenuGrp(self.taskOptionMenuGrp, e=1, vis=True)
                 # find step_id
                 filters = [["code", "is", step_name],
                            ["entity_type", "is", "Asset"]]
-                main.currentStepId = sg.find_one("Step", filters)["id"]
+                self.currentStepId = main.sg.find_one("Step", filters)["id"]
 
-                filters = [["project", "is", {"type": "Project", "id": main.currentProjectId}],
+                filters = [["project", "is", {"type": "Project", "id": self.currentProjectId}],
                            ["step", "is", {"type": "Step",
-                                           "id": main.currentStepId}]]
+                                           "id": self.currentStepId}]]
                 fields = ["entity", "content", "upstream_tasks"]
                 find = main.sg.find("Task", filters, fields)
 
-                taskList = []
+                self.taskList = []
 
                 for f in find:
-                    print f
                     asset_id = f["entity"]["id"]
                     task_name = f["content"]
                     task_id = f["id"]
-                    animTask = f["upstream_tasks"][0]["id"]
+                    animTask_id = f["upstream_tasks"][0]["id"]
 
-                    if asset_id == main.currentAssetId and animTask == main.currentAnimTaskId:
-                        taskList.append([task_name, task_id])
+                    if asset_id == self.currentAssetId and animTask_id == self.currentAnimTaskId:
+                        self.taskList.append([task_name, task_id])
 
-        if len(taskList) == 0:
+        # loaded color
+        cmds.optionMenuGrp(
+            self.taskOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.taskOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
+        if len(self.taskList) == 0:
             cmds.menuItem(parent=(self.taskOptionMenuGrp +
                                   '|OptionMenu'), label="None")
 
         else:
             i = 0
-            for task in taskList:
+            for task in self.taskList:
                 cmds.menuItem(parent=(self.taskOptionMenuGrp +
                                       '|OptionMenu'), label=task[0])
                 if i == 0:
@@ -519,153 +642,378 @@ class MainSettingsModule(object):
                 cmds.optionMenuGrp(
                     self.taskOptionMenuGrp, e=1, v=task_name)
 
-                for task in taskList:
-                    if task[0] == task_name:
-                        self.currentTaskName = task[0]
-                        self.currentTaskId = task[1]
-
             except:
                 0
 
-            self.populateVersion()
+        self.taskChangeCmd()
 
     def populateVersion(self, *args):
-        pass
+        # loading color
+        cmds.optionMenuGrp(
+            self.versionOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
 
-        '''
+        # deletes all items in menu
+        menuItems = cmds.optionMenuGrp(
+            self.versionOptionMenuGrp, q=True, itemListLong=True)
+        if menuItems:
+            cmds.deleteUI(menuItems)
 
+        if self.currentTaskName == "None":
+            cmds.menuItem(parent=(self.versionOptionMenuGrp +
+                                  '|OptionMenu'), label="None")
 
+            self.versionChangeCmd()
+            return
 
+        filters = [
+            ["task.Task.id", "is", self.currentTaskId],
+            ["published_file_type.PublishedFileType.code", "is", "Alembic Cache"],
+        ]
 
+        fields = ["path", "name", "published_file_type", "version_number"]
+        order = [
+            {"field_name": "version_number", "direction": "desc"},
+        ]
 
+        versionList = main.sg.find("PublishedFile", filters, fields, order)
 
-
-        if source == "Asset":
-        # find step_id
-        filters = [["code", "is", step_name],
-                   ["entity_type", "is", source]]
-        step_id = main.sg.find_one("Step", filters)["id"]
-
-        filters = [["project", "is", {"type": "Project", "id": main.project_id}],
-                   ["step", "is", {"type": "Step", "id": step_id}],
-                   ["entity", "is", {"type": "Asset", "id": asset_id}]]
-
-        filters = [["project", "is", {"type": "Project", "id": main.project_id}],
-                   ["step", "is", {"type": "Step", "id": step_id}],
-                   ["entity", "is", {"type": "Shot", "id": 1243}]]
-
-        fields = ["content"]
-        order = [{'field_name': 'content', 'direction': 'asc'}]
-        find = main.sg.find("Task", filters, fields, order)
-
-
-        if len(find) == 0:
-            cmds.menuItem(parent=(self.taskOptionMenuGrp +
+        if len(versionList) == 0:
+            cmds.menuItem(parent=(self.versionOptionMenuGrp +
                                   '|OptionMenu'), label="None")
 
         else:
-            for f in find:
-                animTask = f["content"]
-                cmds.menuItem(parent=(self.taskOptionMenuGrp +
-                                      '|OptionMenu'), label=animTask)
+            for version in versionList:
+                version_number = version["version_number"]
+                cmds.menuItem(parent=(self.versionOptionMenuGrp +
+                                      '|OptionMenu'), label=version_number)
 
-            try:
-                entity_name = mwUtils.getTask()
-                cmds.optionMenuGrp(
-                    self.taskOptionMenuGrp, e=1, v=entity_name)
-            except:
-                0
-        '''
-
-    def populateStep(self, *args):
-        asset_name = cmds.optionMenuGrp(self.assetOptionMenuGrp, q=1, v=True)
-        source = cmds.optionMenuGrp(self.sourceOptionMenuGrp, q=1, v=True)
-
-        # find asset_id
-        filters = [["code", "is", asset_name]]
-        asset_id = main.sg.find_one("Asset", filters)["id"]
-
-        if source == "Shot":
-            filters = [["project", "is", {"type": "Project", "id": main.project_id}], {
-                "filter_operator": "any", "filters": [["assets", "is", {"type": "Asset", "id": asset_id}]]}]
-            fields = ["code"]
-            order = [{'field_name': 'code', 'direction': 'asc'}]
-            find = main.sg.find("Shot", filters, fields, order)
+        self.versionChangeCmd()
 
 
-class NewModule(object):
+class NewLink(object):
 
-    def __init__(self, label="New Cache Chain link"):
+    def __init__(self, label=""):
 
         self.label = label
 
-        main.modules.append(self)
+        main.links.append(self)
 
         # attributes
-        cmds.setParent(main.modulesColumnLayout)
+        cmds.setParent(main.mainColumnLayout)
         self.frameLayout = cmds.frameLayout(
-            collapsable=True, collapse=True, w=340, label=self.label)
-        cmds.scrollLayout(w=300, h=200)
+            collapsable=True, collapse=False, w=340, label=self.label)
+
+        self.changeLabel(label="Pass_"+str(main.lastLinkNum))
+        main.lastLinkNum += 1
 
         cmds.text(l='')
-        self.labelTextFieldGrp = cmds.textFieldGrp(label='Label:', text=self.label, cw=[
-            1, 70], changeCommand=partial(self.changeAtt, 'label'))
-        cmds.text(l='')
+        self.labelTextFieldGrp = cmds.textFieldGrp(label='Pass name:', text=self.label, cw=[
+            1, 70], changeCommand=partial(self.changeLabel))
+
         cmds.separator(style='in')
 
-        # *** Generation controls
+        self.linkToOptionMenuGrp = cmds.optionMenuGrp(
+            label='Link to:', changeCommand=partial(self.linkToChangeCmd))
+        cmds.menuItem(label='Source Animation')
+        cmds.menuItem(label='Previous Link')
 
-        cmds.text(l='')
-
-        self.genIntSliderGrp = cmds.intSliderGrp(field=True, label='Generation:', minValue=0, maxValue=100, fieldMinValue=0, fieldMaxValue=100, cw=[
-            1, 70])
-
-        cmds.text(l='')
-
-        self.dontDeriveCheckBoxGrp = cmds.checkBoxGrp(numberOfCheckBoxes=1, label="Don't derive", cw=[
-            1, 70])
-
-        cmds.text(l='')
-
-        self.appendToRadioButtonGrp = cmds.radioButtonGrp(label='Append to:', labelArray2=['Prev. generation', 'Branch'], numberOfRadioButtons=2, cw=[
-            1, 70])
-
-        cmds.text(l='')
-
-        self.inBranchTextFieldGrp = cmds.textFieldGrp(label='Branch:', cw=[
-            1, 70])
-
-        cmds.text(l='')
-
-        cmds.text(l='')
         cmds.separator(style='in')
 
-        cmds.text(l='')
+        self.linkStepOptionMenuGrp = cmds.optionMenuGrp(
+            label='Step:', changeCommand=partial(self.linkStepChangeCmd))
+        cmds.menuItem(label='Rig')
+        cmds.menuItem(label='Cloth')
+        cmds.menuItem(label='LookDev')
+
+        self.linkTaskOptionMenuGrp = cmds.optionMenuGrp(
+            label='Task:', changeCommand=partial(self.linkTaskChangeCmd))
+
+        self.linkVersionOptionMenuGrp = cmds.optionMenuGrp(
+            label='Version:', changeCommand=partial(self.linkVersionChangeCmd))
+
         cmds.separator(style='in')
-        cmds.separator(style='in')
-        cmds.text(l='')
-        self.liveTweakButton = cmds.button(
-            label='Live tweak', bgc=[0.2, 0.2, 0.2])
-        cmds.text(l='')
-        cmds.button(label='Delete module', command=partial(
-            self.deleteModule), bgc=[0.3, 0.2, 0.2])
+
+        cmds.button(label='Delete link', command=partial(
+            self.deleteLink), bgc=[0.3, 0.2, 0.2], w=300)
 
         cmds.text(l='')
 
-    def deleteModule(self, *args):
+        for link in main.links:
+            link.populateLinkTo()
+
+        self.linkStepChangeCmd()
+
+    def linkToChangeCmd(self, *args):
+        self.currentLinkTo = cmds.optionMenuGrp(
+            self.linkToOptionMenuGrp, q=1, v=1)
+
+        # loaded color
+        cmds.optionMenuGrp(
+            self.linkToOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.linkToOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
+    def linkStepChangeCmd(self, *args):
+        self.currentLinkStep = cmds.optionMenuGrp(
+            self.linkStepOptionMenuGrp, q=1, v=1)
+        self.populateLinkTask()
+
+    def linkTaskChangeCmd(self, *args):
+        self.currentLinkTask = cmds.optionMenuGrp(
+            self.linkTaskOptionMenuGrp, q=1, v=1)
+        self.populateLinkVersion()
+
+    def linkVersionChangeCmd(self, *args):
+
+        try:
+            self.currentLinkVersionNumber = int(cmds.optionMenuGrp(
+                self.linkVersionOptionMenuGrp, q=True, v=True))
+
+            filters = [
+                ["task.Task.id", "is", self.currentLinkTaskId],
+                ["version_number", "is", self.currentLinkVersionNumber],
+                ["published_file_type.PublishedFileType.code", "is", "Maya Scene"],
+            ]
+
+            fields = ["path", "name", "version_number"]
+
+            version = main.sg.find_one("PublishedFile", filters, fields)
+
+            print version["path"]["local_path_windows"]
+            self.linkPublishedVersion = version["id"]
+        except:
+            print "No path was found."
+
+        # loaded color
+        cmds.optionMenuGrp(
+            self.linkVersionOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.linkVersionOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
+    def populateLinkTo(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.linkToOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
+        currentSel = cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                                        q=1, v=1)
+
+        # deletes all items in menu
+        menuItems = cmds.optionMenuGrp(
+            self.linkToOptionMenuGrp, q=True, itemListLong=True)
+        if menuItems:
+            cmds.deleteUI(menuItems)
+
+        cmds.menuItem(parent=(self.linkToOptionMenuGrp +
+                              '|OptionMenu'), label='Source Animation')
+
+        cmds.menuItem(parent=(self.linkToOptionMenuGrp +
+                              '|OptionMenu'), label='Previous link')
+
+        if len(main.links) > 1:
+            cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                               e=1, v="Previous link")
+            self.currentLinkTo = "Previous link"
+        else:
+            cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                               e=1, v="Source Animation")
+            self.currentLinkTo = "Source Animation"
+
+        for link in main.links:
+            if link != self:
+                cmds.menuItem(parent=(self.linkToOptionMenuGrp +
+                                      '|OptionMenu'), label=link.currentPassName)
+            else:
+                break
+
+        try:
+            cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                               e=1, v=currentSel)
+        except:
+            0
+
+        self.linkToChangeCmd()
+
+    def populateLinkVersion(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.linkVersionOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
+        # deletes all items in menu
+        menuItems = cmds.optionMenuGrp(
+            self.linkVersionOptionMenuGrp, q=True, itemListLong=True)
+        if menuItems:
+            cmds.deleteUI(menuItems)
+
+        if self.currentLinkTask == "None":
+            cmds.menuItem(parent=(self.linkVersionOptionMenuGrp +
+                                  '|OptionMenu'), label="None")
+
+            self.linkVersionChangeCmd()
+            return
+
+        # find task_id
+        filters = [["content", "is", self.currentLinkTask],
+                   ["entity", "is", {"type": "Asset",
+                                     "id": animSource.currentAssetId}]]
+        self.currentLinkTaskId = main.sg.find_one("Task", filters)["id"]
+
+        filters = [
+            ["task.Task.id", "is", self.currentLinkTaskId],
+            ["published_file_type.PublishedFileType.code", "is", "Maya Scene"],
+        ]
+
+        fields = ["path", "name", "version_number"]
+        order = [
+            {"field_name": "version_number", "direction": "desc"},
+        ]
+
+        versionList = main.sg.find("PublishedFile", filters, fields, order)
+
+        if len(versionList) == 0:
+            cmds.menuItem(parent=(self.linkVersionOptionMenuGrp +
+                                  '|OptionMenu'), label="None")
+
+        else:
+            for version in versionList:
+                version_number = version["version_number"]
+                cmds.menuItem(parent=(self.linkVersionOptionMenuGrp +
+                                      '|OptionMenu'), label=version_number)
+
+        self.linkVersionChangeCmd()
+
+    def populateLinkTask(self, *args):
+        # loading color
+        cmds.optionMenuGrp(
+            self.linkTaskOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+        cmds.refresh()
+
+        # deletes all items in menu
+        menuItems = cmds.optionMenuGrp(
+            self.linkTaskOptionMenuGrp, q=True, itemListLong=True)
+        if menuItems:
+            cmds.deleteUI(menuItems)
+
+        # find step_id
+        filters = [["code", "is", self.currentLinkStep],
+                   ["entity_type", "is", "Asset"]]
+        self.currentLinkStepId = main.sg.find_one("Step", filters)["id"]
+
+        filters = [["project", "is", {"type": "Project", "id": animSource.currentProjectId}],
+                   ["entity", "is", {"type": "Asset",
+                                     "id": animSource.currentAssetId}],
+                   ["step", "is", {"type": "Step",
+                                   "id": self.currentLinkStepId}]]
+        fields = ["entity", "content"]
+        order = [{'field_name': 'content', 'direction': 'asc'}]
+        find = main.sg.find("Task", filters, fields, order)
+
+        if len(find) == 0:
+            cmds.menuItem(parent=(self.linkTaskOptionMenuGrp +
+                                  '|OptionMenu'), label="None")
+
+        else:
+            for task in find:
+                if "Puppet" not in task["content"]:
+                    cmds.menuItem(parent=(self.linkTaskOptionMenuGrp +
+                                          '|OptionMenu'), label=task["content"])
+
+        # loaded color
+        cmds.optionMenuGrp(
+            self.linkTaskOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+        cmds.optionMenuGrp(
+            self.linkTaskOptionMenuGrp, e=1, enableBackground=False)
+        cmds.refresh()
+
+        self.linkTaskChangeCmd()
+
+    def deleteLink(self, *args):
         cmds.deleteUI(self.frameLayout)
-        main.modules.remove(self)
+        main.links.remove(self)
 
-    def changeAtt(self, type, *args):
-        if type == 'label':
-            newLabel = mc.textFieldGrp(self.labelTextFieldGrp, q=True, tx=True)
-            mc.frameLayout(self.frameLayout, e=True, label=newLabel)
-            self.label = newLabel
+        for link in main.links:
+            link.populateLinkTo()
+
+    def changeLabel(self, label=None, *args):
+        if label == None:
+            newLabel = cmds.textFieldGrp(
+                self.labelTextFieldGrp, q=True, tx=True)
+        else:
+            newLabel = label
+            self.currentPassName = label
+        cmds.frameLayout(self.frameLayout, e=True, label=newLabel)
+        self.label = newLabel
 
 
-def deleteAllModules():
+def deleteAllLinks():
+    for m in range(0, len(main.links)):
+        link = main.links[0]
 
-    for m in range(0, len(main.modules)):
-        module = main.modules[0]
+        link.deleteLink()
 
-        module.deleteModule()
+
+def runCacheChain():
+    mwCacheApp_data = []
+
+    for i, link in enumerate(main.links):
+        project_id = animSource.currentProjectId
+        sourcePublish_id = animSource.publishedVersion
+        linkPublish_id = link.linkPublishedVersion
+        chain_mode = cmds.optionMenuGrp(
+            animSource.sourceOptionMenuGrp, q=1, v=1)
+        if chain_mode == "Shot":
+            anim_task = animSource.currentSequenceName+"_"+animSource.currentShotName
+        elif chain_mode == "Asset":
+            anim_task = animSource.currentAnimTaskName
+        asset_name = animSource.currentAssetName
+        pass_name = link.currentPassName
+        pass_task = link.currentLinkTask
+        source_task = link.currentLinkTo
+        from_id = False
+        if source_task == "Source Animation":
+            source_task = animSource.currentTaskName
+            from_id = True
+        elif source_task == "Previous Link":
+            source_task = main.links[i-1].currentPassName
+
+        ##########################################################
+
+        linkDict = {}
+        linkDict["project_id"] = project_id
+        linkDict["sourcePublish_id"] = sourcePublish_id
+        linkDict["linkPublish_id"] = linkPublish_id
+        linkDict["anim_task"] = anim_task
+        linkDict["chain_mode"] = chain_mode
+        linkDict["asset_name"] = asset_name
+        linkDict["pass_name"] = pass_name
+        linkDict["pass_task"] = pass_task
+        linkDict["source_task"] = source_task
+        linkDict["from_id"] = from_id
+
+        mwCacheApp_data.append(linkDict)
+
+    mw_maya_path = os.getenv("MW_MAYA_PATH")
+    maya_location = os.getenv("MAYA_LOCATION")
+
+    file_path = os.path.join(mw_maya_path, "mwCacheApp_data.json")
+
+    with open(file_path, 'w') as fp:
+        json.dump(mwCacheApp_data, fp, sort_keys=True, indent=4)
+
+    # runs mayabatch
+    env = os.environ.copy()
+    env['SGTK_ENGINE'] = 'tk-maya'
+    env['SGTK_CONTEXT'] = sgtk.platform.current_engine().context.serialize()
+
+    mayabatch = os.path.join(maya_location, "bin", "mayabatch.exe")
+    melscript = os.path.join(mw_maya_path, "cache.mel")
+
+    #subprocess.Popen([mayabatch, '-script', melscript], env=env)
+    import mw_cache_utils
+    reload(mw_cache_utils)
+    mw_cache_utils.startCache(currentSession=True)
