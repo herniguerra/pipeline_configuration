@@ -1,2 +1,3 @@
 hooks/tk-multi-launchapp/maya/rclone/exists.tmp
 *.pyc
+hooks/tk-multi-launchapp/maya/mwCacheApp_data.json

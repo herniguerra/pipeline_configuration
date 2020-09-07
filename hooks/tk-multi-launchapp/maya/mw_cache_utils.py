@@ -43,7 +43,7 @@ def sgBootstrap():
     print ("Shotgun API instance", engine.shotgun)
 
 
-def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, pass_task, source_task, from_id):
+def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id):
     import maya.cmds as cmds
     import mwUtils
     import shotgun_api3
@@ -138,10 +138,10 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
             )
 
         mwUtils.bringPublish(
-            id=linkPublish_id, namespace=asset_name+"_"+pass_task)
+            id=linkPublish_id, namespace=asset_name+"_"+link_task)
 
         mwUtils.connectRigs(asset_name+"_"+source_task,
-                            asset_name+"_"+pass_task)
+                            asset_name+"_"+link_task)
 
     if chain_mode == "Shot":
         seq = anim_task.split("_")[0]
@@ -213,10 +213,10 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
             )
 
         mwUtils.bringPublish(
-            id=linkPublish_id, namespace=asset_name+"_"+pass_task)
+            id=linkPublish_id, namespace=asset_name+"_"+link_task)
 
         mwUtils.connectRigs(asset_name+"_"+source_task,
-                            asset_name+"_"+pass_task)
+                            asset_name+"_"+link_task)
 
     # save and publish
     # need to have an engine running in a context where the publisher has been
@@ -320,7 +320,7 @@ def startCache(currentSession=False):
         chain_mode = link["chain_mode"]
         asset_name = link["asset_name"]
         pass_name = link["pass_name"]
-        pass_task = link["pass_task"]
+        link_task = link["link_task"]
         source_task = link["source_task"]
         from_id = link["from_id"]
 
@@ -331,6 +331,6 @@ def startCache(currentSession=False):
         print source_task
 
         cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode,
-                       asset_name, pass_name, pass_task, source_task, from_id)
+                       asset_name, pass_name, link_task, source_task, from_id)
 
     print "Cache Chain Finished! :D"
