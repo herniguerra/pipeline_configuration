@@ -43,7 +43,20 @@ class createUI(object):
         cmds.menu(label='File')
         cmds.menuItem(label='New', command='mwCacheApp.deleteAllLinks()')
         cmds.menuItem(divider=True)
+        cmds.menuItem(label='Load', command='mwCacheApp.load()')
+        cmds.menuItem(label='Save', command='mwCacheApp.save()')
+        cmds.menuItem(divider=True)
         cmds.menuItem(label='Exit', command='cmds.deleteUI("mwCache_window")')
+        cmds.menu(label='Cache location')
+        cmds.radioMenuItemCollection()
+        self.currentSessionMenuItem = cmds.menuItem(
+            label='Current Maya session', radioButton=False)
+        self.newProcessMenuItem = cmds.menuItem(
+            label='New process', radioButton=True)
+        self.deadlineMenuItem = cmds.menuItem(
+            label='Deadline', radioButton=False, enable=False)
+        self.conductorMenuItem = cmds.menuItem(
+            label='Conductor', radioButton=False, enable=False)
         cmds.menu(label='Help', helpMenu=True)
         cmds.scrollLayout(w=320, h=600)
         self.mainLayout = cmds.columnLayout(w=320)
@@ -740,7 +753,10 @@ class NewLink(object):
         cmds.text(l='')
 
         for link in main.links:
-            link.populateLinkTo()
+            if link == self:
+                link.populateLinkTo(newLink=True)
+            else:
+                link.populateLinkTo(newLink=False)
 
         self.linkStepChangeCmd()
 
@@ -793,7 +809,7 @@ class NewLink(object):
             self.linkVersionOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
 
-    def populateLinkTo(self, *args):
+    def populateLinkTo(self, newLink=False, *args):
         # loading color
         cmds.optionMenuGrp(
             self.linkToOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
@@ -812,16 +828,7 @@ class NewLink(object):
                               '|OptionMenu'), label='Source Animation')
 
         cmds.menuItem(parent=(self.linkToOptionMenuGrp +
-                              '|OptionMenu'), label='Previous link')
-
-        if len(main.links) > 1:
-            cmds.optionMenuGrp(self.linkToOptionMenuGrp,
-                               e=1, v="Previous link")
-            self.currentLinkTo = "Previous link"
-        else:
-            cmds.optionMenuGrp(self.linkToOptionMenuGrp,
-                               e=1, v="Source Animation")
-            self.currentLinkTo = "Source Animation"
+                              '|OptionMenu'), label='Previous Link')
 
         for link in main.links:
             if link != self:
@@ -830,11 +837,23 @@ class NewLink(object):
             else:
                 break
 
-        try:
-            cmds.optionMenuGrp(self.linkToOptionMenuGrp,
-                               e=1, v=currentSel)
-        except:
-            0
+        if newLink == True:
+            if len(main.links) > 1:
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                                   e=1, v="Previous Link")
+                self.currentLinkTo = "Previous Link"
+            else:
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                                   e=1, v="Source Animation")
+                self.currentLinkTo = "Source Animation"
+
+        else:
+            try:
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                                   e=1, v=currentSel)
+            except:
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
+                                   e=1, v="Previous Link")
 
         self.linkToChangeCmd()
 
@@ -957,8 +976,126 @@ def deleteAllLinks():
         link.deleteLink()
 
 
-def runCacheChain():
-    mwCacheApp_data = []
+def load():
+    basicFilter = "*.json"
+    file = cmds.fileDialog2(fileFilter=basicFilter, dialogStyle=2, fm=1)[0]
+
+    with open(file, 'r') as fp:
+        data = json.load(fp)
+
+    deleteAllLinks()
+
+    for i, link in enumerate(data):
+        project_id = link["project_id"]
+        sourcePublish_id = link["sourcePublish_id"]
+        linkPublish_id = link["linkPublish_id"]
+        anim_task = link["anim_task"]
+        chain_mode = link["chain_mode"]
+        asset_name = link["asset_name"]
+        pass_name = link["pass_name"]
+        source_step = link["source_step"]
+        source_task = link["source_task"]
+        source_version = link["source_version"]
+        link_to = link["link_to"]
+        link_step = link["link_step"]
+        link_task = link["link_task"]
+        link_version = link["link_version"]
+        from_id = link["from_id"]
+
+        # gets project name
+        filters = [["is_demo", "is", False], [
+            "is_template", "is", False], ["archived", "is", False], ["id", "is", project_id]]
+        fields = ["name", "id"]
+        order = [{'field_name': 'name', 'direction': 'asc'}]
+        find = main.sg.find("Project", filters, fields, order)
+        project_name = find[0]["name"]
+
+        # sets source anim info
+        if i == 0:
+            # sets project
+            cmds.optionMenuGrp(animSource.projectOptionMenuGrp,
+                               e=1, v=project_name)
+            animSource.projectChangeCmd()
+
+            # sets asset
+            cmds.optionMenuGrp(animSource.assetOptionMenuGrp,
+                               e=1, v=asset_name)
+            animSource.assetChangeCmd()
+
+            # sets source
+            cmds.optionMenuGrp(animSource.sourceOptionMenuGrp,
+                               e=1, v=chain_mode)
+            animSource.sourceChangeCmd()
+
+            # sets step
+            cmds.optionMenuGrp(animSource.stepOptionMenuGrp,
+                               e=1, v=source_step)
+            animSource.stepChangeCmd()
+
+            if chain_mode == "Asset":
+                # sets animTask
+                cmds.optionMenuGrp(animSource.animTaskOptionMenuGrp,
+                                   e=1, v=anim_task)
+                animSource.animTaskChangeCmd()
+
+            elif chain_mode == "Shot":
+                sequence, shot = anim_task.split("_")
+
+                # sets sequence
+                cmds.optionMenuGrp(animSource.seqOptionMenuGrp,
+                                   e=1, v=sequence)
+                animSource.seqChangeCmd()
+
+                # sets shot
+                cmds.optionMenuGrp(animSource.shotOptionMenuGrp,
+                                   e=1, v=shot)
+                animSource.shotChangeCmd()
+
+            # sets task
+            cmds.optionMenuGrp(animSource.taskOptionMenuGrp,
+                               e=1, v=source_task)
+            animSource.taskChangeCmd()
+
+            # sets version
+            cmds.optionMenuGrp(animSource.versionOptionMenuGrp,
+                               e=1, v=source_version)
+
+        newLink = NewLink()
+
+        # sets link pass name
+        newLink.changeLabel(label=pass_name)
+        cmds.textFieldGrp(newLink.labelTextFieldGrp, e=True, tx=pass_name)
+
+        # sets link to
+        cmds.optionMenuGrp(newLink.linkToOptionMenuGrp, e=1, v=link_to)
+
+        # sets link step
+        cmds.optionMenuGrp(newLink.linkStepOptionMenuGrp, e=1, v=link_step)
+        newLink.linkStepChangeCmd()
+
+        # sets link task
+        cmds.optionMenuGrp(newLink.linkTaskOptionMenuGrp, e=1, v=link_task)
+        newLink.linkTaskChangeCmd()
+
+        # sets link version
+        cmds.optionMenuGrp(newLink.linkVersionOptionMenuGrp,
+                           e=1, v=link_version)
+        newLink.linkVersionChangeCmd()
+
+
+def save():
+
+    mwCacheApp_data = makeLinkDict()
+
+    basicFilter = "*.json"
+    file = cmds.fileDialog2(fileFilter=basicFilter, dialogStyle=2, fm=0)[0]
+
+    with open(file, 'w') as fp:
+        json.dump(mwCacheApp_data, fp, sort_keys=True, indent=4)
+
+
+def makeLinkDict():
+    linkDict_data = []
 
     for i, link in enumerate(main.links):
         project_id = animSource.currentProjectId
@@ -971,15 +1108,22 @@ def runCacheChain():
         elif chain_mode == "Asset":
             anim_task = animSource.currentAnimTaskName
         asset_name = animSource.currentAssetName
+        source_version = animSource.currentVersionNumber
         pass_name = link.currentPassName
-        pass_task = link.currentLinkTask
-        source_task = link.currentLinkTo
-        from_id = False
-        if source_task == "Source Animation":
+        source_step = cmds.optionMenuGrp(
+            animSource.stepOptionMenuGrp, q=1, v=1)
+
+        link_to = link.currentLinkTo
+        if link_to == "Source Animation":
             source_task = animSource.currentTaskName
             from_id = True
-        elif source_task == "Previous Link":
+        elif link_to == "Previous Link":
             source_task = main.links[i-1].currentPassName
+
+        link_step = link.currentLinkStep
+        link_task = link.currentLinkTask
+        link_version = link.currentLinkVersionNumber
+        from_id = False
 
         ##########################################################
 
@@ -990,14 +1134,29 @@ def runCacheChain():
         linkDict["anim_task"] = anim_task
         linkDict["chain_mode"] = chain_mode
         linkDict["asset_name"] = asset_name
+        linkDict["source_version"] = source_version
         linkDict["pass_name"] = pass_name
-        linkDict["pass_task"] = pass_task
+        linkDict["link_to"] = link_to
+        linkDict["link_step"] = link_step
+        linkDict["link_task"] = link_task
+        linkDict["link_version"] = link_version
+        linkDict["source_step"] = source_step
         linkDict["source_task"] = source_task
         linkDict["from_id"] = from_id
 
-        mwCacheApp_data.append(linkDict)
+        linkDict_data.append(linkDict)
 
-    mw_maya_path = os.getenv("MW_MAYA_PATH")
+    return linkDict_data
+
+
+def runCacheChain():
+    mwCacheApp_data = makeLinkDict()
+
+    current_engine = sgtk.platform.current_engine()
+
+    mw_maya_path = os.path.join(current_engine.environment["disk_location"].split(
+        "env")[0], "hooks/tk-multi-launchapp/maya")
+
     maya_location = os.getenv("MAYA_LOCATION")
 
     file_path = os.path.join(mw_maya_path, "mwCacheApp_data.json")
@@ -1005,15 +1164,24 @@ def runCacheChain():
     with open(file_path, 'w') as fp:
         json.dump(mwCacheApp_data, fp, sort_keys=True, indent=4)
 
-    # runs mayabatch
-    env = os.environ.copy()
-    env['SGTK_ENGINE'] = 'tk-maya'
-    env['SGTK_CONTEXT'] = sgtk.platform.current_engine().context.serialize()
+    print "currentSession", cmds.menuItem(
+        main.currentSessionMenuItem, q=1, radioButton=1)
+    print "newProcess", cmds.menuItem(
+        main.newProcessMenuItem, q=1, radioButton=1)
 
-    mayabatch = os.path.join(maya_location, "bin", "mayabatch.exe")
-    melscript = os.path.join(mw_maya_path, "cache.mel")
+    if cmds.menuItem(main.currentSessionMenuItem, q=1, radioButton=1) == True:
+        # runs in local session
+        import mw_cache_utils
+        reload(mw_cache_utils)
+        mw_cache_utils.startCache(currentSession=True)
 
-    #subprocess.Popen([mayabatch, '-script', melscript], env=env)
-    import mw_cache_utils
-    reload(mw_cache_utils)
-    mw_cache_utils.startCache(currentSession=True)
+    elif cmds.menuItem(main.newProcessMenuItem, q=1, radioButton=1) == True:
+        # runs mayabatch
+        env = os.environ.copy()
+        env['SGTK_ENGINE'] = 'tk-maya'
+        env['SGTK_CONTEXT'] = sgtk.platform.current_engine().context.serialize()
+
+        mayabatch = os.path.join(maya_location, "bin", "mayabatch.exe")
+        melscript = os.path.join(mw_maya_path, "cache.mel")
+
+        subprocess.Popen([mayabatch, '-script', melscript], env=env)

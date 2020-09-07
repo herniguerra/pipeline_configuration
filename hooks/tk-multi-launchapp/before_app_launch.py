@@ -44,9 +44,6 @@ class BeforeAppLaunch(sgtk.Hook):
             associated with this launch command.
         """
 
-        os.system('setx MW_MAYA_PATH ' +
-                  os.path.join(self.disk_location, "maya") + "")
-
         if engine_name == "tk-maya":
 
             sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial/")

@@ -1383,7 +1383,6 @@ def bringPublish(
     tk = current_engine.sgtk
 
     if id == None:
-        print None, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         template = tk.templates[template]
         fields = context.as_template_fields(template)
 

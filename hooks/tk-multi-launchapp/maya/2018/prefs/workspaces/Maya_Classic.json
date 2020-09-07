@@ -310,43 +310,18 @@
                     }
                 ]
             }
-        },
-        {
-            "mainWindowPanel": false,
-            "posX": 783,
-            "posY": 213,
-            "splitter": {
-                "orientation": "horizontal",
-                "children": [
-                    {
-                        "tabWidget": {
-                            "selectedIndex": 0,
-                            "controlWidth": 1030,
-                            "controlHeight": 658,
-                            "collapsed": false,
-                            "controls": [
-                                {
-                                    "objectName": "scriptEditorPanel1Window",
-                                    "title": "Script Editor",
-                                    "uiScript": "if(!`panel -q -exists scriptEditorPanel1`) {\n\tint $menusOkayInPanels = `optionVar -q allowMenusInPanels`;\n\tstring $panelName = \"scriptEditorPanel1\";\n\tscriptedPanel -unParent  -type \"scriptEditorPanel\" -l (localizedPanelLabel(\"Script Editor\")) -mbv $menusOkayInPanels  scriptEditorPanel1;\n} else {\n\tscriptedPanel -e -unParent scriptEditorPanel1;\n}\nscriptedPanel -e -parent scriptEditorPanel1Window scriptEditorPanel1;\n",
-                                    "retain": false,
-                                    "loadImmediately": false,
-                                    "checkPlugins": false,
-                                    "tabDirection": 0,
-                                    "closed": false,
-                                    "widthProperty": "free",
-                                    "heightProperty": "free",
-                                    "controlWidth": 1030,
-                                    "controlHeight": 658
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
         }
     ],
     "closedControls": [
+        {
+            "objectName": "renderViewWindow",
+            "posX": 183,
+            "posY": 218,
+            "controlHeight": 656,
+            "controlWidth": 996,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
         {
             "objectName": "unifiedRenderGlobalsWindow",
             "posX": 333,
@@ -357,11 +332,11 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "renderViewWindow",
-            "posX": 183,
-            "posY": 218,
-            "controlHeight": 656,
-            "controlWidth": 996,
+            "objectName": "scriptEditorPanel1Window",
+            "posX": 763,
+            "posY": 204,
+            "controlHeight": 599,
+            "controlWidth": 1030,
             "widthProperty": "free",
             "heightProperty": "free"
         }
