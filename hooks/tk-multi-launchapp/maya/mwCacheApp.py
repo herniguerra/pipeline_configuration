@@ -1119,11 +1119,11 @@ def makeLinkDict():
             from_id = True
         elif link_to == "Previous Link":
             source_task = main.links[i-1].currentPassName
+            from_id = False
 
         link_step = link.currentLinkStep
         link_task = link.currentLinkTask
         link_version = link.currentLinkVersionNumber
-        from_id = False
 
         ##########################################################
 
