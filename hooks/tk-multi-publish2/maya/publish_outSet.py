@@ -305,7 +305,6 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         self.parent.ensure_folder_exists(publish_folder)
 
         start_frame, end_frame = _find_scene_animation_range()
-        end_frame = 120
 
         # build AbcExport command
 

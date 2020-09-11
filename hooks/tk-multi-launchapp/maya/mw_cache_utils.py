@@ -43,7 +43,7 @@ def sgBootstrap():
     print ("Shotgun API instance", engine.shotgun)
 
 
-def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id):
+def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene):
     import maya.cmds as cmds
     import mwUtils
     import shotgun_api3
@@ -135,6 +135,7 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
                 entity_name=asset_name,
                 published_file_type="Alembic Cache",
                 namespace=asset_name+"_"+source_task,
+                lsgtk=sgtk,
             )
 
         mwUtils.bringPublish(
@@ -206,10 +207,12 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
         else:
             mwUtils.bringPublish(
                 entity_type="Shot",
+                entity_name=sht,
                 task=asset_name+"_"+source_task,
                 template="maya_shot_publish",
                 published_file_type="Alembic Cache",
                 namespace=asset_name+"_"+source_task,
+                lsgtk=sgtk,
             )
 
         mwUtils.bringPublish(
@@ -241,6 +244,10 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
 
     work_path = template.apply_fields(fields)
     current_engine.ensure_folder_exists(os.path.dirname(work_path))
+
+    # sets frame range
+    if frame_range_from_scene == False:
+        cmds.playbackOptions(minTime=frame_range[0], maxTime=frame_range[1])
 
     cmds.file(rename=work_path)
     cmds.file(save=1)
@@ -323,14 +330,22 @@ def startCache(currentSession=False):
         link_task = link["link_task"]
         source_task = link["source_task"]
         from_id = link["from_id"]
+        frame_range = link["frame_range"]
+        frame_range_from_scene = link["frame_range_from_scene"]
 
-        print "***"
+        print "**********"
         print "Creating cacheChainLink:"
         print pass_name
         print "from:"
         print source_task
+        print "with frame range"
+        if frame_range_from_scene == True:
+            print "from scene"
+        else:
+            print frame_range
+        print "**********"
 
         cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode,
-                       asset_name, pass_name, link_task, source_task, from_id)
+                       asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene)
 
     print "Cache Chain Finished! :D"

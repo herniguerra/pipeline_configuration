@@ -21,3 +21,6 @@ windowPref -topLeftCorner 175 190 -widthHeight 350 621 -maximized false -parentM
 windowPref -topLeftCorner 162 305 -widthHeight 350 621 -maximized false -parentMain true mwCache_window;
 windowPref -topLeftCorner 346 640 -widthHeight 450 320 -maximized false -parentMain true NewFeatureHighlightWnd;
 windowPref -topLeftCorner 346 640 -widthHeight 600 529 -maximized false -parentMain true window1;
+windowPref -topLeftCorner 83 296 -widthHeight 1369 861 -maximized false -parentMain true HotkeyEditor;
+windowPref -topLeftCorner 210 390 -widthHeight 653 450 -maximized false -parentMain true PreferencesWindow;
+windowPref -topLeftCorner 346 640 -widthHeight 802 525 -maximized false -parentMain true mgear_shifter_build_log_window;

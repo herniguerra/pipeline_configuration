@@ -2,3 +2,187 @@
 //
 //
 
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nfrom mgear.shifter import guide_manager\nimport mgear.rigbits as rigbits\nif isinstance(pm.selected()[0], pm.MeshFace):\n    pm.polyExtrudeFacet(constructionHistory=True,keepFacesTogether=True )\nelse:\n    root = pm.selected()[0]\n    if not pm.attributeQuery(\"comp_type\", node=root, ex=True):\n        rigbits.duplicateSym()\n    else:\n        guide_manager.duplicate(True)\n\n")
+	mGear_duplicateSym;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nfrom mgear.shifter import guide_manager\nimport mgear.rigbits as rigbits\nif isinstance(pm.selected()[0], pm.MeshFace):\n    pm.polyExtrudeFacet(constructionHistory=True,keepFacesTogether=True )\nelse:\n    root = pm.selected()[0]\n    if not pm.attributeQuery(\"comp_type\", node=root, ex=True):\n        pm.duplicate()\n    else:\n        guide_manager.duplicate(False)\n\n")
+	mGear_duplicate;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport maya.mel as mel\n\ndef frameSelectedCenter():\n    oSel = pm.selected()[0]\n\n    oTra = pm.spaceLocator()\n    oTra.setTransformation(oSel.getMatrix(worldSpace=True))\n    mel.eval(\"fitPanel -selected;\")\n    pm.delete(oTra)\n    pm.select(oSel, r=True)\n\nframeSelectedCenter()\n\n")
+	mGear_frameCenter;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nfrom mgear.core import attribute\nattribute.smart_reset()\n\n")
+	mGear_resetSRT;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport core.cmds as cmds\nimport maya.mel as mel\ngMainWindow = mel.eval('$temp1=$gMainWindow')\nacti = cmds.window( gMainWindow, q=True, titleBar=True)\nif acti:\n    cmds.window( gMainWindow, e=True, titleBar=False)\nelse:\n    cmds.window( gMainWindow, e=True, titleBar=True)\n\n")
+	mGear_maximizeMaya;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nfor obj in pm.selected():\n    if pm.selected()[0].nodeType() == \"transform\":\n\n        if pm.getAttr(obj + \".visibility\"):\n            pm.setAttr(obj + \".visibility\", False)\n        else:\n            pm.setAttr(obj + \".visibility\", True)\n\n")
+	mGear_toggleVisibility;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport maya.mel as mel\n\npanel = pm.getPanel(wf=True)\n\nshaded = pm.modelEditor(panel, q=True, wos=True)\nif shaded:\n    pm.modelEditor(panel, e=True, wos=False)\nelse:\n    pm.modelEditor(panel, e=True, wos=True)\n\n")
+	mGear_toggleWireframeOnTop;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport maya.mel as mel\n\npanel = pm.getPanel(wf=True)\n\nshaded = pm.modelEditor(panel, q=True, da=True)\nif shaded == \"smoothShaded\":\n    pm.modelEditor(panel, e=True, da='wireframe')\nelse:\n    pm.modelEditor(panel, e=True, da='smoothShaded')\n\n")
+	mGear_toggleShadedWireframe;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\n\nif len(pm.selected()) !=2:\n    print \"2 objects must be selected\"\nelse:\n    source, target = pm.selected()\n\n    sWM = source.getMatrix(worldSpace=True)\n    target.setMatrix(sWM, worldSpace=True)\n\n")
+	mGear_align2Transforms;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nfrom mgear.shifter import guide_manager\nguide_manager.inspect_settings()\n\n")
+	mGear_inspectProperty;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nfrom mgear.shifter import guide_manager\nguide_manager.inspect_settings(1)\n\n")
+	mGear_inspectPropertyTab2;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nfrom mgear.shifter import guide_manager\nguide_manager.build_from_selection()\n\n")
+	mGear_buildFromSelection;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkDown(pm.selected())\n\n\n\n")
+	mGear_walkTransformChild;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkUp(pm.selected())\n\n")
+	mGear_walkTransformParent;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkLeft(pm.selected())\n\n")
+	mGear_walkTransformLeft;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkRight(pm.selected())\n\n")
+	mGear_walkTransformRight;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkMirror(pm.selected())\n\n")
+	mGear_walkMirror;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\n\npm.viewSet(p=True, fit=True)\n\n")
+	mGear_resetCameraPersp;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkDown(pm.selected(), True)\n\n\n\n")
+	mGear_walkTransformChildAdd;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkUp(pm.selected(), True)\n\n")
+	mGear_walkTransformParentAdd;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkLeft(pm.selected(), True)\n\n")
+	mGear_walkTransformLeftAdd;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkRight(pm.selected(), True)\n\n")
+	mGear_walkTransformRightAdd;
+
+runTimeCommand
+	-annotation ""
+	-category "mGear"
+	-hotkeyCtx ""
+	-commandLanguage "python"
+	-command ("\nimport pymel.core as pm\nimport mgear.core.pickWalk as pw\n\npw.walkMirror(pm.selected(), True)\n\n")
+	mGear_walkMirrorAdd;
+

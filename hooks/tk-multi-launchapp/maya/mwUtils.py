@@ -1369,6 +1369,7 @@ def bringPublish(
     entity_name="current",
     published_file_type="Maya Scene",
     namespace=None,
+    lsgtk=None,
 ):
     import shotgun_api3
 
@@ -1377,7 +1378,10 @@ def bringPublish(
         script_name="mwUtils_bringPublish",
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
-    current_engine = sgtk.platform.current_engine()
+    if lsgtk == None:
+        current_engine = sgtk.platform.current_engine()
+    else:
+        current_engine = lsgtk.platform.current_engine()
 
     context = current_engine.context
     tk = current_engine.sgtk
@@ -1403,7 +1407,6 @@ def bringPublish(
         publishedFile = sg.find_one("PublishedFile", filters, fields, order)
 
     else:
-        print id, "!!!!!!!!!!!!"
         filters = [["id", "is", id]]
 
         fields = ["path", "name", "published_file_type"]
@@ -1429,22 +1432,29 @@ def bringPublish(
             return filePath
 
     else:
-        window = cmds.window(title="mwCloud", widthHeight=(400, 110))
-        cmds.columnLayout(adjustableColumn=True)
-        cmds.text(label="Downloading")
-        cmds.text(label=publishedFile["name"])
-        cmds.text(label="from mwCloud...")
-        cmds.setParent("..")
-        cmds.showWindow(window)
+        if cmds.about(batch=0):
+            window = cmds.window(title="mwCloud", widthHeight=(400, 110))
+            cmds.columnLayout(adjustableColumn=True)
+            cmds.text(label="Downloading")
+            cmds.text(label=publishedFile["name"])
+            cmds.text(label="from mwCloud...")
+            cmds.setParent("..")
+            cmds.showWindow(window)
 
-        download(publishedFile)
+            download(publishedFile)
 
-        cmds.deleteUI(window)
+            cmds.deleteUI(window)
+
+        else:
+            download(publishedFile)
 
         if returnPath == True:
             return filePath
 
         else:
-            cmds.file(filePath, i=True, defaultNamespace=True)
+            if namespace == None:
+                cmds.file(filePath, i=True, defaultNamespace=True)
+            else:
+                cmds.file(filePath, i=True, namespace=namespace)
 
             return filePath

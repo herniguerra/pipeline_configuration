@@ -60,15 +60,17 @@ class createUI(object):
         cmds.menu(label='Help', helpMenu=True)
         cmds.scrollLayout(w=320, h=600)
         self.mainLayout = cmds.columnLayout(w=320)
-        self.mainColumnLayout = cmds.rowColumnLayout(w=320)
+        self.mainColumnLayout = cmds.rowColumnLayout(
+            w=320, bgc=[0.2, 0.2, 0.2])
         cmds.setParent(self.mainLayout)
+        cmds.text(l='')
         self.bottomColumnLayout = cmds.columnLayout(w=320)
         cmds.setParent(self.bottomColumnLayout)
-        cmds.button('newLinkButton', label='New link', bgc=[0.1, 0.4, 0.1],
+        cmds.button('newLinkButton', label='New link', bgc=[0.05, 0.41, 0.05],
                     command='mwCacheApp.NewLink()')
         cmds.text(l='')
-        cmds.button('generateButton', label='Run Cache Chain', bgc=[0.4, 0.1, 0.1],
-                    command='mwCacheApp.runCacheChain()')
+        self.runCacheChainButton = cmds.button(label='Run Cache Chain', bgc=[0.5, 0.1, 0.1], enable=False,
+                                               command='mwCacheApp.runCacheChain()')
         cmds.showWindow(self.window)
 
 
@@ -81,21 +83,21 @@ class AnimSourceModule(object):
         # attributes
         cmds.setParent(main.mainColumnLayout)
         self.frameLayout = cmds.frameLayout(
-            collapsable=True, collapse=False, w=340, label=self.label)
-        cmds.scrollLayout(w=300, h=200)
+            collapsable=True, collapse=False, w=340, label=self.label, bgc=[0.08, 0.08, 0.08])
+        # cmds.scrollLayout(w=300, h=200)
 
         cmds.text(l='')
 
         self.projectOptionMenuGrp = cmds.optionMenuGrp(
-            label='Project:', changeCommand=partial(self.projectChangeCmd))
+            label='Project:', changeCommand=partial(self.projectChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
 
         self.assetOptionMenuGrp = cmds.optionMenuGrp(
-            label='Asset:', changeCommand=partial(self.assetChangeCmd))
+            label='Asset:', changeCommand=partial(self.assetChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
 
         self.sourceOptionMenuGrp = cmds.optionMenuGrp(
-            label='Source:', changeCommand=partial(self.sourceChangeCmd))
+            label='Source:', changeCommand=partial(self.sourceChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='Shot')
         cmds.menuItem(label='Asset')
         if main.entity_type == "Shot":
@@ -104,32 +106,59 @@ class AnimSourceModule(object):
             cmds.optionMenuGrp(self.sourceOptionMenuGrp, e=1, v="Asset")
 
         self.seqOptionMenuGrp = cmds.optionMenuGrp(
-            label='Seq:', changeCommand=partial(self.seqChangeCmd))
+            label='Seq:', changeCommand=partial(self.seqChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
 
         self.shotOptionMenuGrp = cmds.optionMenuGrp(
-            label='Shot:', changeCommand=partial(self.shotChangeCmd))
+            label='Shot:', changeCommand=partial(self.shotChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
 
         self.animTaskOptionMenuGrp = cmds.optionMenuGrp(
-            label='Anim Task:', vis=False, changeCommand=partial(self.animTaskChangeCmd))
+            label='Anim Task:', vis=False, changeCommand=partial(self.animTaskChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
 
         self.stepOptionMenuGrp = cmds.optionMenuGrp(
-            label='Step:', changeCommand=partial(self.stepChangeCmd))
+            label='Step:', changeCommand=partial(self.stepChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='Animation')
         cmds.menuItem(label='CharacterFX')
 
         self.taskOptionMenuGrp = cmds.optionMenuGrp(
-            label='Task:', changeCommand=partial(self.taskChangeCmd))
+            label='Task:', changeCommand=partial(self.taskChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
 
         self.versionOptionMenuGrp = cmds.optionMenuGrp(
-            label='Version:', changeCommand=partial(self.versionChangeCmd))
+            label='Version:', changeCommand=partial(self.versionChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='None')
+        cmds.separator(style='in')
 
-        # self.liveTweakButton = cmds.button(label='Live tweak', bgc=[0.2, 0.2, 0.2], w=310)
-        # self.populateAsset()
+        cmds.rowColumnLayout(numberOfRows=1)
+
+        self.cutIn = 1001
+        self.cutOut = 1002
+
+        self.frameRangeIntFieldGrp = cmds.intFieldGrp(numberOfFields=2, label='Frame range:', changeCommand=partial(self.frameRangeChangeCmd),
+                                                      value1=self.cutIn, value2=self.cutOut, cw3=[80, 40, 40], bgc=[0.25, 0.25, 0.25], enableBackground=False)
+
+        self.resetFrameRangeButton = cmds.button(
+            label="Reset", enable=0, command=partial(self.populateFrameRange))
+
+        cmds.setParent(self.frameLayout)
+        cmds.rowColumnLayout(numberOfRows=1)
+
+        cmds.text(l='')
+
+        self.currentFrameRangeFromScene = False
+
+        self.frameRangeFromSceneCheckBox = cmds.checkBox(
+            label="From source scene", align='right', changeCommand=partial(self.frameRangeFromSceneChangeCmd), v=self.currentFrameRangeFromScene)
+
+        cmds.setParent(main.mainColumnLayout)
+
+        cmds.separator(style='in')
+
+        cmds.setParent(self.frameLayout)
+        cmds.separator(style='in')
+
         self.populateProject()
 
     def projectChangeCmd(self, *args):
@@ -165,12 +194,22 @@ class AnimSourceModule(object):
             cmds.optionMenuGrp(self.seqOptionMenuGrp, e=1, vis=0)
             cmds.optionMenuGrp(self.shotOptionMenuGrp, e=1, vis=0)
             cmds.optionMenuGrp(self.animTaskOptionMenuGrp, e=1, vis=1)
+
+            self.cutIn = 1001
+            self.cutOut = 1002
+            cmds.checkBox(self.frameRangeFromSceneCheckBox, e=1, v=1)
+            self.frameRangeFromSceneChangeCmd()
+
             self.populateAnimTask()
 
         elif cmds.optionMenuGrp(self.sourceOptionMenuGrp, q=1, v=1) == "Shot":
             cmds.optionMenuGrp(self.seqOptionMenuGrp, e=1, vis=1)
             cmds.optionMenuGrp(self.shotOptionMenuGrp, e=1, vis=1)
             cmds.optionMenuGrp(self.animTaskOptionMenuGrp, e=1, vis=0)
+
+            cmds.checkBox(self.frameRangeFromSceneCheckBox, e=1, v=0)
+            self.frameRangeFromSceneChangeCmd()
+
             self.populateSeq()
 
     def seqChangeCmd(self, *args):
@@ -193,12 +232,17 @@ class AnimSourceModule(object):
             self.shotOptionMenuGrp, q=True, v=True)
         filters = [["code", "is", self.currentShotName], [
             "project", "is", {"type": "Project", "id": self.currentProjectId}]]
+        fields = ["id", "name", "sg_cut_in", "sg_cut_out"]
 
         try:
-            self.currentShotId = main.sg.find_one("Shot", filters)["id"]
+            find = main.sg.find_one("Shot", filters, fields)
+            self.currentShotId = find["id"]
+            self.cutIn = find["sg_cut_in"]
+            self.cutOut = find["sg_cut_out"]
         except:
             0
 
+        self.populateFrameRange()
         self.populateTask()
 
     def animTaskChangeCmd(self, *args):
@@ -220,6 +264,7 @@ class AnimSourceModule(object):
             if task["entity"]["name"] == self.currentAssetName and task["content"] == self.currentAnimTaskName:
                 self.currentAnimTaskId = task["id"]
 
+        self.populateFrameRange()
         self.stepChangeCmd()
 
     def stepChangeCmd(self, *args):
@@ -253,23 +298,47 @@ class AnimSourceModule(object):
 
             version = main.sg.find_one("PublishedFile", filters, fields)
 
-            print version["path"]["local_path_windows"]
-
             self.publishedVersion = version["id"]
+
         except:
-            print "No path was found."
+            pass
 
         # loaded color
         cmds.optionMenuGrp(
-            self.versionOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.versionOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.versionOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
 
+    def frameRangeChangeCmd(self, *args):
+        self.currentCutIn = cmds.intFieldGrp(self.frameRangeIntFieldGrp, q=1,
+                                             value1=True)
+        self.currentCutOut = cmds.intFieldGrp(self.frameRangeIntFieldGrp, q=1,
+                                              value2=True)
+
+        if self.currentCutIn == self.cutIn and self.currentCutOut == self.cutOut:
+            cmds.button(self.resetFrameRangeButton, e=1, enable=0)
+        else:
+            cmds.button(self.resetFrameRangeButton, e=1, enable=1)
+
+    def frameRangeFromSceneChangeCmd(self, *args):
+        self.frame_range_from_scene = cmds.checkBox(
+            self.frameRangeFromSceneCheckBox, q=1, v=1)
+        cmds.intFieldGrp(self.frameRangeIntFieldGrp, e=1,
+                         enable=not(self.frame_range_from_scene))
+
+        self.currentFrameRangeFromScene = cmds.checkBox(
+            self.frameRangeFromSceneCheckBox, q=1, v=1)
+
+        self.frameRangeChangeCmd()
+
+        if self.frame_range_from_scene == True:
+            cmds.button(self.resetFrameRangeButton, e=1, enable=False)
+
     def populateProject(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.projectOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.projectOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -286,7 +355,7 @@ class AnimSourceModule(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.projectOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.projectOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.projectOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -316,7 +385,7 @@ class AnimSourceModule(object):
     def populateAsset(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.assetOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.assetOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -349,7 +418,7 @@ class AnimSourceModule(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.assetOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.assetOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.assetOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -359,7 +428,7 @@ class AnimSourceModule(object):
     def populateSeq(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.seqOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.seqOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -394,7 +463,7 @@ class AnimSourceModule(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.seqOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.seqOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.seqOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -419,7 +488,7 @@ class AnimSourceModule(object):
     def populateShot(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.shotOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.shotOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
@@ -452,7 +521,7 @@ class AnimSourceModule(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.shotOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.shotOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.shotOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -479,7 +548,7 @@ class AnimSourceModule(object):
     def populateAnimTask(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.animTaskOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.animTaskOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -506,7 +575,7 @@ class AnimSourceModule(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.animTaskOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.animTaskOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.animTaskOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -543,7 +612,7 @@ class AnimSourceModule(object):
     def populateTask(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.taskOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.taskOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -631,7 +700,7 @@ class AnimSourceModule(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.taskOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.taskOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.taskOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -663,7 +732,7 @@ class AnimSourceModule(object):
     def populateVersion(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.versionOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.versionOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -703,10 +772,38 @@ class AnimSourceModule(object):
 
         self.versionChangeCmd()
 
+    def populateFrameRange(self, *args):
+        if self.cutIn != None and self.cutOut != None:
+            cmds.intFieldGrp(self.frameRangeIntFieldGrp, e=1,
+                             value1=self.cutIn)
+
+            cmds.intFieldGrp(self.frameRangeIntFieldGrp, e=1,
+                             value2=self.cutOut)
+
+        else:
+            self.cutIn = 1001
+            self.cutOut = 1002
+
+            cmds.intFieldGrp(self.frameRangeIntFieldGrp, e=1,
+                             value1=self.cutIn)
+
+            cmds.intFieldGrp(self.frameRangeIntFieldGrp, e=1,
+                             value2=self.cutOut)
+
+            cmds.warning(
+                "Could not retrieve Frame Range information from Shotgun.")
+
+            self.frameRangeFromSceneChangeCmd()
+
+        self.currentCutIn = self.cutIn
+        self.currentCutOut = self.cutOut
+
+        cmds.button(self.resetFrameRangeButton, e=1, enable=0)
+
 
 class NewLink(object):
 
-    def __init__(self, label=""):
+    def __init__(self, label="", collapse=False):
 
         self.label = label
 
@@ -715,7 +812,7 @@ class NewLink(object):
         # attributes
         cmds.setParent(main.mainColumnLayout)
         self.frameLayout = cmds.frameLayout(
-            collapsable=True, collapse=False, w=340, label=self.label)
+            collapsable=True, collapse=collapse, w=340, label=self.label, bgc=[0.20, 0.10, 0.10])
 
         self.changeLabel(label="Pass_"+str(main.lastLinkNum))
         main.lastLinkNum += 1
@@ -727,30 +824,32 @@ class NewLink(object):
         cmds.separator(style='in')
 
         self.linkToOptionMenuGrp = cmds.optionMenuGrp(
-            label='Link to:', changeCommand=partial(self.linkToChangeCmd))
+            label='Link to:', changeCommand=partial(self.linkToChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='Source Animation')
         cmds.menuItem(label='Previous Link')
 
         cmds.separator(style='in')
 
         self.linkStepOptionMenuGrp = cmds.optionMenuGrp(
-            label='Step:', changeCommand=partial(self.linkStepChangeCmd))
+            label='Step:', changeCommand=partial(self.linkStepChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='Rig')
         cmds.menuItem(label='Cloth')
         cmds.menuItem(label='LookDev')
 
         self.linkTaskOptionMenuGrp = cmds.optionMenuGrp(
-            label='Task:', changeCommand=partial(self.linkTaskChangeCmd))
+            label='Task:', changeCommand=partial(self.linkTaskChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
 
         self.linkVersionOptionMenuGrp = cmds.optionMenuGrp(
-            label='Version:', changeCommand=partial(self.linkVersionChangeCmd))
+            label='Version:', changeCommand=partial(self.linkVersionChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
 
         cmds.separator(style='in')
 
         cmds.button(label='Delete link', command=partial(
-            self.deleteLink), bgc=[0.3, 0.2, 0.2], w=300)
+            self.deleteLink), bgc=[0.2, 0.05, 0.1], w=300)
 
-        cmds.text(l='')
+        cmds.separator(style='in')
+
+        cmds.setParent(main.mainColumnLayout)
 
         for link in main.links:
             if link == self:
@@ -760,13 +859,15 @@ class NewLink(object):
 
         self.linkStepChangeCmd()
 
+        cmds.button(main.runCacheChainButton, e=1, enable=1)
+
     def linkToChangeCmd(self, *args):
         self.currentLinkTo = cmds.optionMenuGrp(
             self.linkToOptionMenuGrp, q=1, v=1)
 
         # loaded color
         cmds.optionMenuGrp(
-            self.linkToOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.linkToOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.linkToOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -797,14 +898,14 @@ class NewLink(object):
 
             version = main.sg.find_one("PublishedFile", filters, fields)
 
-            print version["path"]["local_path_windows"]
             self.linkPublishedVersion = version["id"]
+
         except:
-            print "No path was found."
+            pass
 
         # loaded color
         cmds.optionMenuGrp(
-            self.linkVersionOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.linkVersionOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.linkVersionOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -812,7 +913,7 @@ class NewLink(object):
     def populateLinkTo(self, newLink=False, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.linkToOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.linkToOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         currentSel = cmds.optionMenuGrp(self.linkToOptionMenuGrp,
@@ -860,7 +961,7 @@ class NewLink(object):
     def populateLinkVersion(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.linkVersionOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.linkVersionOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -909,7 +1010,7 @@ class NewLink(object):
     def populateLinkTask(self, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.linkTaskOptionMenuGrp, e=1, bgc=[0.35, 0.30, 0.0])
+            self.linkTaskOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
         # deletes all items in menu
@@ -944,7 +1045,7 @@ class NewLink(object):
 
         # loaded color
         cmds.optionMenuGrp(
-            self.linkTaskOptionMenuGrp, e=1, bgc=[0.35, 0.35, 0.35])
+            self.linkTaskOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
             self.linkTaskOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
@@ -957,6 +1058,9 @@ class NewLink(object):
 
         for link in main.links:
             link.populateLinkTo()
+
+        if len(main.links) == 0:
+            cmds.button(main.runCacheChainButton, e=1, enable=0)
 
     def changeLabel(self, label=None, *args):
         if label == None:
@@ -985,6 +1089,21 @@ def load():
 
     deleteAllLinks()
 
+    progressBarWindow = cmds.window(
+        title='Loading Cache Chain...', mnb=0, mxb=0)
+    cmds.columnLayout()
+    progressBar = cmds.progressBar(width=300)
+    cmds.showWindow(progressBarWindow)
+
+    cmds.progressBar(progressBar,
+                     edit=True,
+                     beginProgress=True,
+                     isInterruptable=False,
+                     status='Loading Cache Chain...',
+                     maxValue=len(data)+1)
+
+    cmds.progressBar(progressBar, edit=True, step=1)
+
     for i, link in enumerate(data):
         project_id = link["project_id"]
         sourcePublish_id = link["sourcePublish_id"]
@@ -1001,6 +1120,8 @@ def load():
         link_task = link["link_task"]
         link_version = link["link_version"]
         from_id = link["from_id"]
+        frame_range = link["frame_range"]
+        frame_range_from_scene = link["frame_range_from_scene"]
 
         # gets project name
         filters = [["is_demo", "is", False], [
@@ -1060,7 +1181,31 @@ def load():
             cmds.optionMenuGrp(animSource.versionOptionMenuGrp,
                                e=1, v=source_version)
 
-        newLink = NewLink()
+            # sets frame range
+            changed = False
+            if animSource.cutIn != frame_range[0]:
+                changed = True
+            if animSource.cutOut != frame_range[1]:
+                changed = True
+
+            cmds.intFieldGrp(animSource.frameRangeIntFieldGrp,
+                             e=1, value1=frame_range[0], value2=frame_range[1])
+            if changed == True:
+                cmds.button(animSource.resetFrameRangeButton, e=1, enable=1)
+            else:
+                cmds.button(animSource.resetFrameRangeButton, e=1, enable=0)
+
+            animSource.currentCutIn = frame_range[0]
+            animSource.currentCutOut = frame_range[1]
+
+            cmds.checkBox(animSource.frameRangeFromSceneCheckBox,
+                          e=1, v=frame_range_from_scene)
+
+            animSource.frameRangeFromSceneChangeCmd()
+
+            cmds.progressBar(progressBar, edit=True, step=1)
+
+        newLink = NewLink(collapse=True)
 
         # sets link pass name
         newLink.changeLabel(label=pass_name)
@@ -1081,6 +1226,11 @@ def load():
         cmds.optionMenuGrp(newLink.linkVersionOptionMenuGrp,
                            e=1, v=link_version)
         newLink.linkVersionChangeCmd()
+
+        cmds.progressBar(progressBar, edit=True, step=1)
+
+    cmds.progressBar(progressBar, edit=True, endProgress=True)
+    cmds.deleteUI(progressBarWindow)
 
 
 def save():
@@ -1118,14 +1268,21 @@ def makeLinkDict():
             source_task = animSource.currentTaskName
             from_id = True
         elif link_to == "Previous Link":
-            source_task = main.links[i-1].currentPassName
-            from_id = False
+            if i == 0:
+                source_task = animSource.currentTaskName
+                from_id = True
+            else:
+                source_task = main.links[i-1].currentPassName
+                from_id = False
         else:
             source_task = link_to
 
         link_step = link.currentLinkStep
         link_task = link.currentLinkTask
         link_version = link.currentLinkVersionNumber
+        frame_range = [animSource.currentCutIn,
+                       animSource.currentCutOut]
+        frame_range_from_scene = animSource.currentFrameRangeFromScene
 
         ##########################################################
 
@@ -1145,6 +1302,8 @@ def makeLinkDict():
         linkDict["source_step"] = source_step
         linkDict["source_task"] = source_task
         linkDict["from_id"] = from_id
+        linkDict["frame_range"] = frame_range
+        linkDict["frame_range_from_scene"] = frame_range_from_scene
 
         linkDict_data.append(linkDict)
 
