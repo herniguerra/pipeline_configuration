@@ -37,10 +37,10 @@ def sgBootstrap():
     # As we imported sgtk prior to bootstrapping we should import it again now as the bootstrap process swapped the standalone sgtk out for the project's sgtk.
     import sgtk
 
-    print ("engine", engine)
-    print ("context", engine.context)
-    print ("sgtk instance", engine.sgtk)
-    print ("Shotgun API instance", engine.shotgun)
+    print("engine", engine)
+    print("context", engine.context)
+    print("sgtk instance", engine.sgtk)
+    print("Shotgun API instance", engine.shotgun)
 
 
 def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene, anim_preRoll, sim_preRoll):
@@ -284,19 +284,21 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
             # sets integrator quasiStatic on, substeps to 1
             solver = cmds.listRelatives(solverTransform, c=1)[0]
 
-            integrator = cmds.getAttr(solver + ".integrator")
+            if cmds.objExists(solver + ".integrator"):
 
-            cmds.setKeyframe(
-                solver, attribute="integrator", v=3, t=frame_range[0]-anim_preRoll-sim_preRoll
-            )
+                integrator = cmds.getAttr(solver + ".integrator")
 
-            cmds.setKeyframe(
-                solver, attribute="integrator", v=3, t=frame_range[0]-1
-            )
+                cmds.setKeyframe(
+                    solver, attribute="integrator", v=3, t=frame_range[0]-anim_preRoll-sim_preRoll
+                )
 
-            cmds.setKeyframe(
-                solver, attribute="integrator", v=integrator, t=frame_range[0]
-            )
+                cmds.setKeyframe(
+                    solver, attribute="integrator", v=3, t=frame_range[0]-1
+                )
+
+                cmds.setKeyframe(
+                    solver, attribute="integrator", v=integrator, t=frame_range[0]
+                )
 
             cmds.setKeyframe(
                 solver, attribute="substeps", t=frame_range[0]
