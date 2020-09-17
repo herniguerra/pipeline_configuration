@@ -190,7 +190,7 @@ class ZivaMarkingMenu:
         cmds.menuItem(
             parent=menu,
             label="Rebuild Marking Menu",
-            command=rebuild_marking_manu,
+            command=rebuild_marking_menu,
         )
         cmds.menuItem(parent=menu, divider=True, dividerLabel="asdasdasdasd")
 
@@ -244,14 +244,14 @@ def create_loa(*args):
             )
 
         # Create the line of action.
-        curve = item.name().replace("_msh", "_loac")
+        curve = item.name().replace("_msl", "_loac")
         if pymel.objExists(curve):
             pymel.select(curve, fiber, replace=True)
             loa_node = pymel.ziva(loa=True)[0]
         else:
             pymel.select(item, replace=True)
             curve = pymel.PyNode(mel.eval("zLineOfActionUtil")[0])
-            pymel.rename(curve.getParent(), item.name().replace("_msh", "_loa"))
+            pymel.rename(curve.getParent(), item.name().replace("_msl", "_loa"))
             pymel.select(curve, fiber, replace=True)
             loa_node = pymel.ziva(loa=True)[0]
         pymel.rename(
@@ -284,7 +284,7 @@ def switch_tissue(elements=None):
                 element.visibility.set(1)
 
 
-def rebuild_marking_manu(*args):
+def rebuild_marking_menu(*args):
     """This function assumes that this file has been imported in the userSetup.py
     and all it does is reload the module and initialize the markingMenu class which
     rebuilds our marking menu"""

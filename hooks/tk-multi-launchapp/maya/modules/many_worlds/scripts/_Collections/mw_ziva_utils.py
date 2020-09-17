@@ -131,43 +131,6 @@ def switch_tissue(elements=None):
     return procesed_items
 
 
-class MuscleRigBuilder(object):
-    """Main Ziva rig builder class"""
-
-    def __init__(
-        self,
-        anatomy_apkg,
-        ziva_build=None,
-        cache_file=None,
-        new_scene=True):
-        """[summary]
-
-        Args:
-            anatomy_apkg (str): Main path to anatomy packcage.
-            ziva_build (str, optional): Ziva build file. Defaults None.
-            cache_file (stg, optional): Previous skeleton cache. Defaults None.
-        """
-        self.anatomy_apkg = anatomy_apkg
-        self.ziva_build = ziva_build
-        self.cache_file = cache_file
-        self.new_scene = new_scene
-
-    def build(self):
-        """Bring the anatomy package"""
-        if self.new_scene:
-            mw_maya_utils.edit_maya_scene("new")
-        package = mw_creature_manager_lib.serialize_creature_package_to_maya(self.anatomy_apkg)
-        mw_creature_manager_lib.import_creature_package(package)
-        cmds.refresh(currentView=True)
-
-        if self.ziva_build:
-            import zBuilder.builders.ziva as zva
-
-            ziva_handle = zva.Ziva()
-            ziva_handle.retrieve_from_file(self.ziva_build)
-            ziva_handle.build()
-
-
 def rename_rivets():
     """ Rename zRivets types on the scene."""
     for item in pymel.ls(type="zRivetToBoneLocator"):

@@ -35,7 +35,6 @@ reload(mw_QGroupBox)
 reload(mw_QtDialog)
 reload(mw_QAssetLibrary)
 
-#parent=mw_pyside_utils.maya_main_window()
 class MWQPackageBuilder(mw_QtDialog.MWQDialog):
     """ Many Worlds custom QDialog class. """
     def __init__(self, parent=None):
@@ -195,7 +194,6 @@ class MWQPackageBuilder(mw_QtDialog.MWQDialog):
             heigth=35
         )
 
-    
     def create_connections(self):
         """ Ceeate the connections between the widgets and the class methods.
         """
