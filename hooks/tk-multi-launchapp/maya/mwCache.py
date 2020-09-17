@@ -14,11 +14,13 @@ def run():
     scenefile = cmds.file(sceneName=True, query=True)
 
     PyblishInstanceData = mel.eval('DeadlineExtraInfo("PyblishInstanceData");')
-    PyblishInstanceData = PyblishInstanceData.replace("'", '"').replace("\\", "/")
+    PyblishInstanceData = PyblishInstanceData.replace(
+        "'", '"').replace("\\", "/")
     PyblishInstanceData = json.loads(PyblishInstanceData)
 
     PyblishContextData = mel.eval('DeadlineExtraInfo("PyblishContextData");')
-    PyblishContextData = PyblishContextData.replace("'", '"').replace("\\", "/")
+    PyblishContextData = PyblishContextData.replace(
+        "'", '"').replace("\\", "/")
     PyblishContextData = json.loads(PyblishContextData)
 
     name = PyblishInstanceData["name"]
@@ -139,7 +141,8 @@ def run():
         for solverTransform in allSolverTransforms:
             if cmds.getAttr(solverTransform + ".enable") == 1:
                 cmds.setAttr(solverTransform + ".enable", 0)
-                cmds.setAttr(solverTransform + ".startFrame", simPreRollStartFrame)
+                cmds.setAttr(solverTransform + ".startFrame",
+                             simPreRollStartFrame)
                 allSolverTransforms2.append(solverTransform)
 
                 # bakes to root jnt for positionPreRoll
@@ -227,7 +230,8 @@ def run():
         l = cmds.ls(sl=1, l=1)[0]
         roots = roots + "-root " + l + " "
 
-    abcExportFilePath = PyblishInstanceData["abcExportFilePath"].replace("//", "/")
+    abcExportFilePath = PyblishInstanceData["abcExportFilePath"].replace(
+        "//", "/")
     abcExportPublishPath = PyblishInstanceData["output"][2]
 
     cmds.file(f=True, type="mayaAscii", save=True)
@@ -514,7 +518,8 @@ def connectRigs(source=None, dest=None):
                     if cmds.objExists(obj + "." + attr):
                         if disconnect == False:
                             try:
-                                connectAttr(connectObj + "." + attr, obj + "." + attr)
+                                connectAttr(connectObj + "." +
+                                            attr, obj + "." + attr)
                             except:
                                 cmds.warning(
                                     "Error connecting "
@@ -597,7 +602,8 @@ def makeAnimPreRoll(
 
     cmds.playbackOptions(minTime=simPreRollStartFrame, maxTime=frameRange[1])
 
-    locCtls1 = [ns + ":world_ctl" + ns + ":global_C0_ctl", ns + ":local_C0_ctl"]
+    locCtls1 = [ns + ":world_ctl" + ns +
+                ":global_C0_ctl", ns + ":local_C0_ctl"]
     locCtls = []
     for l in locCtls1:
         if cmds.objExists(l):
@@ -633,19 +639,19 @@ def makeAnimPreRoll(
     cmds.currentTime(posePreRollStartFrame)
     for ctl in posCtls:
         cmds.select(ctl, r=1)
-        defaultKeyableAttrs(ctl, noRefAttrs=True)
+        defaultKeyableAttrs(ctl)
         cmds.setKeyframe()
 
     cmds.currentTime(positionPreRollStartFrame)
     for ctl in posCtls:
         cmds.select(ctl, r=1)
-        defaultKeyableAttrs(ctl, noRefAttrs=True)
+        defaultKeyableAttrs(ctl)
         cmds.setKeyframe()
 
     cmds.currentTime(simPreRollStartFrame)
     for ctl in posCtls:
         cmds.select(ctl, r=1)
-        defaultKeyableAttrs(ctl, noRefAttrs=True)
+        defaultKeyableAttrs(ctl)
         cmds.setKeyframe()
 
     cmds.select(locCtls, r=1)
@@ -654,7 +660,7 @@ def makeAnimPreRoll(
     cmds.currentTime(positionPreRollStartFrame)
     for ctl in locCtls:
         cmds.select(ctl, r=1)
-        defaultKeyableAttrs(ctl, noRefAttrs=True)
+        defaultKeyableAttrs(ctl)
         cmds.setKeyframe()
 
     cmds.currentTime(positionPreRollStartFrame)
@@ -664,7 +670,7 @@ def makeAnimPreRoll(
             cmds.setAttr(h + ".simulationMethod", 3)
 
 
-def defaultKeyableAttrs(obj, noRefAttrs=False):
+def defaultKeyableAttrs(obj, noRefAttrs=True):
     for attr in cmds.listAttr(obj, k=1):
         default = cmds.attributeQuery(attr, node=obj, listDefault=True)[0]
 
@@ -756,19 +762,22 @@ def constraint(
 
     if type == "orient":
         cmds.orientConstraint(
-            source, dest, mo=mo, skip=skip, n=renameSuffix(dest, "orc", add=addName)
+            source, dest, mo=mo, skip=skip, n=renameSuffix(
+                dest, "orc", add=addName)
         )
         return renameSuffix(dest, "orc", add=addName)
 
     if type == "point":
         cmds.pointConstraint(
-            source, dest, mo=mo, skip=skip, n=renameSuffix(dest, "poc", add=addName)
+            source, dest, mo=mo, skip=skip, n=renameSuffix(
+                dest, "poc", add=addName)
         )
         return renameSuffix(dest, "poc", add=addName)
 
     if type == "scale":
         cmds.scaleConstraint(
-            source, dest, mo=mo, skip=skip, n=renameSuffix(dest, "scc", add=addName)
+            source, dest, mo=mo, skip=skip, n=renameSuffix(
+                dest, "scc", add=addName)
         )
         return renameSuffix(dest, "scc", add=addName)
 

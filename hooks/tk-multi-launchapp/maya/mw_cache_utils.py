@@ -43,7 +43,7 @@ def sgBootstrap():
     print ("Shotgun API instance", engine.shotgun)
 
 
-def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene):
+def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene, anim_preRoll, sim_preRoll):
     import maya.cmds as cmds
     import mwUtils
     import shotgun_api3
@@ -135,14 +135,13 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
                 entity_name=asset_name,
                 published_file_type="Alembic Cache",
                 namespace=asset_name+"_"+source_task,
-                lsgtk=sgtk,
             )
 
         mwUtils.bringPublish(
             id=linkPublish_id, namespace=asset_name+"_"+link_task)
 
-        mwUtils.connectRigs(asset_name+"_"+source_task,
-                            asset_name+"_"+link_task)
+        objDict = mwUtils.connectRigs(asset_name+"_"+source_task,
+                                      asset_name+"_"+link_task)
 
     if chain_mode == "Shot":
         seq = anim_task.split("_")[0]
@@ -212,14 +211,13 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
                 template="maya_shot_publish",
                 published_file_type="Alembic Cache",
                 namespace=asset_name+"_"+source_task,
-                lsgtk=sgtk,
             )
 
         mwUtils.bringPublish(
             id=linkPublish_id, namespace=asset_name+"_"+link_task)
 
-        mwUtils.connectRigs(asset_name+"_"+source_task,
-                            asset_name+"_"+link_task)
+        objDict = mwUtils.connectRigs(asset_name+"_"+source_task,
+                                      asset_name+"_"+link_task)
 
     # save and publish
     # need to have an engine running in a context where the publisher has been
@@ -247,7 +245,70 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
 
     # sets frame range
     if frame_range_from_scene == False:
-        cmds.playbackOptions(minTime=frame_range[0], maxTime=frame_range[1])
+        cmds.playbackOptions(
+            minTime=frame_range[0], maxTime=frame_range[1])
+
+    # sets anim_preRoll
+    cmds.currentTime(frame_range[0])
+    for obj in objDict:
+        if objDict[obj]["connectID"][0] == "3":
+            bsn = objDict[obj]["connectObj"]+"_bs"
+            cmds.setKeyframe(bsn+".envelope")
+
+    cmds.currentTime(frame_range[0]-anim_preRoll)
+
+    for obj in objDict:
+        if objDict[obj]["connectID"][0] == "3":
+            bsn = objDict[obj]["connectObj"]+"_bs"
+            cmds.setAttr(bsn+".envelope", 0)
+            cmds.setKeyframe(bsn+".envelope")
+
+    cmds.addAttr(asset_name+"_"+link_task+":out_set",
+                 ln="anim_preRoll", at="long", dv=anim_preRoll)
+
+    cmds.addAttr(asset_name+"_"+link_task+":out_set",
+                 ln="sim_preRoll", at="long", dv=sim_preRoll)
+
+    # sets sim preRoll
+
+    allSolverTransforms = cmds.ls("*:*", type="zSolverTransform")
+    allSolverTransforms2 = []
+    constraintList = []
+    for solverTransform in allSolverTransforms:
+        if cmds.getAttr(solverTransform + ".enable") == 1:
+            cmds.setAttr(solverTransform + ".enable", 0)
+            cmds.setAttr(solverTransform + ".startFrame",
+                         frame_range[0]-anim_preRoll-sim_preRoll)
+            allSolverTransforms2.append(solverTransform)
+
+            # sets integrator quasiStatic on, substeps to 1
+            solver = cmds.listRelatives(solverTransform, c=1)[0]
+
+            integrator = cmds.getAttr(solver + ".integrator")
+
+            cmds.setKeyframe(
+                solver, attribute="integrator", v=3, t=frame_range[0]-anim_preRoll-sim_preRoll
+            )
+
+            cmds.setKeyframe(
+                solver, attribute="integrator", v=3, t=frame_range[0]-1
+            )
+
+            cmds.setKeyframe(
+                solver, attribute="integrator", v=integrator, t=frame_range[0]
+            )
+
+            cmds.setKeyframe(
+                solver, attribute="substeps", t=frame_range[0]
+            )
+            cmds.setKeyframe(
+                solver, attribute="substeps", v=1, t=frame_range[0]-anim_preRoll-sim_preRoll
+            )
+            cmds.setKeyframe(
+                solver, attribute="substeps", v=1, t=frame_range[0]-1
+            )
+    for solverTransform in allSolverTransforms2:
+        cmds.setAttr(solverTransform + ".enable", 1)
 
     cmds.file(rename=work_path)
     cmds.file(save=1)
@@ -308,7 +369,8 @@ def startCache(currentSession=False):
     import sgtk
 
     if currentSession == False:
-        sgBootstrap()
+        pass
+        # sgBootstrap()
 
     current_engine = sgtk.platform.current_engine()
 
@@ -332,6 +394,8 @@ def startCache(currentSession=False):
         from_id = link["from_id"]
         frame_range = link["frame_range"]
         frame_range_from_scene = link["frame_range_from_scene"]
+        anim_preRoll = link["anim_preRoll"]
+        sim_preRoll = link["sim_preRoll"]
 
         print "**********"
         print "Creating cacheChainLink:"
@@ -346,6 +410,6 @@ def startCache(currentSession=False):
         print "**********"
 
         cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode,
-                       asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene)
+                       asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene, anim_preRoll, sim_preRoll)
 
     print "Cache Chain Finished! :D"

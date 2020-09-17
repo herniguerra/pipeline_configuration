@@ -455,9 +455,9 @@ def disconnectRigs(*args):
 
 def connectRigs(source=None, dest=None, disconnect=False):
     # connectID reference
-    # 0[1constraint] 1[1pac,  2orc, 3poc, 4scc] 2[mo] 3[s(t)x] 4[s(t)y] 5[s(t)z] 6[srx] 7[sry] 8[srz]
+    # 0[1constraint] 1[1:pac,  2:orc, 3:poc, 4:scc] 2[mo] 3[s(t)x] 4[s(t)y] 5[s(t)z] 6[srx] 7[sry] 8[srz]
     # 0[2directConnect] 1[v] 2[tx] 3[ty] 4[tz] 5[rx] 6[ry] 7[rz] 8[sx] 9[sy] 10[sz]
-    # 0[3blendShape] 1[foc]
+    # 0[3blendShape] 1[deformationOrder (0:Automatic, 1:Pre-Deformation, 2:Post-Deformation, 3:After, 4:Split, 5:Parallel)] 2[Origin (0:Local, 1:World)]
     # 0[4inMesh]
     # 0[5userDefined]
 
@@ -709,10 +709,47 @@ def connectRigs(source=None, dest=None, disconnect=False):
             if tag[0] == "3":
                 # blendShape
                 bsn = connectObj + "_bs"
+
                 if disconnect == False:
+                    try:
+                        if tag[2] == 0:
+                            origin = "local"
+                        elif tag[2] == 1:
+                            origin = "world"
+                    except:
+                        origin = "local"
+
                     cmds.select(connectObj, r=1)
                     cmds.select(obj, add=1)
-                    cmds.blendShape(foc=bool(tag[1]), n=bsn, w=[0, 1])
+
+                    try:
+                        if tag[1] == "0":
+                            cmds.blendShape(automatic=1, n=bsn, w=[
+                                            0, 1], origin=origin)
+
+                        elif tag[1] == "1":
+                            cmds.blendShape(frontOfChain=1, n=bsn,
+                                            w=[0, 1], origin=origin)
+
+                        elif tag[1] == "2":
+                            cmds.blendShape(before=1, n=bsn, w=[
+                                            0, 1], origin=origin)
+
+                        elif tag[1] == "3":
+                            cmds.blendShape(after=1, n=bsn, w=[
+                                            0, 1], origin=origin)
+
+                        elif tag[1] == "4":
+                            cmds.blendShape(split=1, n=bsn, w=[
+                                            0, 1], origin=origin)
+
+                        elif tag[1] == "5":
+                            cmds.blendShape(parallel=1, n=bsn, w=[
+                                            0, 1], origin=origin)
+                    except:
+                        cmds.blendShape(automatic=1, n=bsn, w=[
+                            0, 1], origin=origin)
+
                 else:
                     cmds.delete(bsn)
 
@@ -760,6 +797,8 @@ def connectRigs(source=None, dest=None, disconnect=False):
                                     + "."
                                     + attr
                                 )
+
+    return objDict
 
 
 def download(published_file):
@@ -1369,7 +1408,6 @@ def bringPublish(
     entity_name="current",
     published_file_type="Maya Scene",
     namespace=None,
-    lsgtk=None,
 ):
     import shotgun_api3
 
@@ -1378,10 +1416,8 @@ def bringPublish(
         script_name="mwUtils_bringPublish",
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
-    if lsgtk == None:
-        current_engine = sgtk.platform.current_engine()
-    else:
-        current_engine = lsgtk.platform.current_engine()
+
+    current_engine = sgtk.platform.current_engine()
 
     context = current_engine.context
     tk = current_engine.sgtk

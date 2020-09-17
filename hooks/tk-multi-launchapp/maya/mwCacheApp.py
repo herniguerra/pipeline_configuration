@@ -152,6 +152,31 @@ class AnimSourceModule(object):
         self.frameRangeFromSceneCheckBox = cmds.checkBox(
             label="From source scene", align='right', changeCommand=partial(self.frameRangeFromSceneChangeCmd), v=self.currentFrameRangeFromScene)
 
+        cmds.text(l='')
+
+        cmds.setParent(self.frameLayout)
+        cmds.separator(style='in')
+        cmds.rowColumnLayout(numberOfRows=2, rowSpacing=[2, 3])
+
+        self.animPreRoll = 50
+        self.simPreRoll = 20
+        self.currentAnimPreRoll = self.animPreRoll
+        self.currentSimPreRoll = self.simPreRoll
+
+        self.animPreRollIntFieldGrp = cmds.intFieldGrp(numberOfFields=1, label='Anim PreRoll:', changeCommand=partial(self.animPreRollChangeCmd),
+                                                       value1=self.animPreRoll, cw2=[80, 40], bgc=[0.25, 0.25, 0.25], enableBackground=False)
+
+        self.simPreRollIntFieldGrp = cmds.intFieldGrp(numberOfFields=1, label='Sim PreRoll:', changeCommand=partial(self.simPreRollChangeCmd),
+                                                      value1=self.simPreRoll, cw2=[80, 40], bgc=[0.25, 0.25, 0.25], enableBackground=False)
+
+        self.resetAnimPreRollButton = cmds.button(
+            label="Reset", enable=0, command=partial(self.populateAnimPreRoll))
+
+        self.resetSimPreRollButton = cmds.button(
+            label="Reset", enable=0, command=partial(self.populateSimPreRoll))
+
+        cmds.text(l='')
+
         cmds.setParent(main.mainColumnLayout)
 
         cmds.separator(style='in')
@@ -334,6 +359,24 @@ class AnimSourceModule(object):
 
         if self.frame_range_from_scene == True:
             cmds.button(self.resetFrameRangeButton, e=1, enable=False)
+
+    def animPreRollChangeCmd(self, *args):
+        self.currentAnimPreRoll = cmds.intFieldGrp(
+            self.animPreRollIntFieldGrp, q=1, value1=True)
+
+        if cmds.intFieldGrp(self.animPreRollIntFieldGrp, q=1, value1=True) == self.animPreRoll:
+            cmds.button(self.resetAnimPreRollButton, e=1, enable=0)
+        else:
+            cmds.button(self.resetAnimPreRollButton, e=1, enable=1)
+
+    def simPreRollChangeCmd(self, *args):
+        self.currentSimPreRoll = cmds.intFieldGrp(
+            self.simPreRollIntFieldGrp, q=1, value1=True)
+
+        if cmds.intFieldGrp(self.simPreRollIntFieldGrp, q=1, value1=True) == self.simPreRoll:
+            cmds.button(self.resetSimPreRollButton, e=1, enable=0)
+        else:
+            cmds.button(self.resetSimPreRollButton, e=1, enable=1)
 
     def populateProject(self, *args):
         # loading color
@@ -800,6 +843,22 @@ class AnimSourceModule(object):
 
         cmds.button(self.resetFrameRangeButton, e=1, enable=0)
 
+    def populateAnimPreRoll(self, *args):
+        cmds.intFieldGrp(self.animPreRollIntFieldGrp,
+                         e=1, value1=self.animPreRoll)
+        self.currentAnimPreRoll = cmds.intFieldGrp(
+            self.animPreRollIntFieldGrp, q=1, value1=True)
+
+        cmds.button(self.resetAnimPreRollButton, e=1, enable=0)
+
+    def populateSimPreRoll(self, *args):
+        cmds.intFieldGrp(self.simPreRollIntFieldGrp,
+                         e=1, value1=self.simPreRoll)
+        self.currentSimPreRoll = cmds.intFieldGrp(
+            self.simPreRollIntFieldGrp, q=1, value1=True)
+
+        cmds.button(self.resetSimPreRollButton, e=1, enable=0)
+
 
 class NewLink(object):
 
@@ -1203,6 +1262,16 @@ def load():
 
             animSource.frameRangeFromSceneChangeCmd()
 
+            # sets preRoll frames
+            cmds.intFieldGrp(animSource.animPreRollIntFieldGrp,
+                             e=1, value1=anim_preRoll)
+
+            cmds.intFieldGrp(animSource.simPreRollIntFieldGrp,
+                             e=1, value1=sim_preRoll)
+
+            animSource.animPreRollChangeCmd()
+            animSource.simPreRollChangeCmd()
+
             cmds.progressBar(progressBar, edit=True, step=1)
 
         newLink = NewLink(collapse=True)
@@ -1283,6 +1352,8 @@ def makeLinkDict():
         frame_range = [animSource.currentCutIn,
                        animSource.currentCutOut]
         frame_range_from_scene = animSource.currentFrameRangeFromScene
+        anim_preRoll = animSource.currentAnimPreRoll
+        sim_preRoll = animSource.currentSimPreRoll
 
         ##########################################################
 
@@ -1304,6 +1375,8 @@ def makeLinkDict():
         linkDict["from_id"] = from_id
         linkDict["frame_range"] = frame_range
         linkDict["frame_range_from_scene"] = frame_range_from_scene
+        linkDict["anim_preRoll"] = anim_preRoll
+        linkDict["sim_preRoll"] = sim_preRoll
 
         linkDict_data.append(linkDict)
 

@@ -306,6 +306,15 @@ class MayaOutSetPublishPlugin(HookBaseClass):
 
         start_frame, end_frame = _find_scene_animation_range()
 
+        preRollStartFrame = (
+            start_frame - item.properties["anim_preRoll"] - item.properties["sim_preRoll"])
+
+        cmds.playbackOptions(minTime=preRollStartFrame)
+        cmds.currentTime(preRollStartFrame)
+        cmds.currentTime(preRollStartFrame+1)
+        cmds.currentTime(preRollStartFrame)
+        print cmds.playbackOptions(q=1, minTime=1)
+
         # build AbcExport command
 
         yeti = False
@@ -331,7 +340,8 @@ class MayaOutSetPublishPlugin(HookBaseClass):
                     publish_path.replace(os.path.sep, "/"),
                 )
             )
-            export_cmd = 'AbcExport -j "' + args + '";'
+            export_cmd = 'AbcExport -verbose -preRollStartFrame ' + \
+                str(preRollStartFrame) + ' -j "' + args + '";'
 
         elif yeti:
             roots = roots.replace("-root", "")

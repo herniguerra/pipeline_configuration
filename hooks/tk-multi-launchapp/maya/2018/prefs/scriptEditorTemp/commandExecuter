@@ -1,1 +1,1 @@
-getenv ("MAYA_APP_DIR");
+AbcExport -verbose -verbose -verbose -preRollStartFrame 1.0 -h

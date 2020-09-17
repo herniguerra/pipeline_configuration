@@ -423,10 +423,14 @@ class MayaSessionCollector(HookBaseClass):
             outSet_item.set_icon_from_path(icon_path)
 
             outSet_item.properties["outSet_name"] = "out_set"
+            outSet_item.properties["anim_preRoll"] = cmds.getAttr(
+                "out_set.anim_preRoll")
+            outSet_item.properties["sim_preRoll"] = cmds.getAttr(
+                "out_set.sim_preRoll")
 
         if cmds.objExists("*:out_set"):
-            for ns in cmds.ls("*:out_set"):
-                asset = ns.split(":")[0].split("_")[0]
+            for out_set in cmds.ls("*:out_set"):
+                asset = out_set.split(":")[0].split("_")[0]
 
                 outSet_item = parent_item.create_item(
                     "maya.session.out_set", "out_set", asset)
@@ -434,3 +438,9 @@ class MayaSessionCollector(HookBaseClass):
                 outSet_item.set_icon_from_path(icon_path)
 
                 outSet_item.properties["outSet_name"] = asset
+
+                outSet_item.properties["anim_preRoll"] = cmds.getAttr(
+                    out_set+".anim_preRoll")
+
+                outSet_item.properties["sim_preRoll"] = cmds.getAttr(
+                    out_set+".sim_preRoll")

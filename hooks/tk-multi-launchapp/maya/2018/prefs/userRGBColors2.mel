@@ -1,6 +1,6 @@
 displayRGBColor -c background 0.631 0.631 0.631;
-displayRGBColor -c backgroundTop 0.3688 0.1724 0.2593;
-displayRGBColor -c backgroundBottom 0 0 0;
+displayRGBColor -c backgroundTop 0.5546 0.3457 0.4382;
+displayRGBColor -c backgroundBottom 0.108225 0.108225 0.108225;
 displayRGBColor -c template 0.47 0.47 0.47;
 displayRGBColor -c preSelectHilite 1 0 0;
 displayRGBColor -c symmetryPreSelectHilite 0 0 1;

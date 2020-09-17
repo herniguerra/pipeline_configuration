@@ -1,0 +1,1 @@
+print cmds.playbackOptions(q=1, minTime=1)
