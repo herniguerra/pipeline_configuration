@@ -1,7 +1,7 @@
 {
     "linkedMenu": "modelingMenuSet",
     "autoSave": true,
-    "selectedShelf": "Ziva",
+    "selectedShelf": "mwRig",
     "panels": [
         {
             "mainWindowPanel": true,
@@ -310,76 +310,15 @@
                     }
                 ]
             }
-        },
-        {
-            "mainWindowPanel": false,
-            "posX": 732,
-            "posY": 321,
-            "splitter": {
-                "orientation": "horizontal",
-                "children": [
-                    {
-                        "tabWidget": {
-                            "selectedIndex": 0,
-                            "controlWidth": 1071,
-                            "controlHeight": 731,
-                            "collapsed": false,
-                            "controls": [
-                                {
-                                    "objectName": "scriptEditorPanel1Window",
-                                    "title": "Script Editor",
-                                    "uiScript": "if(!`panel -q -exists scriptEditorPanel1`) {\n\tint $menusOkayInPanels = `optionVar -q allowMenusInPanels`;\n\tstring $panelName = \"scriptEditorPanel1\";\n\tscriptedPanel -unParent  -type \"scriptEditorPanel\" -l (localizedPanelLabel(\"Script Editor\")) -mbv $menusOkayInPanels  scriptEditorPanel1;\n} else {\n\tscriptedPanel -e -unParent scriptEditorPanel1;\n}\nscriptedPanel -e -parent scriptEditorPanel1Window scriptEditorPanel1;\n",
-                                    "retain": false,
-                                    "loadImmediately": false,
-                                    "checkPlugins": false,
-                                    "tabDirection": 0,
-                                    "closed": false,
-                                    "widthProperty": "free",
-                                    "heightProperty": "free",
-                                    "controlWidth": 1071,
-                                    "controlHeight": 731
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
         }
     ],
     "closedControls": [
         {
-            "objectName": "GuideManagerWorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 750,
-            "controlWidth": 305,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "mgear_guide_rootWorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 771,
-            "controlWidth": 682,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "renderViewWindow",
-            "posX": 183,
-            "posY": 218,
-            "controlHeight": 656,
-            "controlWidth": 996,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "control_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 540,
-            "controlWidth": 307,
+            "objectName": "nodeEditorPanel1Window",
+            "posX": 200,
+            "posY": 250,
+            "controlHeight": 600,
+            "controlWidth": 1040,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -393,20 +332,56 @@
             "heightProperty": "free"
         },
         {
+            "objectName": "renderViewWindow",
+            "posX": 183,
+            "posY": 218,
+            "controlHeight": 656,
+            "controlWidth": 996,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "GuideManagerWorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 750,
+            "controlWidth": 305,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "control_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 540,
+            "controlWidth": 307,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
             "objectName": "graphEditor1Window",
-            "posX": -119,
-            "posY": 156,
+            "posX": -159,
+            "posY": 105,
             "controlHeight": 1013,
             "controlWidth": 1916,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "nodeEditorPanel1Window",
-            "posX": 200,
-            "posY": 250,
-            "controlHeight": 600,
-            "controlWidth": 1040,
+            "objectName": "mgear_guide_rootWorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 771,
+            "controlWidth": 682,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "scriptEditorPanel1Window",
+            "posX": 489,
+            "posY": 251,
+            "controlHeight": 731,
+            "controlWidth": 1071,
             "widthProperty": "free",
             "heightProperty": "free"
         }

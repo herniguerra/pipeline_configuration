@@ -1,26 +1,50 @@
 [
     {
         "anim_preRoll": 50, 
-        "anim_task": "SQ0010_SH0010", 
+        "anim_task": "jumpAround", 
         "asset_name": "Pipe", 
-        "chain_mode": "Shot", 
+        "chain_mode": "Asset", 
         "frame_range": [
             1001, 
-            1120
+            1002
         ], 
-        "frame_range_from_scene": false, 
+        "frame_range_from_scene": true, 
         "from_id": true, 
-        "linkPublish_id": 1483, 
+        "linkPublish_id": 1561, 
         "link_step": "Cloth", 
         "link_task": "Cloth", 
-        "link_to": "Source Animation", 
-        "link_version": 4, 
+        "link_to": "Previous Link", 
+        "link_version": 5, 
         "pass_name": "clothPass", 
         "project_id": 157, 
         "sim_preRoll": 20, 
-        "sourcePublish_id": 1558, 
+        "sourcePublish_id": 1599, 
         "source_step": "CharacterFX", 
-        "source_task": "Pipe_skinPass", 
-        "source_version": 15
+        "source_task": "jumpAround_skinPass", 
+        "source_version": 4
+    }, 
+    {
+        "anim_preRoll": 50, 
+        "anim_task": "jumpAround", 
+        "asset_name": "Pipe", 
+        "chain_mode": "Asset", 
+        "frame_range": [
+            1001, 
+            1002
+        ], 
+        "frame_range_from_scene": true, 
+        "from_id": false, 
+        "linkPublish_id": 951, 
+        "link_step": "LookDev", 
+        "link_task": "Groom", 
+        "link_to": "Previous Link", 
+        "link_version": 11, 
+        "pass_name": "groomPass", 
+        "project_id": 157, 
+        "sim_preRoll": 20, 
+        "sourcePublish_id": 1599, 
+        "source_step": "CharacterFX", 
+        "source_task": "clothPass", 
+        "source_version": 4
     }
 ]

@@ -38,7 +38,7 @@ class createUI(object):
         if cmds.window('mwCache_window', exists=True):
             cmds.deleteUI('mwCache_window')
 
-        self.window = cmds.window('mwCache_window', title='mwCacheApp v0.0.1',
+        self.window = cmds.window('mwCache_window', title='mwCacheApp v0.1.0',
                                   w=350, h=600, mxb=0, mnb=0, sizeable=0, menuBar=True)
         cmds.menu(label='File')
         cmds.menuItem(label='New', command='mwCacheApp.deleteAllLinks()')
@@ -1181,6 +1181,8 @@ def load():
         from_id = link["from_id"]
         frame_range = link["frame_range"]
         frame_range_from_scene = link["frame_range_from_scene"]
+        anim_preRoll = link["anim_preRoll"]
+        sim_preRoll = link["sim_preRoll"]
 
         # gets project name
         filters = [["is_demo", "is", False], [

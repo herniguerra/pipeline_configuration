@@ -247,6 +247,9 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
     if frame_range_from_scene == False:
         cmds.playbackOptions(
             minTime=frame_range[0], maxTime=frame_range[1])
+    else:
+        frame_range = [cmds.playbackOptions(
+            q=1, minTime=1), cmds.playbackOptions(q=1, maxTime=1)]
 
     # sets anim_preRoll
     cmds.currentTime(frame_range[0])
@@ -273,44 +276,88 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
 
     allSolverTransforms = cmds.ls("*:*", type="zSolverTransform")
     allSolverTransforms2 = []
-    constraintList = []
-    for solverTransform in allSolverTransforms:
-        if cmds.getAttr(solverTransform + ".enable") == 1:
-            cmds.setAttr(solverTransform + ".enable", 0)
-            cmds.setAttr(solverTransform + ".startFrame",
-                         frame_range[0]-anim_preRoll-sim_preRoll)
-            allSolverTransforms2.append(solverTransform)
 
-            # sets integrator quasiStatic on, substeps to 1
-            solver = cmds.listRelatives(solverTransform, c=1)[0]
+    allTissues = cmds.ls("*:*", type="zTissue")
+    allCloths = cmds.ls("*:*", type="zCloth")
 
-            if cmds.objExists(solver + ".integrator"):
+    # sets preRoll for zSolverTransform nodes
+    if len(allSolverTransforms) != 0:
 
-                integrator = cmds.getAttr(solver + ".integrator")
+        for solverTransform in allSolverTransforms:
+            if cmds.getAttr(solverTransform + ".enable") == 1:
+                cmds.setAttr(solverTransform + ".enable", 0)
+                cmds.setAttr(solverTransform + ".startFrame",
+                             frame_range[0]-anim_preRoll-sim_preRoll)
+                allSolverTransforms2.append(solverTransform)
+
+                # sets integrator quasiStatic on, substeps to 1
+                solver = cmds.listRelatives(solverTransform, c=1)[0]
+
+                if cmds.objExists(solver + ".integrator"):
+
+                    integrator = cmds.getAttr(solver + ".integrator")
+
+                    cmds.setKeyframe(
+                        solver, attribute="integrator", v=3, t=frame_range[0]-anim_preRoll-sim_preRoll
+                    )
+
+                    cmds.setKeyframe(
+                        solver, attribute="integrator", v=3, t=frame_range[0]-1
+                    )
+
+                    cmds.setKeyframe(
+                        solver, attribute="integrator", v=integrator, t=frame_range[0]
+                    )
 
                 cmds.setKeyframe(
-                    solver, attribute="integrator", v=3, t=frame_range[0]-anim_preRoll-sim_preRoll
+                    solver, attribute="substeps", t=frame_range[0]-anim_preRoll
                 )
-
                 cmds.setKeyframe(
-                    solver, attribute="integrator", v=3, t=frame_range[0]-1
+                    solver, attribute="substeps", v=1, t=frame_range[0]-anim_preRoll-sim_preRoll
                 )
-
                 cmds.setKeyframe(
-                    solver, attribute="integrator", v=integrator, t=frame_range[0]
+                    solver, attribute="substeps", v=1, t=frame_range[0]-anim_preRoll-1
                 )
 
-            cmds.setKeyframe(
-                solver, attribute="substeps", t=frame_range[0]
-            )
-            cmds.setKeyframe(
-                solver, attribute="substeps", v=1, t=frame_range[0]-anim_preRoll-sim_preRoll
-            )
-            cmds.setKeyframe(
-                solver, attribute="substeps", v=1, t=frame_range[0]-1
-            )
-    for solverTransform in allSolverTransforms2:
-        cmds.setAttr(solverTransform + ".enable", 1)
+                # sets gravity preRoll
+                attrList = ["gravityX", "gravityY", "gravityZ"]
+                for attr in attrList:
+                    if cmds.getAttr(solver + "." + attr) != 0:
+                        cmds.setKeyframe(solver, attribute=attr,
+                                         t=frame_range[0]-anim_preRoll)
+                        cmds.setKeyframe(solver, attribute=attr, v=0,
+                                         t=frame_range[0]-anim_preRoll-sim_preRoll)
+
+        for solverTransform in allSolverTransforms2:
+            cmds.setAttr(solverTransform + ".enable", 1)
+
+    # sets preRoll for zTissue nodes
+    if len(allTissues) != 0:
+        for tissue in allTissues:
+            attrList = [
+                "restScaleEnvelope",
+                "pressureEnvelope",
+                "surfaceTensionEnvelope",
+            ]
+            for attr in attrList:
+                cmds.setKeyframe(tissue, attribute=attr, v=0,
+                                 t=frame_range[0]-anim_preRoll-sim_preRoll)
+                cmds.setKeyframe(tissue, attribute=attr, v=1,
+                                 t=frame_range[0]-anim_preRoll)
+
+    # sets preRoll for zCloth nodes
+    if len(allCloths) != 0:
+        for cloth in allCloths:
+            attrList = [
+                "restScaleEnvelope",
+                "pressureEnvelope",
+                "surfaceTensionEnvelope",
+            ]
+            for attr in attrList:
+                cmds.setKeyframe(cloth, attribute=attr, v=0,
+                                 t=frame_range[0]-anim_preRoll-sim_preRoll)
+                cmds.setKeyframe(cloth, attribute=attr, v=1,
+                                 t=frame_range[0]-anim_preRoll)
 
     cmds.file(rename=work_path)
     cmds.file(save=1)

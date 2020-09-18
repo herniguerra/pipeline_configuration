@@ -18,7 +18,7 @@ windowPref -topLeftCorner 150 200 -widthHeight 1120 640 -maximized false -parent
 windowPref -topLeftCorner 235 230 -widthHeight 1430 710 -maximized false -parentMain true contentBrowserPanel1Window;
 windowPref -topLeftCorner -8 -8 -widthHeight 1280 1024 -maximized true -parentMain false MayaWindow;
 windowPref -topLeftCorner 175 190 -widthHeight 350 621 -maximized false -parentMain true mainWindow;
-windowPref -topLeftCorner 177 1413 -widthHeight 350 621 -maximized false -parentMain true mwCache_window;
+windowPref -topLeftCorner 162 1433 -widthHeight 350 621 -maximized false -parentMain true mwCache_window;
 windowPref -topLeftCorner 346 640 -widthHeight 450 320 -maximized false -parentMain true NewFeatureHighlightWnd;
 windowPref -topLeftCorner 83 296 -widthHeight 1369 861 -maximized false -parentMain true HotkeyEditor;
 windowPref -topLeftCorner 203 1022 -widthHeight 653 450 -maximized false -parentMain true PreferencesWindow;
@@ -26,3 +26,4 @@ windowPref -topLeftCorner 346 640 -widthHeight 802 525 -maximized false -parentM
 windowPref -topLeftCorner 346 640 -widthHeight 450 411 -maximized false -parentMain true pluginManagerWindow;
 windowPref -topLeftCorner 346 640 -widthHeight 357 275 -maximized false -parentMain true namespaceEditor;
 windowPref -topLeftCorner 175 1361 -widthHeight 546 350 -maximized false -parentMain true OptionBoxWindow;
+windowPref -topLeftCorner 140 726 -widthHeight 737 734 -maximized false -parentMain true shelfEditor;

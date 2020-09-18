@@ -1,1 +1,1 @@
-print cmds.playbackOptions(q=1, minTime=1)
+print [cmds.playbackOptions(q=1, minTime=1), cmds.playbackOptions(q=1, maxTime=1)]

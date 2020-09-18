@@ -1135,6 +1135,8 @@ def installMenu():
     from mgear.crank import crank_tool
     from mgear.animbits import softTweaks
 
+    import mwCacheApp
+
     from functools import partial
     from mgear import anim_picker
 
@@ -1320,20 +1322,26 @@ def installMenu():
     )
 
     ###########################
-    # --- create techAnim menu
+    # --- create characterFX menu
     ###########################
 
-    techAnim_menu = cmds.menuItem(
-        parent=mw_menu, label="techAnim", subMenu=True)
+    characterFX_menu = cmds.menuItem(
+        parent=mw_menu, label="CharacterFX", subMenu=True)
     cmds.menuItem(
-        parent=techAnim_menu,
+        parent=characterFX_menu,
         label="Soft tweaks",
         command=partial(softTweaks.openSoftTweakManager, False, False),
     )
     cmds.menuItem(
-        parent=techAnim_menu,
+        parent=characterFX_menu,
         label="Crank: Shot sculpt",
         command=partial(crank_tool.openUI, False, False),
+    )
+    cmds.menuItem(parent=characterFX_menu, divider=True)
+    cmds.menuItem(
+        parent=characterFX_menu,
+        label="mwCacheApp",
+        command="mwCacheApp.run()",
     )
 
     cmds.menuItem(parent=mw_menu, divider=True)

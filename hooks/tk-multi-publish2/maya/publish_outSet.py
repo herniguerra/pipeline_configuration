@@ -306,14 +306,16 @@ class MayaOutSetPublishPlugin(HookBaseClass):
 
         start_frame, end_frame = _find_scene_animation_range()
 
-        preRollStartFrame = (
-            start_frame - item.properties["anim_preRoll"] - item.properties["sim_preRoll"])
+        try:
+            preRollStartFrame = (
+                start_frame - item.properties["anim_preRoll"] - item.properties["sim_preRoll"])
+        except:
+            preRollStartFrame = start_frame
 
         cmds.playbackOptions(minTime=preRollStartFrame)
         cmds.currentTime(preRollStartFrame)
         cmds.currentTime(preRollStartFrame+1)
         cmds.currentTime(preRollStartFrame)
-        print cmds.playbackOptions(q=1, minTime=1)
 
         # build AbcExport command
 
