@@ -33,7 +33,7 @@ global proc shelf_mwRig () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "mwUtils.bringPublish2()" 
+        -command "mwUtils.bringPublish()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1

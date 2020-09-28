@@ -1,1 +1,10 @@
-print [cmds.playbackOptions(q=1, minTime=1), cmds.playbackOptions(q=1, maxTime=1)]
+import sgtk
+current_engine = sgtk.platform.current_engine()
+
+context = current_engine.context
+tk = current_engine.sgtk
+path = ""
+published_file = ""
+loader_app = current_engine.apps.get("tk-multi-loader2")
+
+loader_app.execute_hook_expression("{config}/tk-multi-loader2/tk-maya_actions.py", "_ensure_file_is_local", path=path, published_file=published_file)

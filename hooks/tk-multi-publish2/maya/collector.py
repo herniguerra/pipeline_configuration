@@ -430,7 +430,9 @@ class MayaSessionCollector(HookBaseClass):
 
         if cmds.objExists("*:out_set"):
             for out_set in cmds.ls("*:out_set"):
-                asset = out_set.split(":")[0].split("_")[0]
+                ns = out_set.split(":")[0]
+
+                asset = ns.split("_"+ns.split("_")[-1])[0]
 
                 outSet_item = parent_item.create_item(
                     "maya.session.out_set", "out_set", asset)

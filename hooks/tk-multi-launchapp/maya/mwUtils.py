@@ -709,6 +709,7 @@ def connectRigs(source=None, dest=None, disconnect=False):
             if tag[0] == "3":
                 # blendShape
                 bsn = connectObj + "_bs"
+                print "Connecting", bsn, "..."
 
                 if disconnect == False:
                     try:
@@ -750,8 +751,14 @@ def connectRigs(source=None, dest=None, disconnect=False):
                         cmds.blendShape(automatic=1, n=bsn, w=[
                             0, 1], origin=origin)
 
+                    print "Connected", bsn
+
                 else:
-                    cmds.delete(bsn)
+                    try:
+                        cmds.delete(bsn)
+                        print "Disconnected", bsn
+                    except:
+                        print "Could not disconnect", bsn
 
             if tag[0] == "4":
                 # inMesh
@@ -799,49 +806,6 @@ def connectRigs(source=None, dest=None, disconnect=False):
                                 )
 
     return objDict
-
-
-def download(published_file):
-    import mwCloudStorageUtils
-
-    """
-        Downloads the PublishedFile from the remote storage.
-        This method is responsible for finding the file in the remote storage based on
-        the passed published_file.
-        :param published_file: dict, PublishedFile entity.
-        :return: str; The path to the downloaded file.
-    """
-
-    print ("downloading %s" % published_file)
-
-    remote_path = "{id}_{name}".format(
-        id=published_file["id"], name=published_file["name"]
-    )
-
-    print remote_path
-
-    if not mwCloudStorageUtils.exists(remote_path):
-        print (
-            "PublishedFile %s could not be found in the remote storage."
-            % published_file["id"]
-        )
-        return None
-
-    # TODO: maybe try and resolve the path rather than expecting to be able to place
-    #  it back in exactly the same location that it was when it was published
-    destination = published_file["path"]["local_path"]
-
-    if os.path.exists(destination):
-        print (
-            "PublishedFile %s already exists locally here: %s"
-            % (published_file["id"], destination)
-        )
-        return
-
-    else:
-        mwCloudStorageUtils.download(remote_path, destination)
-
-    return destination
 
 
 def createCam(type):
@@ -1430,6 +1394,8 @@ def bringPublish(
     context = current_engine.context
     tk = current_engine.sgtk
 
+    project_id = getProject(returnId=True)
+
     if id == None:
         template = tk.templates[template]
         fields = context.as_template_fields(template)
@@ -1439,11 +1405,12 @@ def bringPublish(
 
         filters = [
             ["entity."+entity_type+".code", "is", entity_name],
+            ["project", "is", {"type": "Project", "id": project_id}],
             ["task.Task.content", "is", task],
             ["published_file_type.PublishedFileType.code", "is", published_file_type],
         ]
 
-        fields = ["path", "name", "published_file_type"]
+        fields = ["path", "name", "published_file_type", "code"]
         order = [
             {"field_name": "version_number", "direction": "desc"},
         ]
@@ -1451,9 +1418,10 @@ def bringPublish(
         publishedFile = sg.find_one("PublishedFile", filters, fields, order)
 
     else:
-        filters = [["id", "is", id]]
+        filters = [["id", "is", id], ["project", "is",
+                                      {"type": "Project", "id": project_id}]]
 
-        fields = ["path", "name", "published_file_type"]
+        fields = ["path", "name", "published_file_type", "code"]
 
         publishedFile = sg.find_one("PublishedFile", filters, fields)
 
@@ -1462,43 +1430,18 @@ def bringPublish(
     print "***"
     print filePath
 
-    if os.path.isfile(filePath):
+    # ensure file is local
+    loader_app = current_engine.apps.get("tk-multi-loader2")
+    loader_app.execute_hook_expression("{config}/tk-multi-loader2/tk-maya_actions.py",
+                                       "_ensure_file_is_local", path=filePath, published_file=publishedFile)
 
-        if returnPath == True:
-            return filePath
-
-        if namespace == None:
-            cmds.file(filePath, i=True, defaultNamespace=True)
-            return filePath
-
-        else:
-            cmds.file(filePath, i=True, namespace=namespace)
-            return filePath
+    if returnPath == True:
+        return filePath
 
     else:
-        if cmds.about(batch=0):
-            window = cmds.window(title="mwCloud", widthHeight=(400, 110))
-            cmds.columnLayout(adjustableColumn=True)
-            cmds.text(label="Downloading")
-            cmds.text(label=publishedFile["name"])
-            cmds.text(label="from mwCloud...")
-            cmds.setParent("..")
-            cmds.showWindow(window)
-
-            download(publishedFile)
-
-            cmds.deleteUI(window)
-
+        if namespace == None:
+            cmds.file(filePath, i=True, defaultNamespace=True)
         else:
-            download(publishedFile)
+            cmds.file(filePath, i=True, namespace=namespace)
 
-        if returnPath == True:
-            return filePath
-
-        else:
-            if namespace == None:
-                cmds.file(filePath, i=True, defaultNamespace=True)
-            else:
-                cmds.file(filePath, i=True, namespace=namespace)
-
-            return filePath
+        return filePath

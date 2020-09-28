@@ -13,7 +13,8 @@ Hook that provides upload and download functionality for the cloud storage provi
 """
 import os
 import sgtk
-import mwCloudStorageUtils
+import mwUtils
+import subprocess
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -21,6 +22,7 @@ HookBaseClass = sgtk.get_hook_baseclass()
 class LocalProvider(HookBaseClass):
 
     remote_storage_location = "gs:\\"
+    project = mwUtils.getProject()
 
     def upload(self, published_file):
         """
@@ -52,9 +54,17 @@ class LocalProvider(HookBaseClass):
                 id=published_file["id"], name=published_file["name"]
             )
 
-            mwCloudStorageUtils.upload(
-                published_file["path"]["local_path"], destFilename
+            source = published_file["path"]["local_path"]
+
+            rclonePath = os.path.join(
+                os.path.dirname(os.path.realpath(__file__)
+                                ), "rclone", "rclone.exe"
             )
+            command = rclonePath + " copyto " + "--progress " + source + " " + \
+                "sg_publishes:mw_projectdata/" + self.project + "/"+destFilename
+
+            print command
+            subprocess.Popen(command)
 
             return destination_path
 
@@ -74,7 +84,7 @@ class LocalProvider(HookBaseClass):
 
         remote_path = self._generate_remote_path(published_file)
 
-        if not mwCloudStorageUtils.exists(remote_path):
+        if not self._exists(remote_path):
             self.logger.warning(
                 "PublishedFile %s could not be found in the remote storage."
                 % published_file["id"]
@@ -93,7 +103,16 @@ class LocalProvider(HookBaseClass):
             return
 
         else:
-            mwCloudStorageUtils.download(remote_path, destination)
+            rclonePath = os.path.join(
+                os.path.dirname(os.path.realpath(__file__)
+                                ), "rclone", "rclone.exe"
+            )
+            command = rclonePath + " copyto --progress sg_publishes:mw_projectdata/" + \
+                self.project+"/" + remote_path + " " + destination
+
+            print command
+            process = subprocess.Popen(command)
+            process.wait()
 
         return destination
 
@@ -110,3 +129,20 @@ class LocalProvider(HookBaseClass):
         )
         return file_name
         # return os.path.join(os.path.expandvars(self.remote_storage_location), file_name)
+
+    def _exists(self, source):
+        rclonePath = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "rclone", "rclone.exe"
+        )
+        existsPath = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "rclone", "exists.tmp"
+        )
+
+        command = rclonePath + " lsf sg_publishes:mw_projectdata/"+self.project+"/" + source
+        os.system(command + " > " + existsPath)
+        result = open(existsPath, "r").readline().strip()
+
+        if result == source:
+            return True
+        else:
+            return False

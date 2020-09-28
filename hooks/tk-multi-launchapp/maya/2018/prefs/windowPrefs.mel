@@ -25,5 +25,7 @@ windowPref -topLeftCorner 203 1022 -widthHeight 653 450 -maximized false -parent
 windowPref -topLeftCorner 346 640 -widthHeight 802 525 -maximized false -parentMain true mgear_shifter_build_log_window;
 windowPref -topLeftCorner 346 640 -widthHeight 450 411 -maximized false -parentMain true pluginManagerWindow;
 windowPref -topLeftCorner 346 640 -widthHeight 357 275 -maximized false -parentMain true namespaceEditor;
-windowPref -topLeftCorner 175 1361 -widthHeight 546 350 -maximized false -parentMain true OptionBoxWindow;
+windowPref -topLeftCorner 346 640 -widthHeight 546 350 -maximized false -parentMain true OptionBoxWindow;
 windowPref -topLeftCorner 140 726 -widthHeight 737 734 -maximized false -parentMain true shelfEditor;
+windowPref -topLeftCorner 346 640 -widthHeight 500 525 -maximized false -parentMain true AddAttrWin;
+windowPref -topLeftCorner 346 640 -widthHeight 500 400 -maximized false -parentMain true LockingKeyable;
