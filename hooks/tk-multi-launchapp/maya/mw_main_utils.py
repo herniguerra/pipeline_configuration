@@ -2,7 +2,7 @@ import os
 import maya.cmds as cmds
 import shutil
 import maya.mel as mel
-import mwRig
+import mw_rig_utils
 import sys
 
 # import mgear.core as mgear
@@ -725,33 +725,34 @@ def connectRigs(source=None, dest=None, disconnect=False):
 
                     try:
                         if tag[1] == "0":
-                            cmds.blendShape(automatic=1, n=bsn, w=[
-                                            0, 1], origin=origin)
+                            bsName = cmds.blendShape(automatic=1, n=bsn, w=[
+                                0, 1], origin=origin)
 
                         elif tag[1] == "1":
-                            cmds.blendShape(frontOfChain=1, n=bsn,
-                                            w=[0, 1], origin=origin)
+                            bsName = cmds.blendShape(frontOfChain=1, n=bsn,
+                                                     w=[0, 1], origin=origin)
 
                         elif tag[1] == "2":
-                            cmds.blendShape(before=1, n=bsn, w=[
-                                            0, 1], origin=origin)
+                            bsName = cmds.blendShape(before=1, n=bsn, w=[
+                                0, 1], origin=origin)
 
                         elif tag[1] == "3":
-                            cmds.blendShape(after=1, n=bsn, w=[
-                                            0, 1], origin=origin)
+                            bsName = cmds.blendShape(after=1, n=bsn, w=[
+                                0, 1], origin=origin)
 
                         elif tag[1] == "4":
-                            cmds.blendShape(split=1, n=bsn, w=[
-                                            0, 1], origin=origin)
+                            bsName = cmds.blendShape(split=1, n=bsn, w=[
+                                0, 1], origin=origin)
 
                         elif tag[1] == "5":
-                            cmds.blendShape(parallel=1, n=bsn, w=[
-                                            0, 1], origin=origin)
+                            bsName = cmds.blendShape(parallel=1, n=bsn, w=[
+                                0, 1], origin=origin)
                     except:
-                        cmds.blendShape(automatic=1, n=bsn, w=[
+                        bsName = cmds.blendShape(automatic=1, n=bsn, w=[
                             0, 1], origin=origin)
 
-                    print "Connected", bsn
+                    objDict[obj]["bsName"] = bsName[0]
+                    print "Connected", bsName[0]
 
                 else:
                     try:
@@ -886,7 +887,7 @@ def getSequence(returnId=False):
         import shotgun_api3
         sg = shotgun_api3.Shotgun(
             "https://many-worlds.shotgunstudio.com",
-            script_name="mwUtils_bringPublish",
+            script_name="mw_main_script",
             api_key="wmNnyhwfdpuecdstofw0^gjkk",
         )
 
@@ -1089,17 +1090,17 @@ def installMenu():
     print "Installing Many-Worlds menu..."
     sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")
 
-    import mwCheek_rigger
-    import mwEyebrows_rigger
-    import mwEyelids_rigger
-    import mwEyelines_rigger
-    import mwNose_rigger
-    import mwMouth_rigger
+    import mw_cheek_rigger
+    import mw_eyebrows_rigger
+    import mw_eyelids_rigger
+    import mw_eyelines_rigger
+    import mw_nose_rigger
+    import mw_mouth_rigger
 
     from mgear.crank import crank_tool
     from mgear.animbits import softTweaks
 
-    import mwCacheApp
+    import mw_cache_app
 
     from functools import partial
     from mgear import anim_picker
@@ -1124,10 +1125,10 @@ def installMenu():
 
     rigging_menu = cmds.menuItem(parent=mw_menu, label="Rigging", subMenu=True)
     cmds.menuItem(
-        parent=rigging_menu, label="Add connect tags", command="mwRig.addConnectTags()"
+        parent=rigging_menu, label="Add connect tags", command="mw_rig_utils.addConnectTags()"
     )
     cmds.menuItem(
-        parent=rigging_menu, label="Build rigBound", command=mwRig.buildRigBound
+        parent=rigging_menu, label="Build rigBound", command=mw_rig_utils.buildRigBound
     )
     cmds.menuItem(parent=rigging_menu,
                   label="Connect rigs", command=connectRigs)
@@ -1135,16 +1136,16 @@ def installMenu():
                   command=disconnectRigs)
     cmds.menuItem(parent=rigging_menu, divider=True)
     cmds.menuItem(parent=rigging_menu, label="Export skins",
-                  command=mwRig.exportSkins)
+                  command=mw_rig_utils.exportSkins)
     cmds.menuItem(
         parent=rigging_menu,
         label="Export poly correctives",
-        command=mwRig.exportPolyCorrectives,
+        command=mw_rig_utils.exportPolyCorrectives,
     )
     cmds.menuItem(
         parent=rigging_menu,
         label="Export nurbs correctives",
-        command=mwRig.exportPolyCorrectives,
+        command=mw_rig_utils.exportPolyCorrectives,
     )
     cmds.menuItem(parent=rigging_menu, divider=True)
 
@@ -1155,30 +1156,30 @@ def installMenu():
     cmds.menuItem(
         parent=facial_menu,
         label="MW Eyebrows Rigger",
-        command=mwEyebrows_rigger.showMwEyebrowsUI,
+        command=mw_eyebrows_rigger.showMwEyebrowsUI,
     )
     cmds.menuItem(
         parent=facial_menu,
         label="MW Eyelids Rigger",
-        command=mwEyelids_rigger.showMwEyelidsUI,
+        command=mw_eyelids_rigger.showMwEyelidsUI,
     )
     cmds.menuItem(
         parent=facial_menu,
         label="MW Eyelines Rigger",
-        command=mwEyelines_rigger.showMwEyelinesUI,
+        command=mw_eyelines_rigger.showMwEyelinesUI,
     )
     cmds.menuItem(
-        parent=facial_menu, label="MW Nose Rigger", command=mwNose_rigger.showMwNoseUI
+        parent=facial_menu, label="MW Nose Rigger", command=mw_nose_rigger.showMwNoseUI
     )
     cmds.menuItem(
         parent=facial_menu,
         label="MW Mouth Rigger",
-        command=mwMouth_rigger.showMwMouthUI,
+        command=mw_mouth_rigger.showMwMouthUI,
     )
     cmds.menuItem(
         parent=facial_menu,
         label="MW Cheek Rigger",
-        command=mwCheek_rigger.showMwCheekUI,
+        command=mw_cheek_rigger.showMwCheekUI,
     )
 
     cmds.menuItem(parent=rigging_menu, divider=True)
@@ -1188,29 +1189,29 @@ def installMenu():
         parent=rigging_menu, label="Nurbs", subMenu=True)
 
     cmds.menuItem(
-        parent=nurbs_menu, label="Flip", command=mwRig.flipNurbs,
+        parent=nurbs_menu, label="Flip", command=mw_rig_utils.flipNurbs,
     )
 
     cmds.menuItem(
-        parent=nurbs_menu, label="Transfer shape", command=mwRig.transferNurbsShape,
+        parent=nurbs_menu, label="Transfer shape", command=mw_rig_utils.transferNurbsShape,
     )
 
     cmds.menuItem(
         parent=nurbs_menu,
         label="Select U Vertices",
-        command=mwRig.selectNurbsUVertices,
+        command=mw_rig_utils.selectNurbsUVertices,
     )
 
     cmds.menuItem(
         parent=nurbs_menu,
         label="Select V Vertices",
-        command=mwRig.selectNurbsVVertices,
+        command=mw_rig_utils.selectNurbsVVertices,
     )
 
     cmds.menuItem(parent=rigging_menu, divider=True)
 
     cmds.menuItem(parent=rigging_menu, label="Ziva mirror",
-                  command=mwRig.zivaMirror)
+                  command=mw_rig_utils.zivaMirror)
 
     ###########################
     # --- Create muscle menu
@@ -1225,17 +1226,17 @@ def installMenu():
     cmds.menuItem(
         parent=layout_menu,
         label="Create Cam - Handheld",
-        command="mwUtils.createCam(type=1)",
+        command="mw_main_utils.createCam(type=1)",
     )
     cmds.menuItem(
         parent=layout_menu,
         label="Create Cam - Dolly",
-        command="mwUtils.createCam(type=2)",
+        command="mw_main_utils.createCam(type=2)",
     )
     cmds.menuItem(
         parent=layout_menu,
         label="Create Cam - Circle Dolly",
-        command="mwUtils.createCam(type=3)",
+        command="mw_main_utils.createCam(type=3)",
     )
 
     ###########################
@@ -1304,61 +1305,71 @@ def installMenu():
     cmds.menuItem(parent=characterFX_menu, divider=True)
     cmds.menuItem(
         parent=characterFX_menu,
-        label="mwCacheApp",
-        command="mwCacheApp.run()",
+        label="mw_cache_app",
+        command="mw_cache_app.run()",
     )
 
     cmds.menuItem(parent=mw_menu, divider=True)
     cmds.menuItem(
-        parent=mw_menu, label="Reload MW scripts", command="mwUtils.reloadScripts()"
+        parent=mw_menu, label="Reload MW scripts", command="mw_main_utils.reloadScripts()"
     )
     cmds.menuItem(
-        parent=mw_menu, label="Reload MW menu", command="mwUtils.installMenu()"
+        parent=mw_menu, label="Reload MW menu", command="mw_main_utils.installMenu()"
     )
 
     print "Menu installed"
 
 
 def reloadScripts():
-    import mwUtils
-    import mwRig
-    import mwCheek_rigger
-    import mwEyebrows_rigger
-    import mwEyelids_rigger
-    import mwEyelines_rigger
-    import mwNose_rigger
-    import mwMouth_rigger
+    import mw_main_utils
+    import mw_ldv_utils
+    import mw_rig_utils
+    import mw_cache_utils
+    import mw_cheek_rigger
+    import mw_eyebrows_rigger
+    import mw_eyelids_rigger
+    import mw_eyelines_rigger
+    import mw_nose_rigger
+    import mw_mouth_rigger
 
-    print "Reloading mwUtils..."
-    reload(mwUtils)
+    print "Reloading mw_main_utils..."
+    reload(mw_main_utils)
     print "Ok"
 
-    print "Reloading mwWig..."
-    reload(mwRig)
+    print "Reloading mw_ldv_utils..."
+    reload(mw_ldv_utils)
     print "Ok"
 
-    print "Reloading mwCheek_rigger..."
-    reload(mwCheek_rigger)
+    print "Reloading mw_rig_utils..."
+    reload(mw_rig_utils)
     print "Ok"
 
-    print "Reloading mwEyebrows_rigger..."
-    reload(mwEyebrows_rigger)
+    print "Reloading mw_cache_utils..."
+    reload(mw_cache_utils)
     print "Ok"
 
-    print "Reloading mwEyelids_rigger..."
-    reload(mwEyelids_rigger)
+    print "Reloading mw_cheek_rigger..."
+    reload(mw_cheek_rigger)
     print "Ok"
 
-    print "Reloading mwEyelines_rigger..."
-    reload(mwEyelines_rigger)
+    print "Reloading mw_eyebrows_rigger..."
+    reload(mw_eyebrows_rigger)
     print "Ok"
 
-    print "Reloading mwNose_rigger..."
-    reload(mwNose_rigger)
+    print "Reloading mw_eyelids_rigger..."
+    reload(mw_eyelids_rigger)
     print "Ok"
 
-    print "Reloading mwMouth_rigger..."
-    reload(mwMouth_rigger)
+    print "Reloading mw_eyelines_rigger..."
+    reload(mw_eyelines_rigger)
+    print "Ok"
+
+    print "Reloading mw_nose_rigger..."
+    reload(mw_nose_rigger)
+    print "Ok"
+
+    print "Reloading mw_mouth_rigger..."
+    reload(mw_mouth_rigger)
     print "Ok"
 
 
@@ -1385,7 +1396,7 @@ def bringPublish(
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
-        script_name="mwUtils_bringPublish",
+        script_name="mw_main_script",
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
@@ -1445,3 +1456,32 @@ def bringPublish(
             cmds.file(filePath, i=True, namespace=namespace)
 
         return filePath
+
+
+def zip_dir(src, dst, mode="zip"):
+    import zipfile
+
+    if mode == "zip":
+        if os.path.exists(src):
+            outZipFile = zipfile.ZipFile(
+                dst, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+
+            # The root directory within the ZIP file.
+            rootdir = os.path.basename(src)
+
+            for dirpath, dirnames, filenames in os.walk(src):
+                for filename in filenames:
+
+                    # Write the file named filename to the archive,
+                    # giving it the archive name 'arcname'.
+                    filepath = os.path.join(dirpath, filename)
+                    parentpath = os.path.relpath(filepath, src)
+                    arcname = os.path.join(rootdir, parentpath)
+
+                    outZipFile.write(filepath, arcname)
+
+            outZipFile.close()
+
+    elif mode == "unzip":
+        with zipfile.ZipFile(src, 'r') as zip_ref:
+            zip_ref.extractall(dst)

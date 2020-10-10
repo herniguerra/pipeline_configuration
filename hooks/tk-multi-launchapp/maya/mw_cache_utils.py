@@ -19,7 +19,7 @@ def sgBootstrap():
     # user = sa.get_user()
 
     # or authenticate using script credentials
-    user = sa.create_script_user(api_script="mwUtils_bringPublish",
+    user = sa.create_script_user(api_script="mw_main_script",
                                  api_key="wmNnyhwfdpuecdstofw0^gjkk",
                                  host="https://many-worlds.shotgunstudio.com")
 
@@ -45,7 +45,7 @@ def sgBootstrap():
 
 def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chain_mode, asset_name, pass_name, link_task, source_task, from_id, frame_range, frame_range_from_scene, anim_preRoll, sim_preRoll):
     import maya.cmds as cmds
-    import mwUtils
+    import mw_main_utils
     import shotgun_api3
     import sgtk
 
@@ -55,7 +55,7 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
 
     sg = shotgun_api3.Shotgun(
         "https://many-worlds.shotgunstudio.com",
-        script_name="mwUtils_bringPublish",
+        script_name="mw_main_script",
         api_key="wmNnyhwfdpuecdstofw0^gjkk",
     )
 
@@ -64,7 +64,7 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
     tk = current_engine.sgtk
 
     step_name = "CharacterFX"
-    user_id = mwUtils.getUser(returnId=True)
+    user_id = mw_main_utils.getUser(returnId=True)
 
     if chain_mode == "Asset":
         template_name = "maya_asset_work"
@@ -124,11 +124,11 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
         print "--- Source task:", source_task
 
         if from_id == True:
-            mwUtils.bringPublish(id=sourcePublish_id,
-                                 namespace=asset_name+"_"+source_task)
+            mw_main_utils.bringPublish(id=sourcePublish_id,
+                                       namespace=asset_name+"_"+source_task)
 
         else:
-            mwUtils.bringPublish(
+            mw_main_utils.bringPublish(
                 entity_type="Asset",
                 task=anim_task+"_"+source_task,
                 template="maya_asset_publish",
@@ -137,11 +137,11 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
                 namespace=asset_name+"_"+source_task,
             )
 
-        mwUtils.bringPublish(
+        mw_main_utils.bringPublish(
             id=linkPublish_id, namespace=asset_name+"_"+link_task)
 
-        objDict = mwUtils.connectRigs(asset_name+"_"+source_task,
-                                      asset_name+"_"+link_task)
+        objDict = mw_main_utils.connectRigs(asset_name+"_"+source_task,
+                                            asset_name+"_"+link_task)
 
     if chain_mode == "Shot":
         seq = anim_task.split("_")[0]
@@ -201,10 +201,10 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
         sgtk.platform.change_context(new_context)
 
         if from_id == True:
-            mwUtils.bringPublish(id=sourcePublish_id,
-                                 namespace=asset_name+"_"+source_task)
+            mw_main_utils.bringPublish(id=sourcePublish_id,
+                                       namespace=asset_name+"_"+source_task)
         else:
-            mwUtils.bringPublish(
+            mw_main_utils.bringPublish(
                 entity_type="Shot",
                 entity_name=sht,
                 task=asset_name+"_"+source_task,
@@ -213,11 +213,11 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
                 namespace=asset_name+"_"+source_task,
             )
 
-        mwUtils.bringPublish(
+        mw_main_utils.bringPublish(
             id=linkPublish_id, namespace=asset_name+"_"+link_task)
 
-        objDict = mwUtils.connectRigs(asset_name+"_"+source_task,
-                                      asset_name+"_"+link_task)
+        objDict = mw_main_utils.connectRigs(asset_name+"_"+source_task,
+                                            asset_name+"_"+link_task)
 
     # save and publish
     # need to have an engine running in a context where the publisher has been
@@ -255,22 +255,27 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
     cmds.currentTime(frame_range[0])
     for obj in objDict:
         if objDict[obj]["connectID"][0] == "3":
-            bsn = objDict[obj]["connectObj"]+"_bs"
+            bsn = objDict[obj]["bsName"]
             cmds.setKeyframe(bsn+".envelope")
 
     cmds.currentTime(frame_range[0]-anim_preRoll)
 
     for obj in objDict:
         if objDict[obj]["connectID"][0] == "3":
-            bsn = objDict[obj]["connectObj"]+"_bs"
+            bsn = objDict[obj]["bsName"]
             cmds.setAttr(bsn+".envelope", 0)
             cmds.setKeyframe(bsn+".envelope")
 
-    cmds.addAttr(asset_name+"_"+link_task+":out_set",
-                 ln="anim_preRoll", at="long", dv=anim_preRoll)
+    if cmds.objExists(asset_name+"_"+link_task+":out_set.anim_preRoll") == False:
+        cmds.addAttr(asset_name+"_"+link_task+":out_set",
+                     ln="anim_preRoll", at="long")
+    cmds.setAttr(asset_name+"_"+link_task +
+                 ":out_set.anim_preRoll", anim_preRoll)
 
-    cmds.addAttr(asset_name+"_"+link_task+":out_set",
-                 ln="sim_preRoll", at="long", dv=sim_preRoll)
+    if cmds.objExists(asset_name+"_"+link_task+":out_set.sim_preRoll") == False:
+        cmds.addAttr(asset_name+"_"+link_task+":out_set",
+                     ln="sim_preRoll", at="long")
+    cmds.setAttr(asset_name+"_"+link_task+":out_set.sim_preRoll", sim_preRoll)
 
     # sets sim preRoll
 
@@ -378,6 +383,9 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
     # validate the items to publish
     tasks_failed_validation = manager.validate()
 
+    cmds.select(d=1)
+    cmds.viewFit()
+
     # all good. let's publish and finalize
     try:
         manager.publish()
@@ -425,12 +433,12 @@ def startCache(currentSession=False):
 
     mw_maya_path = os.path.join(current_engine.environment["disk_location"].split(
         "env")[0], "hooks/tk-multi-launchapp/maya")
-    file_path = os.path.join(mw_maya_path, "mwCacheApp_data.json")
+    file_path = os.path.join(mw_maya_path, "mw_cache_temp.json")
 
     with open(file_path, 'r') as fp:
-        mwCacheApp_data = json.load(fp)
+        mw_cache_temp = json.load(fp)
 
-    for link in mwCacheApp_data:
+    for link in mw_cache_temp:
         project_id = link["project_id"]
         sourcePublish_id = link["sourcePublish_id"]
         linkPublish_id = link["linkPublish_id"]

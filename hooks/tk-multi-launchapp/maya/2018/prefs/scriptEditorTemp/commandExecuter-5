@@ -1,0 +1,19 @@
+import sgtk
+import shotgun_api3
+
+
+sg = shotgun_api3.Shotgun(
+        "https://many-worlds.shotgunstudio.com",
+        script_name="mwUtils_bringPublish",
+        api_key="wmNnyhwfdpuecdstofw0^gjkk",
+    )
+project_id = mwUtils.getProject(returnId=1)
+
+filters = [["id", "is", 2019], ["project", "is",
+                                      {"type": "Project", "id": project_id}]]
+
+fields = ["path", "name", "published_file_type", "code"]
+
+publishedFile = sg.find_one("PublishedFile", filters, fields)
+
+print publishedFile

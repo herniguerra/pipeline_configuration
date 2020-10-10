@@ -187,6 +187,10 @@ settings.tk-multi-publish2.maya.asset_step:
       hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
       settings:
         Publish Template: maya_asset_publish
+    - name: Publish Session Geometry
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_session_geometry.py"
+      settings:
+        Publish Template: maya_asset_publish
     - name: Publish out_set
       hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_outSet.py"
       settings:
@@ -195,6 +199,11 @@ settings.tk-multi-publish2.maya.asset_step:
       hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_shader_network.py"
       settings:
         Publish Template: maya_shader_network_publish
+    - name: Publish Texture Pack
+      hook: "{self}/publish_file.py:{config}/tk-multi-publish2/maya/publish_texture_pack.py"
+      settings:
+        Publish Template: maya_texture_pack_publish
+
   post_phase: "{config}/tk-multi-publish2/post_phase.py"
   help_url: *help_url
   location: "@apps.tk-multi-publish2.location"

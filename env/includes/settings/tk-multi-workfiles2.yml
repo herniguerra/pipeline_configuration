@@ -254,6 +254,8 @@ settings.tk-multi-workfiles2.maya.asset_step:
         link_field: entity
         hierarchy: [step]
   location: "@apps.tk-multi-workfiles2.location"
+  custom_actions_hook: "{config}/tk-multi-workfiles2/maya/custom_actions.py"
+  hook_scene_operation: "{config}/tk-multi-workfiles2/maya/scene_operation_tk-maya.py"
 
 # asset_rig_step
 settings.tk-multi-workfiles2.maya.asset_rig_step:
@@ -281,6 +283,8 @@ settings.tk-multi-workfiles2.maya.asset_rig_step:
         link_field: entity
         hierarchy: [step]
   location: "@apps.tk-multi-workfiles2.location"
+  custom_actions_hook: "{config}/tk-multi-workfiles2/maya/custom_actions.py"
+  hook_scene_operation: "{config}/tk-multi-workfiles2/maya/scene_operation_tk-maya.py"
 
 # shot_step
 settings.tk-multi-workfiles2.maya.shot_step:
@@ -308,6 +312,8 @@ settings.tk-multi-workfiles2.maya.shot_step:
         link_field: entity
         hierarchy: [step]
   location: "@apps.tk-multi-workfiles2.location"
+  custom_actions_hook: "{config}/tk-multi-workfiles2/maya/custom_actions.py"
+  hook_scene_operation: "{config}/tk-multi-workfiles2/maya/scene_operation_tk-maya.py"
 
 ################################################################################
 

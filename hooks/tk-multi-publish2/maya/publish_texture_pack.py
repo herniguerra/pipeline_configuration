@@ -16,13 +16,17 @@ import maya.mel as mel
 
 import sgtk
 
+import shutil
+
+import mw_main_utils
+import mw_ldv_utils
 # this method returns the evaluated hook base class. This could be the Hook
 # class defined in Toolkit core or it could be the publisher app's base publish
 # plugin class as defined in the configuration.
 HookBaseClass = sgtk.get_hook_baseclass()
 
 
-class MayaOutSetPublishPlugin(HookBaseClass):
+class MayaTexturePackPublishPlugin(HookBaseClass):
     """
     This class defines the required interface for a publish plugin. Publish
     plugins are responsible for operating on items collected by the collector
@@ -39,7 +43,7 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         html tags supported by Qt's rich text engine).
         """
         return """
-        <p>This plugin handles publishing of out_set members from maya.
+        <p>This plugin handles publishing of texture packs from maya.
         A publish template is required to define the destination of the output
         file.
         </p>
@@ -89,21 +93,22 @@ class MayaOutSetPublishPlugin(HookBaseClass):
            for additional example implementations.
         """
         # inherit the settings from the base publish plugin
-        plugin_settings = super(MayaOutSetPublishPlugin, self).settings or {}
+        plugin_settings = super(
+            MayaTexturePackPublishPlugin, self).settings or {}
 
         # settings specific to this class
-        maya_outSet_publish_settings = {
+        maya_texturePack_publish_settings = {
             "Publish Template": {
                 "type": "template",
                 "default": None,
-                "description": "Template path for published out_set. Should"
+                "description": "Template path for published texture pack. Should"
                 "correspond to a template defined in "
                 "templates.yml.",
             },
         }
 
         # update the base settings
-        plugin_settings.update(maya_outSet_publish_settings)
+        plugin_settings.update(maya_texturePack_publish_settings)
 
         return plugin_settings
 
@@ -126,7 +131,7 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         Strings can contain glob patters such as ``*``, for example ``["maya.*",
         "file.maya"]``.
         """
-        return ["maya.session.out_set"]
+        return ["maya.session.texture_pack"]
 
     def accept(self, settings, item):
         """
@@ -185,7 +190,7 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         if not work_template:
             self.logger.debug(
                 "A work template is required for the session item in order to "
-                "publish the out_set. Not accepting session out_set item."
+                "publish the texture pack. Not accepting session texture pack item."
             )
             return {"accepted": False}
 
@@ -200,7 +205,7 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         else:
             self.logger.debug(
                 "The valid publish template could not be determined for the "
-                "session out_set item. Not accepting the item."
+                "session texture pack item. Not accepting the item."
             )
             return {"accepted": False}
 
@@ -242,7 +247,7 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         # get the normalized path
         path = sgtk.util.ShotgunPath.normalize(path)
 
-        outSet_name = item.properties["outSet_name"]
+        texturePack_name = item.properties["texturePack_name"]
 
         # get the configured work file template
         work_template = item.parent.properties.get("work_template")
@@ -252,8 +257,8 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         # template:
         work_fields = work_template.get_fields(path)
 
-        # include the out_set name in the fields
-        work_fields["name"] = outSet_name
+        # include the texture pack name in the fields
+        work_fields["name"] = texturePack_name
 
         # ensure the fields work for the publish template
         missing_keys = publish_template.missing_keys(work_fields)
@@ -277,8 +282,11 @@ class MayaOutSetPublishPlugin(HookBaseClass):
         if "version" in work_fields:
             item.properties["publish_version"] = work_fields["version"]
 
+        # consolidate texture files
+        item.properties["work_texture_path"] = mw_ldv_utils.consolidateTextureFiles()
+
         # run the base class validation
-        return super(MayaOutSetPublishPlugin, self).validate(settings, item)
+        return super(MayaTexturePackPublishPlugin, self).validate(settings, item)
 
     def publish(self, settings, item):
         """
@@ -299,105 +307,23 @@ class MayaOutSetPublishPlugin(HookBaseClass):
 
         # get the path to create and publish
         publish_path = item.properties["publish_path"]
+        work_texture_path = item.properties["work_texture_path"]
+
+        mw_main_utils.zip_dir(work_texture_path, publish_path)
 
         # ensure the publish folder exists:
         publish_folder = os.path.dirname(publish_path)
         self.parent.ensure_folder_exists(publish_folder)
 
-        start_frame, end_frame = _find_scene_animation_range()
-
-        try:
-            preRollStartFrame = (
-                start_frame - item.properties["anim_preRoll"] - item.properties["sim_preRoll"])
-        except:
-            preRollStartFrame = start_frame
-
-        cmds.playbackOptions(minTime=preRollStartFrame)
-        cmds.currentTime(preRollStartFrame)
-        cmds.currentTime(preRollStartFrame+1)
-        cmds.currentTime(preRollStartFrame)
-
-        # build AbcExport command
-
-        yeti = False
-        roots = ""
-        combinedOutSets = []
-        if cmds.objExists("out_set"):
-            combinedOutSets.append("out_set")
-        if cmds.objExists("*:out_set"):
-            combinedOutSets += cmds.ls("*:out_set")
-
-        for o in cmds.sets(combinedOutSets, q=1):
-            roots = roots + ("-root " + o + " ")
-            if cmds.objectType(cmds.listRelatives(o, s=1)[0]) == "pgYetiMaya":
-                yeti = True
-
-        if not yeti:
-            args = (
-                "-worldSpace -uvWrite -dataFormat ogawa -attrPrefix 'connect' -frameRange '%s' '%s' %s -file '%s'"
-                % (
-                    start_frame,
-                    end_frame,
-                    roots,
-                    publish_path.replace(os.path.sep, "/"),
-                )
-            )
-            export_cmd = 'AbcExport -verbose -preRollStartFrame ' + \
-                str(preRollStartFrame) + ' -j "' + args + '";'
-
-        elif yeti:
-            roots = roots.replace("-root", "")
-            samples = 1
-
-            args = '-writeAlembic "%s" -range %s %s -samples %s %s' % (
-                publish_path.replace(os.path.sep, "/"),
-                start_frame,
-                end_frame,
-                samples,
-                roots,
-            )
-
-            export_cmd = "pgYetiCommand " + args + ";"
-
-        # ...and execute it:
-        try:
-            self.logger.debug("Executing command: %s" % export_cmd)
-            mel.eval(export_cmd)
-
-        except Exception, e:
-            self.logger.error("Failed to export out_set: %s" % e)
-            return
-
         # set the publish type in the item's properties. the base plugin will
         # use this when registering the file with Shotgun
-        item.properties["publish_type"] = "Alembic Cache"
+        item.properties["publish_type"] = "Texture Pack"
 
         # Now that the path has been generated, hand it off to the
-        super(MayaOutSetPublishPlugin, self).publish(settings, item)
+        super(MayaTexturePackPublishPlugin, self).publish(settings, item)
 
         # restore selection
         cmds.select(cur_selection)
-
-
-def _find_scene_animation_range():
-    """
-    Find the animation range from the current scene.
-    """
-    # look for any animation in the scene:
-    animation_curves = cmds.ls(typ="animCurve")
-
-    # if there aren't any animation curves then just return
-    # a single frame:
-    if not animation_curves:
-        return 1, 1
-
-    # something in the scene is animated so return the
-    # current timeline.  This could be extended if needed
-    # to calculate the frame range of the animated curves.
-    start = int(cmds.playbackOptions(q=True, min=True))
-    end = int(cmds.playbackOptions(q=True, max=True))
-
-    return start, end
 
 
 def _session_path():

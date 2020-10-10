@@ -33,7 +33,7 @@ global proc shelf_mwRig () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "mwUtils.bringPublish()" 
+        -command "mw_main_utils.bringPublish()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
@@ -67,7 +67,7 @@ global proc shelf_mwRig () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "mwRig.multiMirror()" 
+        -command "mw_rig_utils.multiMirror()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
@@ -101,7 +101,7 @@ global proc shelf_mwRig () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "mwRig.copySkin()" 
+        -command "mw_rig_utils.copySkin()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
@@ -215,7 +215,7 @@ global proc shelf_mwRig () {
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "mwCacheApp" 
+        -label "mw_cache_app" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -224,12 +224,12 @@ global proc shelf_mwRig () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "mwCacheApp.png" 
-        -image1 "mwCacheApp.png" 
+        -image "mw_cache_app.png" 
+        -image1 "mw_cache_app.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mwCacheApp\nreload(mwCacheApp)\nmwCacheApp.run()" 
+        -command "import mw_cache_app\nreload(mw_cache_app)\nmw_cache_app.run()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1

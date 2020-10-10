@@ -13,6 +13,7 @@ import os
 import maya.cmds as cmds
 import maya.mel as mel
 import sgtk
+import mw_main_utils
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -24,6 +25,44 @@ class MayaSessionCollector(HookBaseClass):
     """
 
     @property
+    def common_file_info(self):
+        """
+        A dictionary of file type info that allows the basic collector to
+        identify common production file types and associate them with a display
+        name, item type, and config icon.
+
+        The dictionary returned is of the form::
+
+            {
+                <Publish Type>: {
+                    "extensions": [<ext>, <ext>, ...],
+                    "icon": <icon path>,
+                    "item_type": <item type>
+                },
+                <Publish Type>: {
+                    "extensions": [<ext>, <ext>, ...],
+                    "icon": <icon path>,
+                    "item_type": <item type>
+                },
+                ...
+            }
+
+        See the collector source to see the default values returned.
+
+        Subclasses can override this property, get the default values via
+        ``super``, then update the dictionary as necessary by
+        adding/removing/modifying values.
+        """
+
+        self._common_file_info["TexturePack"] = {
+            "extensions": ["zip"],
+            "icon": self._get_icon_path("texture.png"),
+            "item_type": "file.texture_pack",
+        }
+
+        return self._common_file_info
+
+    @ property
     def settings(self):
         """
         Dictionary defining the settings that this collector expects to receive
@@ -95,8 +134,8 @@ class MayaSessionCollector(HookBaseClass):
                 },
             )
 
-            self.collect_playblasts(item, project_root)
-            self.collect_alembic_caches(item, project_root)
+            # self.collect_playblasts(item, project_root)
+            # self.collect_alembic_caches(item, project_root)
         else:
 
             self.logger.info(
@@ -110,14 +149,26 @@ class MayaSessionCollector(HookBaseClass):
                 },
             )
 
+        '''
         if cmds.ls(geometry=True, noIntermediate=True):
             self._collect_session_geometry(item)
+        '''
 
-        # self._collect_meshes(item)
+        task = mw_main_utils.getTask()
+        step = mw_main_utils.getStep()
 
-        self._collect_cameras(item)
+        if step == "LookDev":
+            self._collect_meshes(item)
+            self._collect_texturePack(item)
 
-        self._collect_outSet(item)
+        elif step == "Layout":
+            self._collect_cameras(item)
+
+        elif step == "CharacterFX":
+            self._collect_outSet(item)
+
+        elif step == "Animation":
+            self._collect_outSet(item)
 
     def collect_current_maya_session(self, settings, parent_item):
         """
@@ -337,8 +388,9 @@ class MayaSessionCollector(HookBaseClass):
 
         # iterate over all top-level transforms and create mesh items
         # for any mesh.
+
         try:
-            for object in cmds.ls("*:*", type="transform"):
+            for object in cmds.ls("*", "*:*", type="transform"):
 
                 if (
                     not cmds.ls(object, dag=True, type="mesh")
@@ -346,6 +398,8 @@ class MayaSessionCollector(HookBaseClass):
                 ):
                     # ignore non-meshes
                     continue
+
+                print "yes"
 
                 # create a new item parented to the supplied session item. We
                 # define an item type (maya.session.mesh) that will be
@@ -376,6 +430,7 @@ class MayaSessionCollector(HookBaseClass):
         # location refers to the path of this hook file. this means that
         # the icon should live one level above the hook in an "icons"
         # folder.
+
         icon_path = os.path.join(
             self.disk_location, os.pardir, "icons", "camera.png")
 
@@ -423,10 +478,17 @@ class MayaSessionCollector(HookBaseClass):
             outSet_item.set_icon_from_path(icon_path)
 
             outSet_item.properties["outSet_name"] = "out_set"
-            outSet_item.properties["anim_preRoll"] = cmds.getAttr(
-                "out_set.anim_preRoll")
-            outSet_item.properties["sim_preRoll"] = cmds.getAttr(
-                "out_set.sim_preRoll")
+
+            try:
+                outSet_item.properties["anim_preRoll"] = cmds.getAttr(
+                    "out_set.anim_preRoll")
+            except:
+                outSet_item.properties["anim_preRoll"] = 1
+            try:
+                outSet_item.properties["sim_preRoll"] = cmds.getAttr(
+                    "out_set.sim_preRoll")
+            except:
+                outSet_item.properties["sim_preRoll"] = 1
 
         if cmds.objExists("*:out_set"):
             for out_set in cmds.ls("*:out_set"):
@@ -441,8 +503,24 @@ class MayaSessionCollector(HookBaseClass):
 
                 outSet_item.properties["outSet_name"] = asset
 
-                outSet_item.properties["anim_preRoll"] = cmds.getAttr(
-                    out_set+".anim_preRoll")
+                try:
+                    outSet_item.properties["anim_preRoll"] = cmds.getAttr(
+                        out_set+".anim_preRoll")
+                except:
+                    outSet_item.properties["anim_preRoll"] = 1
 
-                outSet_item.properties["sim_preRoll"] = cmds.getAttr(
-                    out_set+".sim_preRoll")
+                try:
+                    outSet_item.properties["sim_preRoll"] = cmds.getAttr(
+                        out_set+".sim_preRoll")
+                except:
+                    outSet_item.properties["sim_preRoll"] = 1
+
+    def _collect_texturePack(self, parent_item):
+        """
+        Creates an item for existing texture packs
+        """
+
+        texture_pack_item = parent_item.create_item(
+            "maya.session.texture_pack", "texture_pack", "Texture pack")
+
+        texture_pack_item.properties["texturePack_name"] = "texturePack"

@@ -1,0 +1,14 @@
+import subprocess
+import shutil
+
+rclonePath = "C:/Many-Worlds/pipeline/shotgun/pipeline_configuration/hooks/tk-framework-remotestorage/rclone/rclone.exe"
+tempPath = "M:/testFile.abc"
+
+command = rclonePath + " copyto --progress sg_publishes:mw-testbucket/1002_Pipe_animTest_Pipe_fatPass.abc" + " " + tempPath
+
+try:
+    process = subprocess.check_call(command)
+except:
+    print "There was an error!!!"
+
+print "Done!"

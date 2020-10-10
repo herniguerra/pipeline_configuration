@@ -92,11 +92,11 @@ class ContextChange(get_hook_baseclass()):
             if current_context.entity and current_context.entity["type"] == "Asset":
                 if current_context.task["name"] == "RigPuppet":
                     # mGear steps path
-                    import mwUtils
+                    import mw_main_utils
 
                     project = current_context.project["name"]
                     asset = current_context.entity["name"]
 
-                    mwUtils.rigPuppetWorkSetup(project, asset)
+                    mw_main_utils.rigPuppetWorkSetup(project, asset)
 
         pass

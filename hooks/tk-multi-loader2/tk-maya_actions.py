@@ -58,12 +58,16 @@ class MayaActions(HookBaseClass):
         :param published_file:
         :return:
         """
+
         if os.path.exists(path):
             # file already exists locally
             return path
 
-        remote_storage = self.load_framework("tk-framework-remotestorage_v1.x.x")
+        remote_storage = self.load_framework(
+            "tk-framework-remotestorage_v1.x.x")
         downloaded_file = remote_storage.download_publish(published_file)
+
+        print remote_storage
 
         if downloaded_file is None:
             # We haven't downloaded a file, and the path doesn't already exist
@@ -79,8 +83,23 @@ class MayaActions(HookBaseClass):
             # location that the file was published to.
             raise Exception(
                 "The downloaded file path does not match the original "
-                "published one; original: %s downloaded: %s" % (path, downloaded_file)
+                "published one; original: %s downloaded: %s" % (
+                    path, downloaded_file)
             )
+
+        dependency = remote_storage.has_dependencies(published_file)
+        if dependency != None:
+            print "********************* downloading dependency", dependency
+            print "/////////"
+            print "/////////"
+            print "/////////"
+            print "/////////"
+            print "/////////"
+            print "/////////"
+            path = dependency["path"]["local_path"]
+            print path
+            self._ensure_file_is_local(path, dependency)
+
         return downloaded_file
 
 

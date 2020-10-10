@@ -1,0 +1,6 @@
+import os
+
+dirs = cmds.filePathEditor(query=True, listDirectories="")
+
+for d in dirs:
+    print os.path.split(d)[-1]

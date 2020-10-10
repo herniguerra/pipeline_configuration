@@ -18,6 +18,7 @@ evalDeferred("autoLoadPlugin(\"\", \"bifmeshio\", \"bifmeshio\")");
 evalDeferred("autoLoadPlugin(\"\", \"shaderFXPlugin\", \"shaderFXPlugin\")");
 evalDeferred("autoLoadPlugin(\"\", \"objExport\", \"objExport\")");
 evalDeferred("autoLoadPlugin(\"\", \"bifrostshellnode\", \"bifrostshellnode\")");
+evalDeferred("autoLoadPlugin(\"\", \"meshSnapCommand\", \"meshSnapCommand\")");
 evalDeferred("autoLoadPlugin(\"\", \"GamePipeline\", \"GamePipeline\")");
 evalDeferred("autoLoadPlugin(\"\", \"tiffFloatReader\", \"tiffFloatReader\")");
 evalDeferred("autoLoadPlugin(\"\", \"MASH\", \"MASH\")");

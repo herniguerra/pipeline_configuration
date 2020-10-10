@@ -13,8 +13,9 @@ Hook that provides upload and download functionality for the cloud storage provi
 """
 import os
 import sgtk
-import mwUtils
+import mw_main_utils
 import subprocess
+import shutil
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -22,7 +23,7 @@ HookBaseClass = sgtk.get_hook_baseclass()
 class LocalProvider(HookBaseClass):
 
     remote_storage_location = "gs:\\"
-    project = mwUtils.getProject()
+    project = mw_main_utils.getProject()
 
     def upload(self, published_file):
         """
@@ -94,6 +95,8 @@ class LocalProvider(HookBaseClass):
         # TODO: maybe try and resolve the path rather than expecting to be able to place
         #  it back in exactly the same location that it was when it was published
         destination = published_file["path"]["local_path"]
+        tempPath = os.path.join(
+            os.getenv("TEMP"), os.path.split(destination)[1])
 
         if os.path.exists(destination):
             self.logger.warning(
@@ -108,11 +111,20 @@ class LocalProvider(HookBaseClass):
                                 ), "rclone", "rclone.exe"
             )
             command = rclonePath + " copyto --progress sg_publishes:mw_projectdata/" + \
-                self.project+"/" + remote_path + " " + destination
+                self.project+"/" + remote_path + " " + tempPath
 
-            print command
-            process = subprocess.Popen(command)
-            process.wait()
+            try:
+                process = subprocess.check_call(command)
+
+                shutil.copy2(tempPath, destination)
+                print "*** Copied", tempPath, "to", destination
+                os.remove(tempPath)
+                print "*** Deleted temp file", tempPath
+
+            except:
+                self.logger.warning("Could not download %s" % remote_path)
+                os.remove(tempPath)
+                return None
 
         return destination
 

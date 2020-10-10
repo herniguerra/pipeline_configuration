@@ -2,7 +2,7 @@ import maya.cmds as cmds
 import random
 from functools import partial
 import sgtk
-import mwUtils
+import mw_main_utils
 import shotgun_api3
 import os
 import json
@@ -22,29 +22,29 @@ class createUI(object):
     def __init__(self):
         self.sg = shotgun_api3.Shotgun(
             "https://many-worlds.shotgunstudio.com",
-            script_name="mwUtils_bringPublish",
+            script_name="mw_main_script",
             api_key="wmNnyhwfdpuecdstofw0^gjkk",
         )
         self.links = []
         self.lastLinkNum = 1
-        self.project_id = mwUtils.getProject(returnId=True)
-        self.project_name = mwUtils.getProject()
-        self.entity_name = mwUtils.getEntity()
-        self.entity_id = mwUtils.getEntity(returnId=True)
-        self.entity_type = mwUtils.getEntity(returnType=True)
+        self.project_id = mw_main_utils.getProject(returnId=True)
+        self.project_name = mw_main_utils.getProject()
+        self.entity_name = mw_main_utils.getEntity()
+        self.entity_id = mw_main_utils.getEntity(returnId=True)
+        self.entity_type = mw_main_utils.getEntity(returnType=True)
         if self.entity_type == "Shot":
-            self.sequence_name = mwUtils.getSequence()
+            self.sequence_name = mw_main_utils.getSequence()
 
         if cmds.window('mwCache_window', exists=True):
             cmds.deleteUI('mwCache_window')
 
-        self.window = cmds.window('mwCache_window', title='mwCacheApp v0.1.0',
-                                  w=350, h=600, mxb=0, mnb=0, sizeable=0, menuBar=True)
+        self.window = cmds.window('mwCache_window', title='mw_cache_app v0.1.0',
+                                  w=350, h=600, mxb=0, mnb=1, sizeable=0, menuBar=True)
         cmds.menu(label='File')
-        cmds.menuItem(label='New', command='mwCacheApp.deleteAllLinks()')
+        cmds.menuItem(label='New', command='mw_cache_app.deleteAllLinks()')
         cmds.menuItem(divider=True)
-        cmds.menuItem(label='Load', command='mwCacheApp.load()')
-        cmds.menuItem(label='Save', command='mwCacheApp.save()')
+        cmds.menuItem(label='Load', command='mw_cache_app.load()')
+        cmds.menuItem(label='Save', command='mw_cache_app.save()')
         cmds.menuItem(divider=True)
         cmds.menuItem(label='Exit', command='cmds.deleteUI("mwCache_window")')
         cmds.menu(label='Cache location')
@@ -67,10 +67,10 @@ class createUI(object):
         self.bottomColumnLayout = cmds.columnLayout(w=320)
         cmds.setParent(self.bottomColumnLayout)
         cmds.button('newLinkButton', label='New link', bgc=[0.05, 0.41, 0.05],
-                    command='mwCacheApp.NewLink()')
+                    command='mw_cache_app.NewLink()')
         cmds.text(l='')
         self.runCacheChainButton = cmds.button(label='Run Cache Chain', bgc=[0.5, 0.1, 0.1], enable=False,
-                                               command='mwCacheApp.runCacheChain()')
+                                               command='mw_cache_app.runCacheChain()')
         cmds.showWindow(self.window)
 
 
@@ -454,7 +454,7 @@ class AnimSourceModule(object):
                                       '|OptionMenu'), label=char)
 
             try:
-                entity_name = mwUtils.getEntity()
+                entity_name = mw_main_utils.getEntity()
                 cmds.optionMenuGrp(self.assetOptionMenuGrp, e=1, v=entity_name)
             except:
                 0
@@ -638,7 +638,7 @@ class AnimSourceModule(object):
                 i += 1
 
             try:
-                task_name = mwUtils.getTask()
+                task_name = mw_main_utils.getTask()
                 cmds.optionMenuGrp(
                     self.taskOptionMenuGrp, e=1, v=task_name)
 
@@ -763,7 +763,7 @@ class AnimSourceModule(object):
                 i += 1
 
             try:
-                task_name = mwUtils.getTask()
+                task_name = mw_main_utils.getTask()
                 cmds.optionMenuGrp(
                     self.taskOptionMenuGrp, e=1, v=task_name)
 
@@ -1306,13 +1306,13 @@ def load():
 
 def save():
 
-    mwCacheApp_data = makeLinkDict()
+    mw_cache_temp = makeLinkDict()
 
     basicFilter = "*.json"
     file = cmds.fileDialog2(fileFilter=basicFilter, dialogStyle=2, fm=0)[0]
 
     with open(file, 'w') as fp:
-        json.dump(mwCacheApp_data, fp, sort_keys=True, indent=4)
+        json.dump(mw_cache_temp, fp, sort_keys=True, indent=4)
 
 
 def makeLinkDict():
@@ -1386,7 +1386,7 @@ def makeLinkDict():
 
 
 def runCacheChain():
-    mwCacheApp_data = makeLinkDict()
+    mw_cache_temp = makeLinkDict()
 
     current_engine = sgtk.platform.current_engine()
 
@@ -1395,10 +1395,10 @@ def runCacheChain():
 
     maya_location = os.getenv("MAYA_LOCATION")
 
-    file_path = os.path.join(mw_maya_path, "mwCacheApp_data.json")
+    file_path = os.path.join(mw_maya_path, "mw_cache_temp.json")
 
     with open(file_path, 'w') as fp:
-        json.dump(mwCacheApp_data, fp, sort_keys=True, indent=4)
+        json.dump(mw_cache_temp, fp, sort_keys=True, indent=4)
 
     print "currentSession", cmds.menuItem(
         main.currentSessionMenuItem, q=1, radioButton=1)

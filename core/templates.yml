@@ -519,6 +519,9 @@ paths:
   # The location where Maya shader networks are written/published
   maya_shader_network_publish:
     definition: "@asset_root/publish/maya/shaders/{name}.v{version}.ma"
+  # The location where Maya texture packs are published
+  maya_texture_pack_publish:
+    definition: "@asset_root/publish/textures/{name}.v{version}.zip"
   #
   # Houdini
   #

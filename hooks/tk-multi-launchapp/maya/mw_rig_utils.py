@@ -1,6 +1,6 @@
 import maya.cmds as cmds
 import os
-import mwUtils
+import mw_main_utils
 import pymel.core as pm
 import mgear.core as mgear
 import mgear.rigbits.sdk_io as sdk
@@ -17,7 +17,7 @@ def facialDirectConnectionToMGearCtl(destCtl, j, dv, axis, name):
     cmds.addAttr(destCtl, ln=name, at="float", max=1, min=0, dv=dv, k=1)
 
     mdv = cmds.createNode(
-        "multiplyDivide", n=mwUtils.renameSuffix(destCtl, add="facialOfs", suffix="mdv")
+        "multiplyDivide", n=mw_main_utils.renameSuffix(destCtl, add="facialOfs", suffix="mdv")
     )
     cmds.connectAttr(destCtl + "." + name, mdv + ".input2X")
     cmds.connectAttr(destCtl + "." + name, mdv + ".input2Y")
@@ -30,39 +30,44 @@ def facialDirectConnectionToMGearCtl(destCtl, j, dv, axis, name):
             ax = ax[1]
             negative = True
 
-        mwUtils.connectAttr(j + ".t" + ax, mdv + ".input1" + ax.upper())
+        mw_main_utils.connectAttr(j + ".t" + ax, mdv + ".input1" + ax.upper())
 
         if negative == True:
-            mwUtils.connectAttr(
+            mw_main_utils.connectAttr(
                 mdv + ".output" + ax.upper(), cns + ".t" + ax, mode="negative"
             )
         else:
-            mwUtils.connectAttr(mdv + ".output" + ax.upper(), cns + ".t" + ax)
+            mw_main_utils.connectAttr(
+                mdv + ".output" + ax.upper(), cns + ".t" + ax)
 
 
 def facialDirectConnection(jnt, sourceJnt, destCtl, jntAxis, ctlAxis, dv, name):
-    jntZtr = mwUtils.renameSuffix(jnt, suffix="ztr")
+    jntZtr = mw_main_utils.renameSuffix(jnt, suffix="ztr")
 
     if cmds.objExists(jntZtr) == False:
-        cmds.createNode("transform", n=mwUtils.renameSuffix(jnt, suffix="ztr"))
+        cmds.createNode(
+            "transform", n=mw_main_utils.renameSuffix(jnt, suffix="ztr"))
         jntPar = cmds.listRelatives(jnt, p=1)[0]
         snap(jntZtr, jnt)
         cmds.parent(jnt, jntZtr)
         cmds.parent(jntZtr, jntPar)
 
-    destCtlZtr = mwUtils.renameSuffix(destCtl, suffix="ztr")
+    destCtlZtr = mw_main_utils.renameSuffix(destCtl, suffix="ztr")
     if cmds.objExists(destCtlZtr) == False:
-        cmds.createNode("transform", n=mwUtils.renameSuffix(destCtl, suffix="ztr"))
+        cmds.createNode("transform", n=mw_main_utils.renameSuffix(
+            destCtl, suffix="ztr"))
         destCtlPar = cmds.listRelatives(destCtl, p=1)[0]
         snap(destCtlZtr, destCtl)
         cmds.parent(destCtl, destCtlZtr)
         cmds.parent(destCtlZtr, destCtlPar)
 
     cmds.addAttr(destCtl, ln=name, at="float", max=1, min=0, dv=dv, k=1)
-    jntOfs = cmds.createNode("transform", n=mwUtils.renameSuffix(jnt, suffix="ofs"))
+    jntOfs = cmds.createNode(
+        "transform", n=mw_main_utils.renameSuffix(jnt, suffix="ofs"))
     snap(jntOfs, jntZtr)
 
-    ctlOfs = cmds.createNode("transform", n=mwUtils.renameSuffix(destCtl, suffix="ofs"))
+    ctlOfs = cmds.createNode(
+        "transform", n=mw_main_utils.renameSuffix(destCtl, suffix="ofs"))
     snap(ctlOfs, destCtlZtr)
 
     cmds.parent(jntOfs, jntZtr)
@@ -70,7 +75,7 @@ def facialDirectConnection(jnt, sourceJnt, destCtl, jntAxis, ctlAxis, dv, name):
     cmds.parent(ctlOfs, destCtlZtr)
     cmds.parent(destCtl, ctlOfs)
     mdv = cmds.createNode(
-        "multiplyDivide", n=mwUtils.renameSuffix(jnt, add="facialOfs", suffix="mdv")
+        "multiplyDivide", n=mw_main_utils.renameSuffix(jnt, add="facialOfs", suffix="mdv")
     )
     cmds.connectAttr(destCtl + "." + name, mdv + ".input1X")
     cmds.connectAttr(destCtl + "." + name, mdv + ".input1Y")
@@ -82,14 +87,16 @@ def facialDirectConnection(jnt, sourceJnt, destCtl, jntAxis, ctlAxis, dv, name):
             ax = ax[1]
             negative = True
 
-        mwUtils.connectAttr(sourceJnt + ".t" + ax, mdv + ".input2" + ax.upper())
+        mw_main_utils.connectAttr(
+            sourceJnt + ".t" + ax, mdv + ".input2" + ax.upper())
 
         if negative == True:
-            mwUtils.connectAttr(
+            mw_main_utils.connectAttr(
                 mdv + ".output" + ax.upper(), jntOfs + ".t" + ax, mode="negative"
             )
         else:
-            mwUtils.connectAttr(mdv + ".output" + ax.upper(), jntOfs + ".t" + ax)
+            mw_main_utils.connectAttr(
+                mdv + ".output" + ax.upper(), jntOfs + ".t" + ax)
 
     for ax in ctlAxis:
         negative = False
@@ -98,11 +105,12 @@ def facialDirectConnection(jnt, sourceJnt, destCtl, jntAxis, ctlAxis, dv, name):
             negative = True
 
         if negative == True:
-            mwUtils.connectAttr(
+            mw_main_utils.connectAttr(
                 mdv + ".output" + ax.upper(), ctlOfs + ".t" + ax, mode="negative"
             )
         else:
-            mwUtils.connectAttr(mdv + ".output" + ax.upper(), ctlOfs + ".t" + ax)
+            mw_main_utils.connectAttr(
+                mdv + ".output" + ax.upper(), ctlOfs + ".t" + ax)
 
 
 def findClosestTransform(origin, transforms):
@@ -127,7 +135,7 @@ def findClosestTransform(origin, transforms):
 
 
 def exportPolyCorrectives(self):
-    path = mwUtils.getPath(to="polyCorrectives")
+    path = mw_main_utils.getPath(to="polyCorrectives")
 
     allBsNodes = cmds.ls("*", type="blendShape")
     bsNodesDict = {}
@@ -160,7 +168,7 @@ def exportPolyCorrectives(self):
 
 
 def exportNurbsCorrectives(self):
-    path = mwUtils.getPath(to="nurbsCorrectives")
+    path = mw_main_utils.getPath(to="nurbsCorrectives")
 
     allBsNodes = cmds.ls("*", type="blendShape")
     bsNodes = []
@@ -227,7 +235,8 @@ def importNurbsBlendShapeTargets(file):
             for u in range(0, numU):
                 for v in range(0, numV):
                     pos = dict[name][str(u)][str(v)]
-                    cmds.xform(target + ".cv[" + str(u) + "][" + str(v) + "]", t=pos)
+                    cmds.xform(
+                        target + ".cv[" + str(u) + "][" + str(v) + "]", t=pos)
 
     for target in targetList:
         addBlendshapeTarget(bsNode, target, nurbs)
@@ -319,17 +328,18 @@ def mirrorNurbsTarget(bsNode, target):
     # mirrors a nurbs blendshape target and adds it into the (mirrored) bsNode
 
     nurbs = cmds.blendShape(bsNode, q=True, g=1)[0]
-    extracted = extractNurbsTarget(bsNode, target, name=mwUtils.mirrorName(target))
+    extracted = extractNurbsTarget(
+        bsNode, target, name=mw_main_utils.mirrorName(target))
     bsNodeSide = bsNode.split("_bs")[0][-1]
 
     if bsNodeSide == "C":
         mirrorNurbs(extracted)
     else:
         flipNurbs(extracted)
-        bsNode = mwUtils.mirrorName(bsNode)
+        bsNode = mw_main_utils.mirrorName(bsNode)
 
-    if cmds.objExists(mwUtils.mirrorName(nurbs)) == True:
-        nurbs = mwUtils.mirrorName(nurbs)
+    if cmds.objExists(mw_main_utils.mirrorName(nurbs)) == True:
+        nurbs = mw_main_utils.mirrorName(nurbs)
 
     addBlendshapeTarget(bsNode, extracted, nurbs)
     cmds.delete(extracted)
@@ -376,7 +386,8 @@ def extractNurbsTarget(bsNode, target, name=None):
         )
 
         if cmds.listConnections(bsNode + "." + aliasList[i], s=1, d=0) != None:
-            input = cmds.listConnections(bsNode + "." + aliasList[i], s=1, d=0)[0]
+            input = cmds.listConnections(
+                bsNode + "." + aliasList[i], s=1, d=0)[0]
             if cmds.nodeType(input) == "combinationShape":
                 bsNodeStateDict[aliasList[i]]["combo"] = input
                 cmds.disconnectAttr(
@@ -398,7 +409,7 @@ def extractNurbsTarget(bsNode, target, name=None):
                 0
 
     if name == None:
-        name = bsNode + mwUtils.upperFirst(target)
+        name = bsNode + mw_main_utils.upperFirst(target)
 
     dup = cmds.duplicate(nurbs, n=name)[0]
 
@@ -415,7 +426,8 @@ def extractNurbsTarget(bsNode, target, name=None):
             )
 
         else:
-            cmds.setAttr(bsNodeStateDict[t]["alias"], bsNodeStateDict[t]["value"])
+            cmds.setAttr(bsNodeStateDict[t]["alias"],
+                         bsNodeStateDict[t]["value"])
 
     return dup
 
@@ -635,7 +647,8 @@ def zivaMirror(sel=None, *args):
 
     for i, obj in enumerate(sel):
         print ("")
-        print ("--- Mirroring " + obj + "(" + str(i + 1) + " of " + str(len(sel)) + ")")
+        print ("--- Mirroring " + obj +
+               "(" + str(i + 1) + " of " + str(len(sel)) + ")")
         cmds.select(obj)
         zObj = zva.Ziva()
         zObj.retrieve_from_scene_selection()
@@ -682,7 +695,8 @@ def mwRivet_Build(input, ob, edgeMax, shape, count, name):
         ["fourByFourMatrix", "mat"],
         ["decomposeMatrix", "dcp"],
     ]
-    pnt = ["normal", "tangentU.tangentU", "tangentV.tangentV", "position.position"]
+    pnt = ["normal", "tangentU.tangentU",
+           "tangentV.tangentV", "position.position"]
     xyz = ["X", "Y", "Z"]
     io = ["input", "output"]
     uv = "UV"
@@ -716,7 +730,8 @@ def mwRivet_Build(input, ob, edgeMax, shape, count, name):
             sA("%s.edgeIndex[0]" % ed, num)
             cA("%s.edgeIndex%d" % (loc[0], one), "%s.edgeIndex[0]" % ed)
             cA("%s.worldMesh[0]" % shape[0], "%s.%sMesh" % (ed, io[0]))
-            cA("%s.outputCurve" % ed, "%s.%sCurve[%s]" % (var[1][1], io[0], one))
+            cA("%s.outputCurve" %
+               ed, "%s.%sCurve[%s]" % (var[1][1], io[0], one))
             aA(loc[0], at="float", ln=uv[one], k=True, p=uv, min=0, max=1)
         print ("ok%s" % node)
 
@@ -729,9 +744,11 @@ def mwRivet_Build(input, ob, edgeMax, shape, count, name):
                 o = xyz[j]
                 if i in [1, 2]:
                     o = o.lower()
-                cA("%s.%s%s" % (var[0][1], pnt[i], o), "%s.in%s%s" % (var[2][1], i, j))
+                cA("%s.%s%s" % (var[0][1], pnt[i], o),
+                   "%s.in%s%s" % (var[2][1], i, j))
 
-        cA("%s.%sSurface" % (var[1][1], io[1]), "%s.%sSurface" % (var[0][1], io[0]))
+        cA("%s.%sSurface" % (var[1][1], io[1]),
+           "%s.%sSurface" % (var[0][1], io[0]))
         cA("%s.%s" % (var[2][1], io[1]), "%s.%sMatrix" % (var[3][1], io[0]))
         cA("%s.%sTranslate" % (var[3][1], io[1]), "%s.t" % gp)
         cA("%s.%sRotate" % (var[3][1], io[1]), "%s.r" % gp)
@@ -783,7 +800,8 @@ def copySkin(name=None, mode="closestPoint"):
         if oldSkc:
             cmds.delete(oldSkc)
             print (
-                "Deleted existing skincluster on " + target + "(" + str(oldSkc) + ")"
+                "Deleted existing skincluster on " +
+                target + "(" + str(oldSkc) + ")"
             )
         jnt = cmds.skinCluster(sourceSkinCluster, influence=True, q=True)
         newSkc = cmds.skinCluster(jnt, target, tsb=True, n=name)[0]
@@ -930,7 +948,7 @@ def createControlCrv(
         name = loc.replace("loc", "crv")
 
     crv = cmds.circle(n=name, nr=nr, r=size, ch=0)[0]
-    ztr = mwUtils.addZtr(crv)
+    ztr = mw_main_utils.addZtr(crv)
     cmds.parent(ztr, loc)
     cmds.setAttr(ztr + ".tx", 0)
     cmds.setAttr(ztr + ".ty", 0)
@@ -948,7 +966,8 @@ def createControlCrv(
 
     if shape == "scLeft":
         cmds.move(-0.3 * size, 0, 0, crv + ".cv[7]", wd=1, r=1, os=1)
-        cmds.move(-0.8 * size, 0, 0, crv + ".cv[0]", crv + ".cv[6:7]", wd=1, r=1, os=1)
+        cmds.move(-0.8 * size, 0, 0, crv +
+                  ".cv[0]", crv + ".cv[6:7]", wd=1, r=1, os=1)
 
     if shape == "scUp":
         cmds.move(0, 0.3 * size, 0, crv + ".cv[5]", wd=1, r=1, os=1)
@@ -993,8 +1012,8 @@ def createFacialGeoLayer(
     if facePolys == []:
         facePolys = None
 
-    facialBody = mwUtils.renameSuffix(faceGeo, "ply", add="facial")
-    facialCut = mwUtils.renameSuffix(faceGeo, "ply", add="facialCut")
+    facialBody = mw_main_utils.renameSuffix(faceGeo, "ply", add="facial")
+    facialCut = mw_main_utils.renameSuffix(faceGeo, "ply", add="facialCut")
     if not cmds.objExists(facialBody):
         facialBody = cmds.duplicate(faceGeo, n=facialBody)[0]
         facialCut = cmds.duplicate(faceGeo, n=facialCut)[0]
@@ -1002,7 +1021,7 @@ def createFacialGeoLayer(
             facialBody,
             faceGeo,
             w=[0, 1],
-            n=mwUtils.renameSuffix(faceGeo, "bs", add="facial"),
+            n=mw_main_utils.renameSuffix(faceGeo, "bs", add="facial"),
             foc=1,
         )
 
@@ -1023,18 +1042,20 @@ def createFacialGeoLayer(
             cmds.meshSnap(
                 facialBody,
                 facialCut,
-                name=mwUtils.renameSuffix(faceGeo, "meshSnap", add="facialCut"),
+                name=mw_main_utils.renameSuffix(
+                    faceGeo, "meshSnap", add="facialCut"),
             )
         elif snapType == "cvWrap":
             # cvWrap
             cmds.cvWrap(
                 facialBody,
                 facialCut,
-                name=mwUtils.renameSuffix(faceGeo, "cvWrap", add="facialCut"),
+                name=mw_main_utils.renameSuffix(
+                    faceGeo, "cvWrap", add="facialCut"),
             )
 
-    faceGeoPly = mwUtils.renameSuffix(faceGeo, "ply", add=name)
-    bsName = mwUtils.renameSuffix(faceGeo, "bs", add="facialSystems")
+    faceGeoPly = mw_main_utils.renameSuffix(faceGeo, "ply", add=name)
+    bsName = mw_main_utils.renameSuffix(faceGeo, "bs", add="facialSystems")
 
     if not cmds.objExists(faceGeoPly):
         cmds.duplicate(facialCut, n=faceGeoPly)[0]
@@ -1065,17 +1086,17 @@ def createFacialGeoLayer(
         addGeos = ast.literal_eval(addGeos)
 
         for g in addGeos:
-            addGeoPly = mwUtils.renameSuffix(g, "ply", add="Facial")
+            addGeoPly = mw_main_utils.renameSuffix(g, "ply", add="Facial")
             if not cmds.objExists(addGeoPly):
                 cmds.duplicate(g, n=addGeoPly)[0]
                 cmds.setAttr(addGeoPly + ".v", 0)
-                bsName = mwUtils.renameSuffix(g, "bs", add="Facial")
+                bsName = mw_main_utils.renameSuffix(g, "bs", add="Facial")
                 cmds.blendShape(addGeoPly, g, w=[0, 1])
 
             newGeo = cmds.duplicate(
-                g, n=mwUtils.renameSuffix(g, "ply", add=name + side)
+                g, n=mw_main_utils.renameSuffix(g, "ply", add=name + side)
             )[0]
-            bsName = mwUtils.renameSuffix(g, "bs", add="Facial")
+            bsName = mw_main_utils.renameSuffix(g, "bs", add="Facial")
 
             if not cmds.objExists(bsName):
                 cmds.blendShape(
@@ -1117,7 +1138,7 @@ def multiMirror(obj=None):
         cmds.warning("No object selected")
         return
 
-    obj = mwUtils.convertToList(obj)
+    obj = mw_main_utils.convertToList(obj)
     for i in range(0, 3):
         for o in obj:
             if cmds.objectType(o) == "transform":
@@ -1159,7 +1180,8 @@ def multiMirror(obj=None):
                                 ss + ".cv[" + str(cv) + "]", q=1, t=1, ws=1
                             )
                             pos = [-mirPos[0], mirPos[1], mirPos[2]]
-                            cmds.xform(mirObj + ".cv[" + str(cv) + "]", t=pos, ws=1)
+                            cmds.xform(
+                                mirObj + ".cv[" + str(cv) + "]", t=pos, ws=1)
 
                     elif "_R" in ss:
                         mirObj = ss.replace("_R", "_L")
@@ -1169,7 +1191,8 @@ def multiMirror(obj=None):
                                 ss + ".cv[" + str(cv) + "]", q=1, t=1, ws=1
                             )
                             pos = [-mirPos[0], mirPos[1], mirPos[2]]
-                            cmds.xform(mirObj + ".cv[" + str(cv) + "]", t=pos, ws=1)
+                            cmds.xform(
+                                mirObj + ".cv[" + str(cv) + "]", t=pos, ws=1)
 
                     elif "_C" in ss:
                         cmds.warning("Skipping center shape: " + ss)
@@ -1186,7 +1209,7 @@ def createFollicleInNurbs(name, nurbs, pos, breakRot=True):
     cmds.setAttr(npC + ".inPositionX", pos[0])
     cmds.setAttr(npC + ".inPositionY", pos[1])
     cmds.setAttr(npC + ".inPositionZ", pos[2])
-    mwUtils.connectAttr("tempCurveShape.worldSpace", npC + ".inputCurve")
+    mw_main_utils.connectAttr("tempCurveShape.worldSpace", npC + ".inputCurve")
 
     param = cmds.getAttr(npC + ".parameter")
     vPos = param / parameter
@@ -1201,10 +1224,11 @@ def createFollicleInNurbs(name, nurbs, pos, breakRot=True):
     shape = cmds.listRelatives(nurbs, c=1, s=1)[0]
     folShape = cmds.listRelatives(name, c=1, s=1)[0]
 
-    mwUtils.connectAttr(shape + ".local", folShape + ".inputSurface")
-    mwUtils.connectAttr(shape + ".worldMatrix[0]", folShape + ".inputWorldMatrix")
-    mwUtils.connectAttr(folShape + ".outRotate", name + ".rotate")
-    mwUtils.connectAttr(folShape + ".outTranslate", name + ".translate")
+    mw_main_utils.connectAttr(shape + ".local", folShape + ".inputSurface")
+    mw_main_utils.connectAttr(
+        shape + ".worldMatrix[0]", folShape + ".inputWorldMatrix")
+    mw_main_utils.connectAttr(folShape + ".outRotate", name + ".rotate")
+    mw_main_utils.connectAttr(folShape + ".outTranslate", name + ".translate")
 
     cmds.setAttr(folShape + ".parameterU", 0.5)
     cmds.setAttr(folShape + ".parameterV", vPos)
@@ -1239,11 +1263,13 @@ def createFollicelInNurbsClosestPoint(name, nurbs, pos):
     cmds.rename("follicle1", name)
     folShape = cmds.listRelatives(name, c=1, s=1)[0]
 
-    mwUtils.connectAttr(nurbsShape + ".local", folShape + ".inputSurface")
-    mwUtils.connectAttr(nurbsShape + ".worldMatrix[0]", folShape + ".inputWorldMatrix")
+    mw_main_utils.connectAttr(nurbsShape + ".local",
+                              folShape + ".inputSurface")
+    mw_main_utils.connectAttr(
+        nurbsShape + ".worldMatrix[0]", folShape + ".inputWorldMatrix")
 
-    mwUtils.connectAttr(folShape + ".outRotate", name + ".rotate")
-    mwUtils.connectAttr(folShape + ".outTranslate", name + ".translate")
+    mw_main_utils.connectAttr(folShape + ".outRotate", name + ".rotate")
+    mw_main_utils.connectAttr(folShape + ".outTranslate", name + ".translate")
 
     cmds.setAttr(folShape + ".parameterU", normParamU)
     cmds.setAttr(folShape + ".parameterV", normParamV)
@@ -1258,9 +1284,9 @@ def connectCtlToFol(ctl, fol):
     pma = fol.replace("fol", "pma")
     cmds.createNode("plusMinusAverage", n=pma)
     cmds.setAttr(pma + ".operation", 2)
-    mwUtils.connectAttr(fol + ".tx", pma + ".input3D[0].input3Dx")
-    mwUtils.connectAttr(fol + ".ty", pma + ".input3D[0].input3Dy")
-    mwUtils.connectAttr(fol + ".tz", pma + ".input3D[0].input3Dz")
+    mw_main_utils.connectAttr(fol + ".tx", pma + ".input3D[0].input3Dx")
+    mw_main_utils.connectAttr(fol + ".ty", pma + ".input3D[0].input3Dy")
+    mw_main_utils.connectAttr(fol + ".tz", pma + ".input3D[0].input3Dz")
     tx = cmds.getAttr(fol + ".tx")
     ty = cmds.getAttr(fol + ".ty")
     tz = cmds.getAttr(fol + ".tz")
@@ -1272,26 +1298,29 @@ def connectCtlToFol(ctl, fol):
     ctlZtr = cmds.listRelatives(ctl, p=1)[0]
 
     # rvt
-    rvt = cmds.createNode("transform", n=mwUtils.renameSuffix(ctl, suffix="rvt"))
+    rvt = cmds.createNode(
+        "transform", n=mw_main_utils.renameSuffix(ctl, suffix="rvt"))
     snap(rvt, ctl)
     cmds.parent(ctl, w=1)
 
     # rvtZtr
-    rvtZtr = cmds.rename(ctlZtr, mwUtils.renameSuffix(ctl, suffix="rvtZtr"))
+    rvtZtr = cmds.rename(
+        ctlZtr, mw_main_utils.renameSuffix(ctl, suffix="rvtZtr"))
     cmds.parent(rvt, rvtZtr)
     zeroOut(rvt)
     cmds.parent(ctl, rvt)
 
     # auto
-    auto = cmds.createNode("transform", n=mwUtils.renameSuffix(ctl, suffix="auto"))
+    auto = cmds.createNode(
+        "transform", n=mw_main_utils.renameSuffix(ctl, suffix="auto"))
     snap(auto, fol)
     cmds.parent(rvtZtr, auto)
 
     # autoZtr
-    autoZtr = mwUtils.addZtr(auto)
+    autoZtr = mw_main_utils.addZtr(auto)
 
     # global ctl ztr
-    newCtlZtr = mwUtils.addZtr(autoZtr)
+    newCtlZtr = mw_main_utils.addZtr(autoZtr)
     cmds.rename(newCtlZtr, ctlZtr)
 
     # fix for mirrored ctls
@@ -1300,26 +1329,26 @@ def connectCtlToFol(ctl, fol):
         cmds.delete(fixedCtlZtr)
         cmds.rename(ctlZtr, fixedCtlZtr)
 
-    mwUtils.connectAttr(pma + ".output3Dx", auto + ".tx")
-    mwUtils.connectAttr(pma + ".output3Dy", auto + ".ty")
-    mwUtils.connectAttr(pma + ".output3Dz", auto + ".tz")
+    mw_main_utils.connectAttr(pma + ".output3Dx", auto + ".tx")
+    mw_main_utils.connectAttr(pma + ".output3Dy", auto + ".ty")
+    mw_main_utils.connectAttr(pma + ".output3Dz", auto + ".tz")
 
     # creates and connects reverse mdv node
     mdv = cmds.createNode(
-        "multiplyDivide", n=mwUtils.renameSuffix(ctl, suffix="mdv", add="reverse")
+        "multiplyDivide", n=mw_main_utils.renameSuffix(ctl, suffix="mdv", add="reverse")
     )
 
-    mwUtils.connectAttr(ctl + ".tx", mdv + ".input1X")
-    mwUtils.connectAttr(ctl + ".ty", mdv + ".input1Y")
-    mwUtils.connectAttr(ctl + ".tz", mdv + ".input1Z")
+    mw_main_utils.connectAttr(ctl + ".tx", mdv + ".input1X")
+    mw_main_utils.connectAttr(ctl + ".ty", mdv + ".input1Y")
+    mw_main_utils.connectAttr(ctl + ".tz", mdv + ".input1Z")
 
     cmds.setAttr(mdv + ".input2Y", -1)
     cmds.setAttr(mdv + ".input2X", -1)
     cmds.setAttr(mdv + ".input2Z", -1)
 
-    mwUtils.connectAttr(mdv + ".outputX", rvt + ".tx")
-    mwUtils.connectAttr(mdv + ".outputY", rvt + ".ty")
-    mwUtils.connectAttr(mdv + ".outputZ", rvt + ".tz")
+    mw_main_utils.connectAttr(mdv + ".outputX", rvt + ".tx")
+    mw_main_utils.connectAttr(mdv + ".outputY", rvt + ".ty")
+    mw_main_utils.connectAttr(mdv + ".outputZ", rvt + ".tz")
 
 
 def getClosestVtx(mesh, pos=None, transform=None):
@@ -1330,7 +1359,7 @@ def getClosestVtx(mesh, pos=None, transform=None):
 
     shape = cmds.listRelatives(mesh, c=1, s=1)[0]
     cpm = cmds.createNode("closestPointOnMesh")
-    mwUtils.connectAttr(shape + ".outMesh", cpm + ".inMesh")
+    mw_main_utils.connectAttr(shape + ".outMesh", cpm + ".inMesh")
     cmds.setAttr(cpm + ".ipx", pos[0])
     cmds.setAttr(cpm + ".ipy", pos[1])
     cmds.setAttr(cpm + ".ipz", pos[2])
@@ -1349,7 +1378,7 @@ def getClosestFace(mesh, pos=None, transform=None):
 
     shape = cmds.listRelatives(mesh, shapes=1)[0]
     cpm = cmds.createNode("closestPointOnMesh")
-    mwUtils.connectAttr(shape + ".outMesh", cpm + ".inMesh")
+    mw_main_utils.connectAttr(shape + ".outMesh", cpm + ".inMesh")
     cmds.setAttr(cpm + ".ipx", pos[0])
     cmds.setAttr(cpm + ".ipy", pos[1])
     cmds.setAttr(cpm + ".ipz", pos[2])
@@ -1587,7 +1616,7 @@ def addConnectTags(obj=None, connectID=None, connectObj=None):
     if obj == None:
         obj = cmds.ls(sl=1)
 
-    obj = mwUtils.convertToList(obj)
+    obj = mw_main_utils.convertToList(obj)
 
     for o in obj:
         if connectObj == None:
@@ -1617,35 +1646,35 @@ def buildRigBound(
     # builds rigBound from published rigPuppet and model
 
     if skeletonGeo == True:
-        skeletonGeo = mwUtils.bringPublish(task="ModelSkeleton")
+        skeletonGeo = mw_main_utils.bringPublish(task="ModelSkeleton")
         if skeletonGeo == True:
             cmds.rename("geo", "skeletonGeo")
             for g in cmds.listRelatives("skeletonGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_skeletonGeo"))
 
     if musclesGeo == True:
-        musclesGeo = mwUtils.bringPublish(task="ModelMuscles")
+        musclesGeo = mw_main_utils.bringPublish(task="ModelMuscles")
         if musclesGeo == True:
             cmds.rename("geo", "musclesGeo")
             for g in cmds.listRelatives("musclesGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_musclesGeo"))
 
     if lowGeo == True:
-        lowGeo = mwUtils.bringPublish(task="ModelLow")
+        lowGeo = mw_main_utils.bringPublish(task="ModelLow")
         if lowGeo == True:
             cmds.rename("geo", "lowGeo")
             for g in cmds.listRelatives("lowGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_lowGeo"))
 
     if highGeo == True:
-        highGeo = mwUtils.bringPublish(task="ModelHigh")
+        highGeo = mw_main_utils.bringPublish(task="ModelHigh")
         if highGeo == True:
             cmds.rename("geo", "highGeo")
             for g in cmds.listRelatives("highGeo", c=1):
                 cmds.rename(g, g.replace("_geo", "_highGeo"))
 
-    mwUtils.bringPublish(task="Model")
-    mwUtils.bringPublish(task="RigPuppet")
+    mw_main_utils.bringPublish(task="Model")
+    mw_main_utils.bringPublish(task="RigPuppet")
 
     joints = cmds.listRelatives("skeleton", ad=1, type="joint")
     rootJoint = getHierarchyRootJoint(joints[0])
@@ -1669,7 +1698,7 @@ def buildRigBound(
 
     if cmds.listRelatives(rootJoint, ad=1, type="joint") != None:
         for j in cmds.listRelatives(rootJoint, ad=1, type="joint"):
-            mwUtils.disconnectAll(j)
+            mw_main_utils.disconnectAll(j)
             for attr in cmds.listAttr(j, k=0, cb=1):
                 cmds.setAttr(j + "." + attr, k=1)
 
@@ -1677,8 +1706,8 @@ def buildRigBound(
     cmds.delete("deformers_set")
     cmds.delete("*Matrix*")
 
-    path = mwUtils.getPath(to="skin")
-    filename = os.path.join(path, mwUtils.getEntity() + ".gSkinPack")
+    path = mw_main_utils.getPath(to="skin")
+    filename = os.path.join(path, mw_main_utils.getEntity() + ".gSkinPack")
     mgear.skin.importSkinPack(filename)
 
     cmds.group("geo", "skeleton", n="ROOT")
