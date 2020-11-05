@@ -25,6 +25,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Sculpt.png" 
@@ -59,6 +63,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Smooth.png" 
@@ -93,6 +101,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Relax.png" 
@@ -127,6 +139,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Grab.png" 
@@ -161,6 +177,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Pinch.png" 
@@ -195,6 +215,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Flatten.png" 
@@ -229,6 +253,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Foamy.png" 
@@ -263,6 +291,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Spray.png" 
@@ -297,6 +329,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Repeat.png" 
@@ -331,6 +367,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Imprint.png" 
@@ -365,6 +405,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Wax.png" 
@@ -399,6 +443,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Scrape.png" 
@@ -433,6 +481,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Fill.png" 
@@ -467,6 +519,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Knife.png" 
@@ -501,6 +557,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Smear.png" 
@@ -535,6 +595,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Bulge.png" 
@@ -569,6 +633,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Amplify.png" 
@@ -603,6 +671,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Freeze.png" 
@@ -650,6 +722,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "freezeSelected.png" 
@@ -683,6 +759,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Objects.png" 
@@ -729,6 +809,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "blendShapeEditor.png" 
@@ -764,6 +848,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "poseEditor.png" 
@@ -811,6 +899,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "SmoothTarget.png" 
@@ -846,6 +938,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "CloneTarget.png" 
@@ -881,6 +977,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Mask.png" 
@@ -916,6 +1016,10 @@ global proc shelf_Sculpting () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
+        -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "Erase.png" 
