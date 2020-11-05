@@ -646,9 +646,9 @@ def zivaMirror(sel=None, *args):
         sel = cmds.ls(sl=True)
 
     for i, obj in enumerate(sel):
-        print ("")
-        print ("--- Mirroring " + obj +
-               "(" + str(i + 1) + " of " + str(len(sel)) + ")")
+        print("")
+        print("--- Mirroring " + obj +
+              "(" + str(i + 1) + " of " + str(len(sel)) + ")")
         cmds.select(obj)
         zObj = zva.Ziva()
         zObj.retrieve_from_scene_selection()
@@ -733,7 +733,7 @@ def mwRivet_Build(input, ob, edgeMax, shape, count, name):
             cA("%s.outputCurve" %
                ed, "%s.%sCurve[%s]" % (var[1][1], io[0], one))
             aA(loc[0], at="float", ln=uv[one], k=True, p=uv, min=0, max=1)
-        print ("ok%s" % node)
+        print("ok%s" % node)
 
         for UV in uv:
             cA("%s.UV.%s" % (loc[0], UV), "%s.parameter%s" % (var[0][1], UV))
@@ -799,7 +799,7 @@ def copySkin(name=None, mode="closestPoint"):
         # test if there is a skincluster on new geo already
         if oldSkc:
             cmds.delete(oldSkc)
-            print (
+            print(
                 "Deleted existing skincluster on " +
                 target + "(" + str(oldSkc) + ")"
             )

@@ -25,7 +25,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrBssrdfShader.xpm" 
@@ -59,7 +62,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrOccSampler.xpm" 
@@ -93,7 +99,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrOrenNayarShader.xpm" 
@@ -127,7 +136,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrAshikhminShader.xpm" 
@@ -161,7 +173,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrDielectricShader.xpm" 
@@ -195,7 +210,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrNormalMap.xpm" 
@@ -229,7 +247,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrRaySampler.xpm" 
@@ -263,7 +284,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrOccData.xpm" 
@@ -297,7 +321,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrSurfaceThickness.xpm" 
@@ -331,7 +358,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrBasicPhotonShader.xpm" 
@@ -365,7 +395,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrPhysicPhotonShader.xpm" 
@@ -399,7 +432,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrDielectricPhotonShader.xpm" 
@@ -433,7 +469,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrShadowMask.xpm" 
@@ -467,7 +506,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrPolyColorPerVertex.xpm" 
@@ -501,7 +543,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrUVMappingVisualizer.xpm" 
@@ -535,7 +580,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrOutputShaderBackendNode.xpm" 
@@ -551,9 +599,15 @@ global proc shelf_TURTLE () {
     shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
+<<<<<<< HEAD
+        -flexibleWidthValue 31
+        -enable 1
+        -width 34
+=======
         -flexibleWidthValue 32
         -enable 1
         -width 35
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -height 34
         -manage 1
         -visible 1
@@ -569,7 +623,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "render_ilrHwBakeVisualizer.xpm" 
@@ -603,7 +660,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "turtleClearIcon.xpm" 
@@ -637,7 +697,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "turtleBakeLayerEditorIcon.xpm" 
@@ -671,7 +734,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "turtlePCShapeIcon.xpm" 
@@ -705,7 +771,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "turtlePCBakeIcon.xpm" 
@@ -739,7 +808,10 @@ global proc shelf_TURTLE () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+<<<<<<< HEAD
+=======
         -font "plainLabelFont" 
+>>>>>>> af3e0977a7575e692f8959c03a9ff57f8d33b9fe
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "turtleInspectHwShaderIcon.xpm" 

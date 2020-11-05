@@ -1,0 +1,18 @@
+import maya.OpenMaya as om
+from datetime import datetime
+
+def log(msg, error=False, warning=False, tag="/// MWlog", color=None):
+    dt = str(datetime.now()).split(".")[0]
+    dt_msg = dt +  " - " + msg
+    tag_dt_msg = tag + " - " + dt + " - " + msg 
+    
+    if error:
+        log_func = om.MGlobal.displayError
+    elif warning:
+	    log_func = om.MGlobal.displayWarning
+    else:
+        log_func = om.MGlobal.displayInfo
+        
+    log_func(tag_dt_msg)
+
+log("hola", warning=1)
