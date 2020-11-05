@@ -1,0 +1,21 @@
+import maya.cmds as cmds
+
+obj = cmds.ls(sl=1)[0]
+op = obj.replace("l_", "r_")
+print op
+
+tx = cmds.getAttr(obj+".tx")
+ty = cmds.getAttr(obj+".ty")
+tz = cmds.getAttr(obj+".tz")
+rx = cmds.getAttr(obj+".rx")
+ry = cmds.getAttr(obj+".ry")
+rz = cmds.getAttr(obj+".rz")
+
+cmds.setAttr(op+".tx", -tx)
+cmds.setAttr(op+".ty", ty)
+cmds.setAttr(op+".tz", tz)
+
+cmds.setAttr(op+".rx", rx)
+cmds.setAttr(op+".ry", ry)
+cmds.setAttr(op+".rz", rz)
+

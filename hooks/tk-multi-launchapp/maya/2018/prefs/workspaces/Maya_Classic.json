@@ -1,7 +1,7 @@
 {
     "linkedMenu": "modelingMenuSet",
     "autoSave": true,
-    "selectedShelf": "Polygons",
+    "selectedShelf": "mwRig",
     "panels": [
         {
             "mainWindowPanel": true,
@@ -88,7 +88,7 @@
                                 {
                                     "tabWidget": {
                                         "selectedIndex": 0,
-                                        "controlWidth": 531,
+                                        "controlWidth": 427,
                                         "controlHeight": 735,
                                         "collapsed": false,
                                         "controls": [
@@ -103,10 +103,10 @@
                                                 "closed": false,
                                                 "widthProperty": "preferred",
                                                 "heightProperty": "free",
-                                                "controlWidth": 531,
+                                                "controlWidth": 427,
                                                 "controlHeight": 735,
                                                 "initCallback": "outlinerStateCallback",
-                                                "stateString": "outlinerEditor -e -docTag \"isolOutln_fromSeln\" -showShapes 0 -showAssignedMaterials 0 -showTimeEditor 1 -showReferenceNodes 0 -showReferenceMembers 0 -showAttributes 0 -showConnected 0 -showAnimCurvesOnly 0 -showMuteInfo 0 -organizeByLayer 1 -organizeByClip 1 -showAnimLayerWeight 1 -autoExpandLayers 1 -autoExpand 0 -showDagOnly 1 -showAssets 1 -showContainedOnly 1 -showPublishedAsConnected 0 -showParentContainers 0 -showContainerContents 1 -ignoreDagHierarchy 0 -expandConnections 0 -showUpstreamCurves 1 -showUnitlessCurves 1 -showCompounds 1 -showLeafs 1 -showNumericAttrsOnly 0 -highlightActive 1 -autoSelectNewObjects 0 -doNotSelectNewObjects 0 -dropIsParent 1 -transmitFilters 0 -setFilter \"defaultSetFilter\" -showSetMembers 1 -allowMultiSelection 1 -alwaysToggleSelect 0 -directSelect 0 -isSet 0 -isSetMember 0 -displayMode \"DAG\" -expandObjects 0 -setsIgnoreFilters 1 -containersIgnoreFilters 0 -editAttrName 0 -showAttrValues 0 -highlightSecondary 0 -showUVAttrsOnly 0 -showTextureNodesOnly 0 -attrAlphaOrder \"default\" -animLayerFilterOptions \"allAffecting\" -sortOrder \"none\" -longNames 0 -niceNames 1 -selectCommand \"<function selCom at 0x7f29c5c04aa0>\" -showNamespace 1 -showPinIcons 0 -mapMotionTrails 0 -ignoreHiddenAttribute 0 -ignoreOutlinerColor 0 -renderFilterVisible 0 -renderFilterIndex 0 -selectionOrder \"chronological\" -expandAttribute 0 $editorName"
+                                                "stateString": "outlinerEditor -e -showShapes 1 -showAssignedMaterials 0 -showTimeEditor 1 -showReferenceNodes 1 -showReferenceMembers 1 -showAttributes 0 -showConnected 0 -showAnimCurvesOnly 0 -showMuteInfo 0 -organizeByLayer 1 -organizeByClip 1 -showAnimLayerWeight 1 -autoExpandLayers 1 -autoExpand 0 -showDagOnly 1 -showAssets 1 -showContainedOnly 1 -showPublishedAsConnected 0 -showParentContainers 0 -showContainerContents 1 -ignoreDagHierarchy 0 -expandConnections 0 -showUpstreamCurves 1 -showUnitlessCurves 1 -showCompounds 1 -showLeafs 1 -showNumericAttrsOnly 0 -highlightActive 1 -autoSelectNewObjects 0 -doNotSelectNewObjects 0 -dropIsParent 1 -transmitFilters 0 -setFilter \"defaultSetFilter\" -showSetMembers 1 -allowMultiSelection 1 -alwaysToggleSelect 0 -directSelect 0 -isSet 0 -isSetMember 0 -displayMode \"DAG\" -expandObjects 0 -setsIgnoreFilters 1 -containersIgnoreFilters 0 -editAttrName 0 -showAttrValues 0 -highlightSecondary 0 -showUVAttrsOnly 0 -showTextureNodesOnly 0 -attrAlphaOrder \"default\" -animLayerFilterOptions \"allAffecting\" -sortOrder \"none\" -longNames 0 -niceNames 1 -showNamespace 1 -showPinIcons 0 -mapMotionTrails 0 -ignoreHiddenAttribute 0 -ignoreOutlinerColor 0 -renderFilterVisible 0 -renderFilterIndex 0 -selectionOrder \"chronological\" -expandAttribute 0 $editorName"
                                             }
                                         ]
                                     }
@@ -114,7 +114,7 @@
                                 {
                                     "tabWidget": {
                                         "selectedIndex": 0,
-                                        "controlWidth": 909,
+                                        "controlWidth": 990,
                                         "controlHeight": 752,
                                         "collapsed": false,
                                         "controls": [
@@ -129,10 +129,10 @@
                                                 "closed": false,
                                                 "widthProperty": "free",
                                                 "heightProperty": "free",
-                                                "controlWidth": 909,
+                                                "controlWidth": 990,
                                                 "controlHeight": 752,
                                                 "initCallback": "mainPaneStateCallback",
-                                                "stateString": "global string $gMainPane; paneLayout -edit -configuration single $gMainPane;if(`modelPanel -exists modelPanel4`){ modelPanel -edit -parent $gMainPane modelPanel4; paneLayout -edit -setPane modelPanel4 1 $gMainPane;}"
+                                                "stateString": "global string $gMainPane; paneLayout -edit -configuration single $gMainPane;if(`modelPanel -exists modelPanel5`){ modelPanel -edit -parent $gMainPane modelPanel5; paneLayout -edit -setPane modelPanel5 1 $gMainPane;}"
                                             }
                                         ]
                                     }
@@ -140,7 +140,7 @@
                                 {
                                     "tabWidget": {
                                         "selectedIndex": 0,
-                                        "controlWidth": 403,
+                                        "controlWidth": 426,
                                         "controlHeight": 752,
                                         "collapsed": false,
                                         "controls": [
@@ -155,7 +155,7 @@
                                                 "closed": false,
                                                 "widthProperty": "preferred",
                                                 "heightProperty": "free",
-                                                "controlWidth": 403,
+                                                "controlWidth": 426,
                                                 "controlHeight": 752
                                             },
                                             {
@@ -205,6 +205,20 @@
                                                 "requiredPlugins": [
                                                     "xgenToolkit"
                                                 ]
+                                            },
+                                            {
+                                                "objectName": "ngSkinToolsMainWindow_dock",
+                                                "title": "ngSkinTools 1.7.9",
+                                                "uiScript": "python(\"from ngSkinTools.ui.mainwindow import MainWindow; MainWindow.resumeInWorkspaceControl()\");",
+                                                "retain": false,
+                                                "loadImmediately": false,
+                                                "checkPlugins": false,
+                                                "tabDirection": 3,
+                                                "closed": false,
+                                                "widthProperty": "free",
+                                                "heightProperty": "free",
+                                                "controlWidth": 389,
+                                                "controlHeight": 752
                                             }
                                         ]
                                     }
@@ -314,20 +328,11 @@
     ],
     "closedControls": [
         {
-            "objectName": "graphEditor1Window",
-            "posX": -649,
-            "posY": 361,
-            "controlHeight": 1013,
-            "controlWidth": 1916,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "control_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 540,
-            "controlWidth": 307,
+            "objectName": "nodeEditorPanel1Window",
+            "posX": -277,
+            "posY": 295,
+            "controlHeight": 600,
+            "controlWidth": 1040,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -341,20 +346,48 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "mgear_guide_rootWorkspaceControl",
+            "objectName": "ngSkinTools2_mainWindow",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 771,
-            "controlWidth": 682,
+            "controlHeight": 328,
+            "controlWidth": 196,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "referenceEditorPanel1Window",
+            "objectName": "graphEditor1Window",
+            "posX": -649,
+            "posY": 361,
+            "controlHeight": 1013,
+            "controlWidth": 1916,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "scriptEditorPanel1Window",
+            "posX": 0,
+            "posY": 23,
+            "controlHeight": 1013,
+            "controlWidth": 1916,
+            "widthProperty": "free",
+            "heightProperty": "free",
+            "maximized": 1
+        },
+        {
+            "objectName": "GuideManagerWorkspaceControl",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 325,
-            "controlWidth": 475,
+            "controlHeight": 750,
+            "controlWidth": 305,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "control_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 540,
+            "controlWidth": 307,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -365,6 +398,15 @@
             "controlHeight": 783,
             "controlWidth": 293,
             "widthProperty": "preferred",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "mgear_guide_rootWorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 771,
+            "controlWidth": 682,
+            "widthProperty": "free",
             "heightProperty": "free"
         },
         {
@@ -386,11 +428,20 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "GuideManagerWorkspaceControl",
+            "objectName": "referenceEditorPanel1Window",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 750,
-            "controlWidth": 305,
+            "controlHeight": 325,
+            "controlWidth": 475,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "relationshipPanel1Window",
+            "posX": 566,
+            "posY": 459,
+            "controlHeight": 725,
+            "controlWidth": 678,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -402,25 +453,6 @@
             "controlWidth": 460,
             "widthProperty": "preferred",
             "heightProperty": "free"
-        },
-        {
-            "objectName": "nodeEditorPanel1Window",
-            "posX": -277,
-            "posY": 295,
-            "controlHeight": 600,
-            "controlWidth": 1040,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "scriptEditorPanel1Window",
-            "posX": 0,
-            "posY": 23,
-            "controlHeight": 1013,
-            "controlWidth": 1916,
-            "widthProperty": "free",
-            "heightProperty": "free",
-            "maximized": 1
         }
     ]
 }

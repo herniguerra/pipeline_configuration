@@ -5,13 +5,20 @@
 //
 // The hotkey set
 //
-hotkeySet -source "Maya_Default" -current Maya_Default_Duplicate;
+hotkeySet -source "Maya_Default" -current ngSkinTools2;
 //
 // The hotkey contexts and hotkeys
 //
 hotkey -keyShortcut "9" -name ("mGear_buildFromSelectionNameCommand");
+hotkey -keyShortcut "f" -ctl -name ("ngst2PaintFloodNameCommand");
+hotkey -keyShortcut "h" -name ("ngst2ToggleHelpNameCommand");
+hotkey -keyShortcut "s" -releaseName ("ngst2SampleInfluenceOffNameCommand");
+hotkey -keyShortcut "s" -name ("ngst2SampleInfluenceOnNameCommand");
 hotkey -keyShortcut "d" -sht -name ("mGear_duplicateNameCommand");
 hotkey -keyShortcut "8" -name ("mGear_inspectPropertyNameCommand");
+hotkey -keyShortcut "b" -name ("ngst2BrushSizeOnNameCommand");
+hotkey -keyShortcut "b" -releaseName ("ngst2BrushSizeOffNameCommand");
+hotkey -keyShortcut "i" -name ("ngst2SetBrushIntensityNameCommand");
 hotkey -keyShortcut "d" -ctl -sht -name ("mGear_duplicateSymNameCommand");
 hotkey -keyShortcut "f" -sht -name ("");
 hotkey -keyShortcut "s" -ctl -sht -name ("mGear_align2TransformsNameCommand");
@@ -32,4 +39,5 @@ hotkeyCtx -type "Tool" -addClient "polyCutUV";
 hotkeyCtx -type "Tool" -addClient "Unfold3DBrush";
 hotkeyCtx -type "Tool" -addClient "sculptMeshCache";
 hotkeyCtx -type "Tool" -addClient "texSculptCacheContext";
+hotkeyCtx -type "Tool" -addClient "ngst2PaintContext";
 hotkeyCtx -type "Tool" -addClient "texCutContext";
