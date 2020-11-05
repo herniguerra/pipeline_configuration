@@ -25,7 +25,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "circle.png" 
@@ -60,7 +59,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "square.png" 
@@ -95,7 +93,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "curveEP.png" 
@@ -130,7 +127,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "pencil.png" 
@@ -165,7 +161,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "threePointArc.png" 
@@ -200,7 +195,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "attachCurves.png" 
@@ -235,7 +229,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "detachCurve.png" 
@@ -270,7 +263,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "insertKnot.png" 
@@ -305,7 +297,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "extend.png" 
@@ -340,7 +331,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "offsetCurve.png" 
@@ -375,7 +365,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "rebuildCurve.png" 
@@ -410,7 +399,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "curveAddPt.png" 
@@ -444,7 +432,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "curveEditor.png" 
@@ -478,7 +465,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "curveBezier.png" 
@@ -526,7 +512,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "sphere.png" 
@@ -561,7 +546,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "cube.png" 
@@ -596,7 +580,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "cylinder.png" 
@@ -631,7 +614,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "cone.png" 
@@ -666,7 +648,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "plane.png" 
@@ -701,7 +682,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "torus.png" 
@@ -736,7 +716,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "revolve.png" 
@@ -771,7 +750,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "skin.png" 
@@ -806,7 +784,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "planarTrim.png" 
@@ -841,7 +818,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "extrude.png" 
@@ -876,7 +852,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "birail1Gen.png" 
@@ -911,7 +886,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "bevelPlus.png" 
@@ -946,7 +920,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "projectCurve.png" 
@@ -981,7 +954,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "srfIntersect.png" 
@@ -1016,7 +988,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "trim.png" 
@@ -1051,7 +1022,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "untrim.png" 
@@ -1086,7 +1056,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "align.png" 
@@ -1121,7 +1090,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "detach.png" 
@@ -1156,7 +1124,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "openCloseSurface.png" 
@@ -1191,7 +1158,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "insert.png" 
@@ -1226,7 +1192,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "extendSurface.png" 
@@ -1261,7 +1226,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "rebuildSurface.png" 
@@ -1296,7 +1260,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "putty.png" 
@@ -1331,7 +1294,6 @@ global proc shelf_CurvesSurfaces () {
         -flipX 0
         -flipY 0
         -useAlpha 1
-        -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "surfaceEditor.png" 

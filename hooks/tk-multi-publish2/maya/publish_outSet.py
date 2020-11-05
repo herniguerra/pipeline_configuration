@@ -329,12 +329,13 @@ class MayaOutSetPublishPlugin(HookBaseClass):
 
         for o in cmds.sets(combinedOutSets, q=1):
             roots = roots + ("-root " + o + " ")
-            if cmds.objectType(cmds.listRelatives(o, s=1)[0]) == "pgYetiMaya":
-                yeti = True
+            if cmds.objectType(o) != "joint":
+                if cmds.objectType(cmds.listRelatives(o, s=1)[0]) == "pgYetiMaya":
+                    yeti = True
 
         if not yeti:
             args = (
-                "-worldSpace -uvWrite -dataFormat ogawa -attrPrefix 'connect' -frameRange '%s' '%s' %s -file '%s'"
+                "-worldSpace -uvWrite -dataFormat ogawa -attrPrefix 'connect' -attrPrefix 'mw' -frameRange '%s' '%s' %s -file '%s'"
                 % (
                     start_frame,
                     end_frame,
