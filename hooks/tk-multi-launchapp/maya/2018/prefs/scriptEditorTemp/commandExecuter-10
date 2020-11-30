@@ -1,9 +1,2 @@
-attrs = cmds.listAttr("terraborg_terraborg_RigPuppet_ma:bodySetup_L0_ctl", ud=1)
-attrFlag = ""
-
-if len(attrs) > 0:    
-    for attr in attrs:
-        attrFlag += "-attr " + attr + " "
-        
-print attrFlag
-
+for g in cmds.ls(sl=1):
+    cmds.setAttr(g+".connectID", "30", type="string")

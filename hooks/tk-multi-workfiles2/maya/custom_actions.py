@@ -121,21 +121,27 @@ class CustomActions(HookBaseClass):
                 api_key="wmNnyhwfdpuecdstofw0^gjkk",
             )
 
+            entity_type = context.entity["type"]
             entity_id = context.entity["id"]
             project_id = context.project["id"]
             task_id = context.task["id"]
 
             filters = [
-                ["entity", "is", {"type": "Asset", "id": entity_id}],
+                ["entity", "is", {"type": entity_type, "id": entity_id}],
                 ["project", "is", {"type": "Project", "id": project_id}],
                 ["task.Task.id", "is", task_id],
                 ["published_file_type.PublishedFileType.code", "is", "Maya Scene"],
                 ["version_number", "is", file["version"]],
             ]
 
+            print filters
+
             fields = ["path", "name", "published_file_type", "code"]
 
             publishedFile = sg.find_one("PublishedFile", filters, fields)
+
+            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            print publishedFile
 
             if publishedFile != None:
                 # ensure file is local

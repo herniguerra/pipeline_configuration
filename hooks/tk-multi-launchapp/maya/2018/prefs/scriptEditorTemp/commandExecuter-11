@@ -1,0 +1,15 @@
+import maya.cmds as cmds
+
+source = cmds.ls(sl=1)[0]
+dest = cmds.ls(sl=1)[1]
+
+sourceShapes = cmds.listRelatives(source, c=1, s=1)
+destShape = cmds.listRelatives(dest, c=1, s=1)[0]
+
+cmds.delete(destShape)
+
+for i, shape in enumerate(sourceShapes):
+    print i
+    cmds.parent(shape, dest, r=1, s=1)
+    cmds.rename(shape, destShape+str(i))
+cmds.error("test")

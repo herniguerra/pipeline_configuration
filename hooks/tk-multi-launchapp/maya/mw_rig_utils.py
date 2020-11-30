@@ -1761,3 +1761,34 @@ def getHierarchyRoot(obj):
         obj = parent[0]
 
     return obj
+
+
+def resetSkin(objs):
+    for obj in mw_main_utils.convertToList(objs):
+        skinCluster = mel.eval('findRelatedSkinCluster ' + obj)
+
+        nInf = len(cmds.listConnections('%s.matrix' %
+                                        skinCluster, destination=False))
+        con_index = []
+
+        list = cmds.listConnections(skinCluster + ".matrix", d=0, c=1)
+
+        for obj in list:
+            if obj.find('[') != -1:
+                con_index.append(int(obj.split('[')[-1].split(']')[0]))
+
+        for n in range(nInf):
+            try:
+                slotNJoint = cmds.listConnections('%s.matrix[ %d ]' % (
+                    skinCluster, con_index[n]), destination=False)[0]
+            except indexError:
+                continue
+
+            matrixAsStr = ' '.join(
+                map(str, cmds.getAttr('%s.worldInverseMatrix' % slotNJoint)))
+            melStr = 'setAttr -type "matrix" %s.bindPreMatrix[ %d ] %s' % (
+                skinCluster, con_index[n], matrixAsStr)
+            mel.eval(melStr)
+
+            for dPose in cmds.listConnections(skinCluster, d=False, type='dagPose') or []:
+                cmds.dagPose(slotNJoint, reset=True, n=dPose)

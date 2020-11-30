@@ -393,8 +393,8 @@ def cacheChainLink(project_id, sourcePublish_id, linkPublish_id, anim_task, chai
         # it would be done in the finalize.
         manager.finalize()
     except Exception as error:
-        logger.error("There was trouble trying to publish!")
-        logger.error("Error: %s", error)
+        cmds.error("There was trouble trying to publish!")
+        cmds.error("Error: %s", error)
 
     print "Link done!"
 

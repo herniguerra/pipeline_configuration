@@ -1,0 +1,47 @@
+{
+    "../../Andar_y_Resbalarse.anim": {
+        "category": "studioLibrary", 
+        "name": "Andar_y_Resbalarse.anim", 
+        "__class__": "studiolibrarymaya.animitem.AnimItem", 
+        "modified": 1606432721.214949, 
+        "path": "../../Andar_y_Resbalarse.anim", 
+        "folder": "../..", 
+        "type": ".anim"
+    }, 
+    "../../Mirar_alrededor.anim": {
+        "category": "studioLibrary", 
+        "name": "Mirar_alrededor.anim", 
+        "__class__": "studiolibrarymaya.animitem.AnimItem", 
+        "modified": 1606432721.2421548, 
+        "path": "../../Mirar_alrededor.anim", 
+        "folder": "../..", 
+        "type": ".anim"
+    }, 
+    "../../hampaRig": {
+        "category": "studioLibrary", 
+        "name": "hampaRig", 
+        "modified": 1606432790.292466, 
+        "__class__": "studiolibrary.folderitem.FolderItem", 
+        "path": "../../hampaRig", 
+        "folder": "../..", 
+        "type": "Folder"
+    }, 
+    "../../hampaRig/Andar_y_Resbalarse_hampaRig.anim": {
+        "category": "hampaRig", 
+        "name": "Andar_y_Resbalarse_hampaRig.anim", 
+        "modified": 1606432218.1928775, 
+        "__class__": "studiolibrarymaya.animitem.AnimItem", 
+        "path": "../../hampaRig/Andar_y_Resbalarse_hampaRig.anim", 
+        "folder": "../../hampaRig", 
+        "type": ".anim"
+    }, 
+    "../../hampaRig/Mirar_alrededor_hampaRig.anim": {
+        "category": "hampaRig", 
+        "name": "Mirar_alrededor_hampaRig.anim", 
+        "__class__": "studiolibrarymaya.animitem.AnimItem", 
+        "modified": 1606432218.7662015, 
+        "path": "../../hampaRig/Mirar_alrededor_hampaRig.anim", 
+        "folder": "../../hampaRig", 
+        "type": ".anim"
+    }
+}
