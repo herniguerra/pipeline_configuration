@@ -16,6 +16,7 @@ import sgtk
 import mw_main_utils
 import subprocess
 import shutil
+import distutils.dir_util
 
 HookBaseClass = sgtk.get_hook_baseclass()
 
@@ -115,8 +116,12 @@ class LocalProvider(HookBaseClass):
 
             try:
                 process = subprocess.check_call(command)
+                try:
+                    shutil.copy2(tempPath, destination)
+                except IOError as io_err:
+                    os.makedirs(os.path.dirname(dest_fpath))
+                    shutil.copy2(tempPath, destination)
 
-                shutil.copy2(tempPath, destination)
                 print "*** Copied", tempPath, "to", destination
                 os.remove(tempPath)
                 print "*** Deleted temp file", tempPath
