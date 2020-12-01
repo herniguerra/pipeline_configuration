@@ -126,6 +126,13 @@ class LocalProvider(HookBaseClass):
                 os.remove(tempPath)
                 return None
 
+            if ".zip" in destination:
+                workPath = destination.replace("publish", "work").replace(
+                    "texturePack.", "").replace(".zip", "/")
+                mw_main_utils.zip_dir(destination, workPath, mode="unzip")
+
+                print "*** Unzipped file to ", workPath
+
         return destination
 
     def _generate_remote_path(self, published_file):

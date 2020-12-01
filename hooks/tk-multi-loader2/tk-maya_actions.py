@@ -65,6 +65,7 @@ class MayaActions(HookBaseClass):
 
         remote_storage = self.load_framework(
             "tk-framework-remotestorage_v1.x.x")
+
         downloaded_file = remote_storage.download_publish(published_file)
 
         print remote_storage
@@ -87,8 +88,8 @@ class MayaActions(HookBaseClass):
                     path, downloaded_file)
             )
 
-        dependencies = remote_storage.has_dependenciess(published_file)
-        print "!!!!!!!!!!!!!!!!!!!!!!!!-------------------------asaaaaa"
+        dependencies = remote_storage.has_dependencies(published_file)
+        print "!!!!!!!!!!!!!!!!!!!!!!!!-------------------------asa"
         print dependencies
         if dependencies != None:
             for dependency in dependencies:

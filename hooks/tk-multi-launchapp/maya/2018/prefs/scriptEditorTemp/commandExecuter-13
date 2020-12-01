@@ -1,0 +1,5 @@
+src = "M:/pipeline/shotgun/projects/dino/assets/Character/Dino/LDV/publish/textures/texturePack.v003.zip"
+
+dest = src.replace("publish", "work")
+
+mw_main_utils.zip_dir(src, dest, mode="unzip")

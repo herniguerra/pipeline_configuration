@@ -74,6 +74,7 @@ frameworks:
   tk-framework-remotestorage_v1.x.x:
     provider_hook: "{config}/tk-framework-remotestorage/gcloud-storage.py"
     location:
-      type: app_store
-      name: tk-framework-remotestorage
-      version: v1.0.0
+      type: github_release
+      organization: herniguerra
+      repository: tk-framework-remotestorage
+      version: v1.0.1
