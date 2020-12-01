@@ -68,8 +68,6 @@ class MayaActions(HookBaseClass):
 
         downloaded_file = remote_storage.download_publish(published_file)
 
-        print remote_storage
-
         if downloaded_file is None:
             # We haven't downloaded a file, and the path doesn't already exist
             # We can't import it.
