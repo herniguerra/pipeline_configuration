@@ -134,14 +134,9 @@ class CustomActions(HookBaseClass):
                 ["version_number", "is", file["version"]],
             ]
 
-            print filters
-
             fields = ["path", "name", "published_file_type", "code"]
 
             publishedFile = sg.find_one("PublishedFile", filters, fields)
-
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print publishedFile
 
             if publishedFile != None:
                 # ensure file is local

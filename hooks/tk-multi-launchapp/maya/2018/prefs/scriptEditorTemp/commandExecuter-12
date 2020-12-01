@@ -1,0 +1,22 @@
+sg = shotgun_api3.Shotgun(
+                "https://many-worlds.shotgunstudio.com",
+                script_name="mw_main_script",
+                api_key="wmNnyhwfdpuecdstofw0^gjkk",
+            )
+
+entity_type = context.entity["type"]
+entity_id = context.entity["id"]
+project_id = context.project["id"]
+task_id = context.task["id"]
+
+filters = [
+    ["entity", "is", {"type": entity_type, "id": entity_id}],
+    ["project", "is", {"type": "Project", "id": project_id}],
+    ["task.Task.id", "is", task_id],
+    ["published_file_type.PublishedFileType.code", "is", "Maya Scene"],
+    ["version_number", "is", file["version"]],
+]
+
+fields = ["path", "name", "published_file_type", "code"]
+
+publishedFile = sg.find_one("PublishedFile", filters, fields)
