@@ -107,13 +107,6 @@ class LocalProvider(HookBaseClass):
             return
 
         else:
-            print "********************************"
-            print "********************************"
-            print "********************************"
-            print "********************************"
-            print "********************************"
-            print "********************************"
-            print "********************************"
 
             rclonePath = os.path.join(
                 os.path.dirname(os.path.realpath(__file__)
@@ -122,21 +115,13 @@ class LocalProvider(HookBaseClass):
             command = rclonePath + " copyto --progress sg_publishes:mw_projectdata/" + \
                 self.project+"/" + remote_path + " " + tempPath
 
-            print 1
-
             try:
-                print 2
                 process = subprocess.check_call(command)
                 try:
-                    print 3
                     shutil.copy2(tempPath, destination)
                 except IOError as io_err:
-                    print 4
                     os.makedirs(os.path.dirname(destination))
                     shutil.copy2(tempPath, destination)
-                    print 5
-
-                print 6
 
                 print "*** Copied", tempPath, "to", destination
                 os.remove(tempPath)
