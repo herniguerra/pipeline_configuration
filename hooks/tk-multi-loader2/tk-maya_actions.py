@@ -87,14 +87,11 @@ class MayaActions(HookBaseClass):
             )
 
         dependencies = remote_storage.has_dependencies(published_file)
-        print "!!!!!!!!!!!!!!!!!!!!!!!!-------------------------asaaa"
+        print "!!!!!!!!!!!!!!!!!!!!!!!!-------------------------asa"
         print dependencies
         if dependencies != None:
             for dependency in dependencies:
                 print "********************* downloading dependency", dependency
-                print "/////////"
-                print "/////////"
-                print "/////////"
                 path = dependency["path"]["local_path"]
                 print path
                 self._ensure_file_is_local(path, dependency)
