@@ -87,14 +87,11 @@ class MayaActions(HookBaseClass):
             )
 
         dependencies = remote_storage.has_dependencies(published_file)
-        print "!!!!!!!!!!!!!!!!!!!!!!!!-------------------------asa"
+        print "!!!!!!!!!!!!!!!!!!!!!!!!-------------------------asaaa"
         print dependencies
         if dependencies != None:
             for dependency in dependencies:
                 print "********************* downloading dependency", dependency
-                print "/////////"
-                print "/////////"
-                print "/////////"
                 print "/////////"
                 print "/////////"
                 print "/////////"
