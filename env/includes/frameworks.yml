@@ -77,4 +77,4 @@ frameworks:
       type: github_release
       organization: herniguerra
       repository: tk-framework-remotestorage
-      version: v1.0.1
+      version: v1.0.2
