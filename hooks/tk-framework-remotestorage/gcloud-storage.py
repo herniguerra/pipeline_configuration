@@ -132,7 +132,7 @@ class LocalProvider(HookBaseClass):
                     shutil.copy2(tempPath, destination)
                 except IOError as io_err:
                     print 4
-                    os.makedirs(os.path.dirname(dest_fpath))
+                    os.makedirs(os.path.dirname(destination))
                     shutil.copy2(tempPath, destination)
                     print 5
 
