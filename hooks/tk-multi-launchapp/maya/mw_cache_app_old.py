@@ -882,25 +882,10 @@ class NewLink(object):
 
         cmds.separator(style='in')
 
-        self.importOptionMenuGrpAddList = []
-        self.importRowColumnLayout = cmds.rowColumnLayout(
-            numberOfColumns=1, w=340)
-        cmds.text(label="Import and connect:", align="left")
-        self.importOptionMenuGrp = cmds.optionMenuGrp(
-            changeCommand=partial(self.importChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
+        self.linkToOptionMenuGrp = cmds.optionMenuGrp(
+            label='Link to:', changeCommand=partial(self.linkToChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False)
         cmds.menuItem(label='Source Animation')
         cmds.menuItem(label='Previous Link')
-
-        cmds.setParent(self.frameLayout)
-
-        cmds.rowColumnLayout(numberOfColumns=2, w=340)
-
-        cmds.button(label="+", command=partial(self.addImportField),
-                    bgc=[0.2, 0.2, 0.1], w=50)
-        self.removeImportButton = cmds.button(label="-", command=partial(self.removeImportField),
-                                              bgc=[0.2, 0.1, 0.1], w=50, enable=0)
-
-        cmds.setParent(self.frameLayout)
 
         cmds.separator(style='in')
 
@@ -927,41 +912,23 @@ class NewLink(object):
 
         for link in main.links:
             if link == self:
-                link.populateImport(newLink=True)
+                link.populateLinkTo(newLink=True)
             else:
-                link.populateImport(newLink=False)
+                link.populateLinkTo(newLink=False)
 
         self.linkStepChangeCmd()
 
         cmds.button(main.runCacheChainButton, e=1, enable=1)
 
-    def removeImportField(self, *args):
-        if len(self.importOptionMenuGrpAddList) != 0:
-            cmds.deleteUI(self.importOptionMenuGrpAddList.pop())
-        if len(self.importOptionMenuGrpAddList) == 0:
-            cmds.button(self.removeImportButton, e=1, enable=0)
-
-    def addImportField(self, *args):
-        cmds.setParent(self.importRowColumnLayout)
-
-        cmds.button(self.removeImportButton, e=1, enable=1)
-
-        self.importOptionMenuGrpAddList.append(cmds.optionMenuGrp(changeCommand=partial(
-            self.importChangeCmd), bgc=[0.25, 0.25, 0.25], enableBackground=False))
-
-        cmds.menuItem(label='Source Animation')
-        cmds.menuItem(label='Previous Link')
-        cmds.menuItem(label='None')
-
-    def importChangeCmd(self, *args):
-        self.currentImport = cmds.optionMenuGrp(
-            self.importOptionMenuGrp, q=1, v=1)
+    def linkToChangeCmd(self, *args):
+        self.currentLinkTo = cmds.optionMenuGrp(
+            self.linkToOptionMenuGrp, q=1, v=1)
 
         # loaded color
         cmds.optionMenuGrp(
-            self.importOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
+            self.linkToOptionMenuGrp, e=1, bgc=[0.25, 0.25, 0.25])
         cmds.optionMenuGrp(
-            self.importOptionMenuGrp, e=1, enableBackground=False)
+            self.linkToOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
 
     def linkStepChangeCmd(self, *args):
@@ -1002,53 +969,53 @@ class NewLink(object):
             self.linkVersionOptionMenuGrp, e=1, enableBackground=False)
         cmds.refresh()
 
-    def populateImport(self, newLink=False, *args):
+    def populateLinkTo(self, newLink=False, *args):
         # loading color
         cmds.optionMenuGrp(
-            self.importOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
+            self.linkToOptionMenuGrp, e=1, bgc=[0.8, 0.6, 0.02])
         cmds.refresh()
 
-        currentSel = cmds.optionMenuGrp(self.importOptionMenuGrp,
+        currentSel = cmds.optionMenuGrp(self.linkToOptionMenuGrp,
                                         q=1, v=1)
 
         # deletes all items in menu
         menuItems = cmds.optionMenuGrp(
-            self.importOptionMenuGrp, q=True, itemListLong=True)
+            self.linkToOptionMenuGrp, q=True, itemListLong=True)
         if menuItems:
             cmds.deleteUI(menuItems)
 
-        cmds.menuItem(parent=(self.importOptionMenuGrp +
+        cmds.menuItem(parent=(self.linkToOptionMenuGrp +
                               '|OptionMenu'), label='Source Animation')
 
-        cmds.menuItem(parent=(self.importOptionMenuGrp +
+        cmds.menuItem(parent=(self.linkToOptionMenuGrp +
                               '|OptionMenu'), label='Previous Link')
 
         for link in main.links:
             if link != self:
-                cmds.menuItem(parent=(self.importOptionMenuGrp +
+                cmds.menuItem(parent=(self.linkToOptionMenuGrp +
                                       '|OptionMenu'), label=link.currentPassName)
             else:
                 break
 
         if newLink == True:
             if len(main.links) > 1:
-                cmds.optionMenuGrp(self.importOptionMenuGrp,
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
                                    e=1, v="Previous Link")
-                self.currentImport = "Previous Link"
+                self.currentLinkTo = "Previous Link"
             else:
-                cmds.optionMenuGrp(self.importOptionMenuGrp,
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
                                    e=1, v="Source Animation")
-                self.currentImport = "Source Animation"
+                self.currentLinkTo = "Source Animation"
 
         else:
             try:
-                cmds.optionMenuGrp(self.importOptionMenuGrp,
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
                                    e=1, v=currentSel)
             except:
-                cmds.optionMenuGrp(self.importOptionMenuGrp,
+                cmds.optionMenuGrp(self.linkToOptionMenuGrp,
                                    e=1, v="Previous Link")
 
-        self.importChangeCmd()
+        self.linkToChangeCmd()
 
     def populateLinkVersion(self, *args):
         # loading color
@@ -1149,7 +1116,7 @@ class NewLink(object):
         main.links.remove(self)
 
         for link in main.links:
-            link.populateImport()
+            link.populateLinkTo()
 
         if len(main.links) == 0:
             cmds.button(main.runCacheChainButton, e=1, enable=0)
@@ -1316,7 +1283,7 @@ def load():
         cmds.textFieldGrp(newLink.labelTextFieldGrp, e=True, tx=pass_name)
 
         # sets link to
-        cmds.optionMenuGrp(newLink.importOptionMenuGrp, e=1, v=link_to)
+        cmds.optionMenuGrp(newLink.linkToOptionMenuGrp, e=1, v=link_to)
 
         # sets link step
         cmds.optionMenuGrp(newLink.linkStepOptionMenuGrp, e=1, v=link_step)
@@ -1367,7 +1334,7 @@ def makeLinkDict():
         source_step = cmds.optionMenuGrp(
             animSource.stepOptionMenuGrp, q=1, v=1)
 
-        link_to = link.currentImport
+        link_to = link.currentLinkTo
         if link_to == "Source Animation":
             source_task = animSource.currentTaskName
             from_id = True

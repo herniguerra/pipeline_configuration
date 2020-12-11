@@ -1,0 +1,15 @@
+for side in "LR":
+    cmds.addAttr("leg_"+side+"0_ik_ctl", ln="ballRoll", at="float", dv=0, k=1)
+    cmds.addAttr("leg_"+side+"0_ik_ctl", ln="heelRoll", at="float", dv=0, k=1)
+    ballMdv = cmds.createNode('multiplyDivide', n="ballRollInvert_"+side+"_mdv")
+    heelMdv = cmds.createNode('multiplyDivide', n="heelRollInvert_"+side+"_mdv")
+    
+    cmds.connectAttr("leg_"+side+"0_ik_ctl.ballRoll", ballMdv+".input1X")
+    cmds.setAttr(ballMdv+".input2X", -1)
+    cmds.connectAttr("leg_"+side+"0_ik_ctl.heelRoll", heelMdv+".input1X")
+    cmds.setAttr(heelMdv+".input2X", -1)
+    
+    sum = cmds.createNode("plusMinusAverage", n="feetSum_"+side+"_pma")
+    cmds.connectAttr(ballMdv+".outputX", sum+".input3D[0].input3Dx")
+    cmds.connectAttr(heelMdv+".outputX", sum+".input3D[1].input3Dx")
+    cmds.connectAttr(sum+".output3Dx", "foot_"+side+"0_roll_ctl.rotateZ")

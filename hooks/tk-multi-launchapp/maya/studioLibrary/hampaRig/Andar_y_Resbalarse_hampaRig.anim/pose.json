@@ -880,7 +880,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:c_chestIk_00_ctl": {
+    "lady_RIG_Rig_v0007:spine_C0_ik1_ctl": {
       "attrs": {
         "translateX": {
           "curve": "CURVE178", 
@@ -1676,7 +1676,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:local_C1_ctl": {
+    "lady_RIG_Rig_v0007:local_C0_ctl": {
       "attrs": {
         "translateX": {
           "curve": "CURVE337", 
@@ -2742,7 +2742,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:c_bodyIk_00_ctl": {
+    "lady_RIG_Rig_v0007:COG_C0_ctl": {
       "attrs": {
         "translateX": {
           "curve": "CURVE555", 
@@ -2918,7 +2918,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:c_spineFk_01_ctl": {
+    "lady_RIG_Rig_v0007:spine_C0_fk2_ctl": {
       "attrs": {
         "rotateX": {
           "curve": "CURVE591", 
@@ -2942,7 +2942,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:c_spineFk_02_ctl": {
+    "lady_RIG_Rig_v0007:spine_C0_fk4_ctl": {
       "attrs": {
         "rotateX": {
           "curve": "CURVE596", 
@@ -4762,7 +4762,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:c_spineFk_00_ctl": {
+    "lady_RIG_Rig_v0007:spine_C0_fk0_ctl": {
       "attrs": {
         "rotateX": {
           "curve": "CURVE961", 
@@ -4938,7 +4938,7 @@
         }
       }
     }, 
-    "lady_RIG_Rig_v0007:c_headIk_00_ctl": {
+    "lady_RIG_Rig_v0007:neck_C0_ik_ctl": {
       "attrs": {
         "stretchVolumeMid": {
           "curve": "CURVE997", 

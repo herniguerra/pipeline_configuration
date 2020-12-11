@@ -1,7 +1,7 @@
 {
     "linkedMenu": "modelingMenuSet",
     "autoSave": true,
-    "selectedShelf": "Ziva",
+    "selectedShelf": "Polygons",
     "panels": [
         {
             "mainWindowPanel": true,
@@ -88,7 +88,7 @@
                                 {
                                     "tabWidget": {
                                         "selectedIndex": 0,
-                                        "controlWidth": 420,
+                                        "controlWidth": 466,
                                         "controlHeight": 735,
                                         "collapsed": false,
                                         "controls": [
@@ -103,7 +103,7 @@
                                                 "closed": false,
                                                 "widthProperty": "preferred",
                                                 "heightProperty": "free",
-                                                "controlWidth": 420,
+                                                "controlWidth": 466,
                                                 "controlHeight": 735,
                                                 "initCallback": "outlinerStateCallback",
                                                 "stateString": "outlinerEditor -e -docTag \"isolOutln_fromSeln\" -showShapes 0 -showAssignedMaterials 0 -showTimeEditor 1 -showReferenceNodes 1 -showReferenceMembers 1 -showAttributes 0 -showConnected 0 -showAnimCurvesOnly 0 -showMuteInfo 0 -organizeByLayer 1 -organizeByClip 1 -showAnimLayerWeight 1 -autoExpandLayers 1 -autoExpand 0 -showDagOnly 1 -showAssets 1 -showContainedOnly 1 -showPublishedAsConnected 0 -showParentContainers 0 -showContainerContents 1 -ignoreDagHierarchy 0 -expandConnections 0 -showUpstreamCurves 1 -showUnitlessCurves 1 -showCompounds 1 -showLeafs 1 -showNumericAttrsOnly 0 -highlightActive 1 -autoSelectNewObjects 0 -doNotSelectNewObjects 0 -dropIsParent 1 -transmitFilters 0 -setFilter \"defaultSetFilter\" -showSetMembers 1 -allowMultiSelection 1 -alwaysToggleSelect 0 -directSelect 0 -isSet 0 -isSetMember 0 -displayMode \"DAG\" -expandObjects 0 -setsIgnoreFilters 1 -containersIgnoreFilters 0 -editAttrName 0 -showAttrValues 0 -highlightSecondary 0 -showUVAttrsOnly 0 -showTextureNodesOnly 0 -attrAlphaOrder \"default\" -animLayerFilterOptions \"allAffecting\" -sortOrder \"none\" -longNames 0 -niceNames 1 -selectCommand \"<function selCom at 0x7f29c5c04aa0>\" -showNamespace 1 -showPinIcons 0 -mapMotionTrails 0 -ignoreHiddenAttribute 0 -ignoreOutlinerColor 0 -renderFilterVisible 0 -renderFilterIndex 0 -selectionOrder \"chronological\" -expandAttribute 0 $editorName"
@@ -114,7 +114,7 @@
                                 {
                                     "tabWidget": {
                                         "selectedIndex": 0,
-                                        "controlWidth": 907,
+                                        "controlWidth": 829,
                                         "controlHeight": 752,
                                         "collapsed": false,
                                         "controls": [
@@ -129,7 +129,7 @@
                                                 "closed": false,
                                                 "widthProperty": "free",
                                                 "heightProperty": "free",
-                                                "controlWidth": 907,
+                                                "controlWidth": 829,
                                                 "controlHeight": 752,
                                                 "initCallback": "mainPaneStateCallback",
                                                 "stateString": "global string $gMainPane; paneLayout -edit -configuration single $gMainPane;if(`modelPanel -exists modelPanel4`){ modelPanel -edit -parent $gMainPane modelPanel4; paneLayout -edit -setPane modelPanel4 1 $gMainPane;}"
@@ -140,7 +140,7 @@
                                 {
                                     "tabWidget": {
                                         "selectedIndex": 0,
-                                        "controlWidth": 516,
+                                        "controlWidth": 548,
                                         "controlHeight": 752,
                                         "collapsed": false,
                                         "controls": [
@@ -155,7 +155,7 @@
                                                 "closed": false,
                                                 "widthProperty": "preferred",
                                                 "heightProperty": "free",
-                                                "controlWidth": 516,
+                                                "controlWidth": 548,
                                                 "controlHeight": 752
                                             },
                                             {
@@ -176,6 +176,23 @@
                                                 ]
                                             },
                                             {
+                                                "objectName": "XGenDockableWidget",
+                                                "title": "XGen",
+                                                "uiScript": "python(\"import maya.cmds as xguibootstrap\\nif not xguibootstrap.pluginInfo('xgenToolkit', q=True, loaded=True):\\n    xguibootstrap.loadPlugin('xgenToolkit')\\ndel xguibootstrap\\nxgui.createDockControl()\");",
+                                                "retain": true,
+                                                "loadImmediately": false,
+                                                "checkPlugins": false,
+                                                "tabDirection": 3,
+                                                "closed": false,
+                                                "widthProperty": "free",
+                                                "heightProperty": "free",
+                                                "controlWidth": 460,
+                                                "controlHeight": 752,
+                                                "requiredPlugins": [
+                                                    "xgenToolkit"
+                                                ]
+                                            },
+                                            {
                                                 "objectName": "AttributeEditor",
                                                 "title": "Attribute Editor",
                                                 "uiScript": "global string $gAttributeEditorForm; formLayout $gAttributeEditorForm;",
@@ -190,21 +207,18 @@
                                                 "controlHeight": 752
                                             },
                                             {
-                                                "objectName": "XGenDockableWidget",
-                                                "title": "XGen",
-                                                "uiScript": "python(\"import maya.cmds as xguibootstrap\\nif not xguibootstrap.pluginInfo('xgenToolkit', q=True, loaded=True):\\n    xguibootstrap.loadPlugin('xgenToolkit')\\ndel xguibootstrap\\nxgui.createDockControl()\");",
-                                                "retain": true,
+                                                "objectName": "ngSkinToolsMainWindow_dock",
+                                                "title": "ngSkinTools 1.7.9",
+                                                "uiScript": "python(\"from ngSkinTools.ui.mainwindow import MainWindow; MainWindow.resumeInWorkspaceControl()\");",
+                                                "retain": false,
                                                 "loadImmediately": false,
                                                 "checkPlugins": false,
                                                 "tabDirection": 3,
                                                 "closed": false,
                                                 "widthProperty": "free",
                                                 "heightProperty": "free",
-                                                "controlWidth": 460,
-                                                "controlHeight": 751,
-                                                "requiredPlugins": [
-                                                    "xgenToolkit"
-                                                ]
+                                                "controlWidth": 430,
+                                                "controlHeight": 752
                                             }
                                         ]
                                     }
@@ -314,38 +328,30 @@
     ],
     "closedControls": [
         {
-            "objectName": "foot_bk_01WorkspaceControl",
+            "objectName": "relationshipPanel1Window",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 423,
-            "controlWidth": 280,
+            "controlHeight": 606,
+            "controlWidth": 587,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "leg_2jnt_freeTangents_01WorkspaceControl",
-            "posX": 577,
-            "posY": 132,
-            "controlHeight": 780,
-            "controlWidth": 280,
+            "objectName": "renderViewWindow",
+            "posX": 0,
+            "posY": 23,
+            "controlHeight": 1013,
+            "controlWidth": 1916,
             "widthProperty": "free",
-            "heightProperty": "free"
+            "heightProperty": "free",
+            "maximized": 1
         },
         {
-            "objectName": "mgear_guide_rootWorkspaceControl",
+            "objectName": "outlinerPanel2Window",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 771,
-            "controlWidth": 682,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "neck_ik_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 620,
-            "controlWidth": 280,
+            "controlHeight": 325,
+            "controlWidth": 475,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -359,47 +365,38 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "spine_ik_02WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 423,
-            "controlWidth": 280,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "ToolSettings",
-            "posX": 953,
-            "posY": 427,
-            "controlHeight": 1056,
-            "controlWidth": 471,
-            "widthProperty": "preferred",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "renderViewWindow",
-            "posX": 219,
-            "posY": 129,
-            "controlHeight": 656,
-            "controlWidth": 996,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
             "objectName": "nodeEditorPanel1Window",
-            "posX": -277,
-            "posY": 295,
+            "posX": 445,
+            "posY": 204,
             "controlHeight": 600,
             "controlWidth": 1040,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "maya_panel_tk_multi_pythonconsole_main",
-            "posX": 1670,
-            "posY": 250,
-            "controlHeight": 1537,
-            "controlWidth": 2154,
+            "objectName": "ToolSettings",
+            "posX": 129,
+            "posY": 278,
+            "controlHeight": 1056,
+            "controlWidth": 471,
+            "widthProperty": "preferred",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "control_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 540,
+            "controlWidth": 307,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "unifiedRenderGlobalsWindow",
+            "posX": 333,
+            "posY": 198,
+            "controlHeight": 670,
+            "controlWidth": 456,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -413,28 +410,10 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "ngSkinToolsMainWindow_dock",
-            "posX": 388,
-            "posY": 245,
-            "controlHeight": 1411,
-            "controlWidth": 1024,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "referenceEditorPanel1Window",
-            "posX": 382,
-            "posY": 202,
-            "controlHeight": 325,
-            "controlWidth": 673,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "chain_spring_01WorkspaceControl",
+            "objectName": "neck_ik_01WorkspaceControl",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 423,
+            "controlHeight": 620,
             "controlWidth": 280,
             "widthProperty": "free",
             "heightProperty": "free"
@@ -445,6 +424,51 @@
             "posY": 202,
             "controlHeight": 783,
             "controlWidth": 1106,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "studiolibrary_978c455d-dbfb-4056-83a0-6961f2776df0WorkspaceControl",
+            "posX": 1219,
+            "posY": 285,
+            "controlHeight": 756,
+            "controlWidth": 610,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "maya_panel_tk_multi_pythonconsole_main",
+            "posX": 1670,
+            "posY": 250,
+            "controlHeight": 1537,
+            "controlWidth": 2154,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "studiolibrary_d1cb1631-6d77-4605-9b52-e46ea09620a1WorkspaceControl",
+            "posX": -89,
+            "posY": 309,
+            "controlHeight": 756,
+            "controlWidth": 610,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "leg_2jnt_freeTangents_01WorkspaceControl",
+            "posX": 577,
+            "posY": 132,
+            "controlHeight": 780,
+            "controlWidth": 280,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "spine_ik_02WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 423,
+            "controlWidth": 280,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -467,38 +491,57 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "control_01WorkspaceControl",
+            "objectName": "foot_bk_01WorkspaceControl",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 540,
-            "controlWidth": 307,
+            "controlHeight": 423,
+            "controlWidth": 280,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "unifiedRenderGlobalsWindow",
-            "posX": 333,
-            "posY": 198,
-            "controlHeight": 670,
-            "controlWidth": 456,
+            "objectName": "chain_spring_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 423,
+            "controlWidth": 280,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "mgear_guide_rootWorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 771,
+            "controlWidth": 682,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
             "objectName": "graphEditor1Window",
-            "posX": -380,
-            "posY": 201,
+            "posX": 0,
+            "posY": 23,
             "controlHeight": 1013,
             "controlWidth": 1916,
+            "widthProperty": "free",
+            "heightProperty": "free",
+            "maximized": 1
+        },
+        {
+            "objectName": "scriptEditorPanel1Window",
+            "posX": 479,
+            "posY": 770,
+            "controlHeight": 719,
+            "controlWidth": 727,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "scriptEditorPanel1Window",
-            "posX": -472,
-            "posY": 458,
-            "controlHeight": 1014,
-            "controlWidth": 1916,
+            "objectName": "referenceEditorPanel1Window",
+            "posX": 382,
+            "posY": 202,
+            "controlHeight": 325,
+            "controlWidth": 673,
             "widthProperty": "free",
             "heightProperty": "free"
         }

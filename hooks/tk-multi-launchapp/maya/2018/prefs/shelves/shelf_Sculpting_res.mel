@@ -1,0 +1,8 @@
+global proc shelf_Sculpting_res () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+
+} 

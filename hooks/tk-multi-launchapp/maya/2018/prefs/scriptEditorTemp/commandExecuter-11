@@ -12,4 +12,3 @@ for i, shape in enumerate(sourceShapes):
     print i
     cmds.parent(shape, dest, r=1, s=1)
     cmds.rename(shape, destShape+str(i))
-cmds.error("test")
