@@ -170,9 +170,21 @@ class LocalProvider(HookBaseClass):
             os.path.dirname(os.path.realpath(__file__)), "rclone", "exists.tmp"
         )
 
+        print "*/////////////////////////////////////"
+        print "*/////////////////////////////////////"
+        print "*/////////////////////////////////////"
+        print "*/////////////////////////////////////"
+        print "*/////////////////////////////////////"
+        print "*/////////////////////////////////////"
+
+        print rclonePath
+        print existsPath
+
         command = rclonePath + " lsf sg_publishes:mw_projectdata/"+self.project+"/" + source
         os.system(command + " > " + existsPath)
         result = open(existsPath, "r").readline().strip()
+
+        print result
 
         if result == source:
             return True
