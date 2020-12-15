@@ -180,7 +180,8 @@ class LocalProvider(HookBaseClass):
         print rclonePath
         print existsPath
 
-        command = rclonePath + " lsf sg_publishes:mw_projectdata/"+self.project+"/" + source
+        runas.exe /savecred /user:administrator 
+        command = "runas.exe /savecred /user:administrator " + rclonePath + " lsf sg_publishes:mw_projectdata/"+self.project+"/" + source
         os.system(command + " > " + existsPath)
         result = open(existsPath, "r").readline().strip()
 
