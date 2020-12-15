@@ -328,23 +328,94 @@
     ],
     "closedControls": [
         {
-            "objectName": "relationshipPanel1Window",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 606,
-            "controlWidth": 587,
+            "objectName": "maya_panel_tk_multi_pythonconsole_main",
+            "posX": 1670,
+            "posY": 250,
+            "controlHeight": 1537,
+            "controlWidth": 2154,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "renderViewWindow",
-            "posX": 0,
-            "posY": 23,
-            "controlHeight": 1013,
-            "controlWidth": 1916,
+            "objectName": "studiolibrary_978c455d-dbfb-4056-83a0-6961f2776df0WorkspaceControl",
+            "posX": 1219,
+            "posY": 285,
+            "controlHeight": 756,
+            "controlWidth": 610,
             "widthProperty": "free",
-            "heightProperty": "free",
-            "maximized": 1
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "spine_ik_02WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 423,
+            "controlWidth": 280,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "leg_2jnt_freeTangents_01WorkspaceControl",
+            "posX": 577,
+            "posY": 132,
+            "controlHeight": 780,
+            "controlWidth": 280,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "nodeEditorPanel1Window",
+            "posX": 445,
+            "posY": 204,
+            "controlHeight": 600,
+            "controlWidth": 1040,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "GuideManagerWorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 750,
+            "controlWidth": 305,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "scriptEditorPanel1Window",
+            "posX": 479,
+            "posY": 770,
+            "controlHeight": 719,
+            "controlWidth": 727,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "referenceEditorPanel1Window",
+            "posX": 382,
+            "posY": 202,
+            "controlHeight": 325,
+            "controlWidth": 673,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "mgear_guide_rootWorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 771,
+            "controlWidth": 682,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "ToolSettings",
+            "posX": 129,
+            "posY": 278,
+            "controlHeight": 1056,
+            "controlWidth": 471,
+            "widthProperty": "preferred",
+            "heightProperty": "free"
         },
         {
             "objectName": "outlinerPanel2Window",
@@ -365,60 +436,6 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "nodeEditorPanel1Window",
-            "posX": 445,
-            "posY": 204,
-            "controlHeight": 600,
-            "controlWidth": 1040,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "ToolSettings",
-            "posX": 129,
-            "posY": 278,
-            "controlHeight": 1056,
-            "controlWidth": 471,
-            "widthProperty": "preferred",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "control_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 540,
-            "controlWidth": 307,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "unifiedRenderGlobalsWindow",
-            "posX": 333,
-            "posY": 198,
-            "controlHeight": 670,
-            "controlWidth": 456,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "GuideManagerWorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 750,
-            "controlWidth": 305,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "neck_ik_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 620,
-            "controlWidth": 280,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
             "objectName": "polyTexturePlacementPanel1Window",
             "posX": 452,
             "posY": 202,
@@ -428,74 +445,11 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "studiolibrary_978c455d-dbfb-4056-83a0-6961f2776df0WorkspaceControl",
-            "posX": 1219,
-            "posY": 285,
-            "controlHeight": 756,
-            "controlWidth": 610,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "maya_panel_tk_multi_pythonconsole_main",
-            "posX": 1670,
-            "posY": 250,
-            "controlHeight": 1537,
-            "controlWidth": 2154,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "studiolibrary_d1cb1631-6d77-4605-9b52-e46ea09620a1WorkspaceControl",
-            "posX": -89,
-            "posY": 309,
-            "controlHeight": 756,
-            "controlWidth": 610,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "leg_2jnt_freeTangents_01WorkspaceControl",
-            "posX": 577,
-            "posY": 132,
-            "controlHeight": 780,
-            "controlWidth": 280,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "spine_ik_02WorkspaceControl",
+            "objectName": "relationshipPanel1Window",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 423,
-            "controlWidth": 280,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "arm_2jnt_freeTangents_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 780,
-            "controlWidth": 284,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "shoulder_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 423,
-            "controlWidth": 280,
-            "widthProperty": "free",
-            "heightProperty": "free"
-        },
-        {
-            "objectName": "foot_bk_01WorkspaceControl",
-            "posX": 250,
-            "posY": 200,
-            "controlHeight": 423,
-            "controlWidth": 280,
+            "controlHeight": 606,
+            "controlWidth": 587,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -509,11 +463,48 @@
             "heightProperty": "free"
         },
         {
-            "objectName": "mgear_guide_rootWorkspaceControl",
+            "objectName": "control_01WorkspaceControl",
             "posX": 250,
             "posY": 200,
-            "controlHeight": 771,
-            "controlWidth": 682,
+            "controlHeight": 540,
+            "controlWidth": 307,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "studiolibrary_d1cb1631-6d77-4605-9b52-e46ea09620a1WorkspaceControl",
+            "posX": -89,
+            "posY": 309,
+            "controlHeight": 756,
+            "controlWidth": 610,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "renderViewWindow",
+            "posX": 0,
+            "posY": 23,
+            "controlHeight": 1013,
+            "controlWidth": 1916,
+            "widthProperty": "free",
+            "heightProperty": "free",
+            "maximized": 1
+        },
+        {
+            "objectName": "neck_ik_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 620,
+            "controlWidth": 280,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "shoulder_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 423,
+            "controlWidth": 280,
             "widthProperty": "free",
             "heightProperty": "free"
         },
@@ -528,20 +519,29 @@
             "maximized": 1
         },
         {
-            "objectName": "scriptEditorPanel1Window",
-            "posX": 479,
-            "posY": 770,
-            "controlHeight": 719,
-            "controlWidth": 727,
+            "objectName": "unifiedRenderGlobalsWindow",
+            "posX": 333,
+            "posY": 198,
+            "controlHeight": 670,
+            "controlWidth": 456,
             "widthProperty": "free",
             "heightProperty": "free"
         },
         {
-            "objectName": "referenceEditorPanel1Window",
-            "posX": 382,
-            "posY": 202,
-            "controlHeight": 325,
-            "controlWidth": 673,
+            "objectName": "foot_bk_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 423,
+            "controlWidth": 280,
+            "widthProperty": "free",
+            "heightProperty": "free"
+        },
+        {
+            "objectName": "arm_2jnt_freeTangents_01WorkspaceControl",
+            "posX": 250,
+            "posY": 200,
+            "controlHeight": 780,
+            "controlWidth": 284,
             "widthProperty": "free",
             "heightProperty": "free"
         }

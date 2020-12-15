@@ -86,6 +86,13 @@ class LocalProvider(HookBaseClass):
 
         remote_path = self._generate_remote_path(published_file)
 
+        print "!!!!!!!!!!!!!!!!!"
+        print "!!!!!!!!!!!!!!!!!"
+        print "!!!!!!!!!!!!!!!!!"
+        print "!!!!!!!!!!!!!!!!!"
+        print "!!!!!!!!!!!!!!!!!"
+        print remote_path
+
         if not self._exists(remote_path):
             self.logger.warning(
                 "PublishedFile %s could not be found in the remote storage."
