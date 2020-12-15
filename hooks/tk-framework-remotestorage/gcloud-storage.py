@@ -184,7 +184,10 @@ class LocalProvider(HookBaseClass):
         os.system(command + " > " + existsPath)
         result = open(existsPath, "r").readline().strip()
 
+        print "---"
         print result
+        print source
+        print "---"
 
         if result == source:
             return True
