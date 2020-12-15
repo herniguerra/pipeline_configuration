@@ -1090,12 +1090,14 @@ def installMenu():
     print "Installing Many-Worlds menu..."
     sys.path.append("C:/Many-Worlds/rigging/mw_rig_dev/mw_facial")
 
-    import mw_cheek_rigger
-    import mw_eyebrows_rigger
-    import mw_eyelids_rigger
-    import mw_eyelines_rigger
-    import mw_nose_rigger
-    import mw_mouth_rigger
+    try:
+        import mw_cheek_rigger
+        import mw_eyebrows_rigger
+        import mw_eyelids_rigger
+        import mw_eyelines_rigger
+        import mw_nose_rigger
+        import mw_mouth_rigger
+    except: 0
 
     from mgear.crank import crank_tool
     from mgear.animbits import softTweaks
@@ -1150,39 +1152,41 @@ def installMenu():
     cmds.menuItem(parent=rigging_menu, divider=True)
 
     # --- create rigging facial submenu
-    facial_menu = cmds.menuItem(
-        parent=rigging_menu, label="MW Facial Riggers", subMenu=True
-    )
-    cmds.menuItem(
-        parent=facial_menu,
-        label="MW Eyebrows Rigger",
-        command=mw_eyebrows_rigger.showMwEyebrowsUI,
-    )
-    cmds.menuItem(
-        parent=facial_menu,
-        label="MW Eyelids Rigger",
-        command=mw_eyelids_rigger.showMwEyelidsUI,
-    )
-    cmds.menuItem(
-        parent=facial_menu,
-        label="MW Eyelines Rigger",
-        command=mw_eyelines_rigger.showMwEyelinesUI,
-    )
-    cmds.menuItem(
-        parent=facial_menu, label="MW Nose Rigger", command=mw_nose_rigger.showMwNoseUI
-    )
-    cmds.menuItem(
-        parent=facial_menu,
-        label="MW Mouth Rigger",
-        command=mw_mouth_rigger.showMwMouthUI,
-    )
-    cmds.menuItem(
-        parent=facial_menu,
-        label="MW Cheek Rigger",
-        command=mw_cheek_rigger.showMwCheekUI,
-    )
+    try:
+        facial_menu = cmds.menuItem(
+            parent=rigging_menu, label="MW Facial Riggers", subMenu=True
+        )
+        cmds.menuItem(
+            parent=facial_menu,
+            label="MW Eyebrows Rigger",
+            command=mw_eyebrows_rigger.showMwEyebrowsUI,
+        )
+        cmds.menuItem(
+            parent=facial_menu,
+            label="MW Eyelids Rigger",
+            command=mw_eyelids_rigger.showMwEyelidsUI,
+        )
+        cmds.menuItem(
+            parent=facial_menu,
+            label="MW Eyelines Rigger",
+            command=mw_eyelines_rigger.showMwEyelinesUI,
+        )
+        cmds.menuItem(
+            parent=facial_menu, label="MW Nose Rigger", command=mw_nose_rigger.showMwNoseUI
+        )
+        cmds.menuItem(
+            parent=facial_menu,
+            label="MW Mouth Rigger",
+            command=mw_mouth_rigger.showMwMouthUI,
+        )
+        cmds.menuItem(
+            parent=facial_menu,
+            label="MW Cheek Rigger",
+            command=mw_cheek_rigger.showMwCheekUI,
+        )
 
-    cmds.menuItem(parent=rigging_menu, divider=True)
+        cmds.menuItem(parent=rigging_menu, divider=True)
+    except: 0
 
     # --- create nurbs submenu
     nurbs_menu = cmds.menuItem(
